@@ -4,23 +4,32 @@ import { MemoryRouter } from 'react-router-dom'
 import { DashboardPage } from '../components/DashboardPage'
 
 describe('DashboardPage', () => {
-  it('renders the page header', () => {
+  it('renders stat cards', () => {
     render(
       <MemoryRouter>
         <DashboardPage />
       </MemoryRouter>
     )
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Dashboard')
+    expect(screen.getByText('Active Companies')).toBeInTheDocument()
+    expect(screen.getByText('Total Employees')).toBeInTheDocument()
+    expect(screen.getByText('W2 Documents')).toBeInTheDocument()
   })
 
-  it('renders the empty state description', () => {
+  it('renders recent documents section', () => {
     render(
       <MemoryRouter>
         <DashboardPage />
       </MemoryRouter>
     )
-    expect(
-      screen.getByText('Summary statistics and quick actions will appear here.')
-    ).toBeInTheDocument()
+    expect(screen.getByText('Recent Documents')).toBeInTheDocument()
+  })
+
+  it('renders recent activity section', () => {
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    )
+    expect(screen.getByText('Recent Activity')).toBeInTheDocument()
   })
 })
