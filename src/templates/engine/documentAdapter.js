@@ -104,5 +104,15 @@ export function adaptDocumentForTemplate(doc) {
       retirementPlan: doc.box13_retirementPlan || false,
       thirdPartySickPay: doc.box13_thirdPartySickPay || false,
     },
+    // Alias for templates that use employer.* instead of company.*
+    employer: {
+      name: comp.name?.toUpperCase() || '',
+      ein: comp.ein || '',
+      addressLine1: compAddr1,
+      addressLine2: compAddr2,
+      city: (comp.city || '').toUpperCase(),
+      stateZip: [comp.state, comp.zipCode].filter(Boolean).join(' ').toUpperCase(),
+      cityStateZip: compCityStateZip,
+    },
   }
 }

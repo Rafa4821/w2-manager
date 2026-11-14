@@ -7,8 +7,6 @@
  */
 import { rgb, StandardFonts } from 'pdf-lib'
 
-const MONEY_PATH = /^boxes\.\d+$/
-
 /** Embed the four standard fonts we need. */
 export async function embedFonts(pdfDoc) {
   return {
@@ -36,13 +34,31 @@ function resolvePath(data, path) {
 export function resolveFieldValue(data, field) {
   const path = field.path || field.key
   if (!path) return ''
+
   const raw = resolvePath(data, path)
+
+  // Null / undefined / empty → skip
   if (raw == null || raw === '') return ''
-  if (field.type === 'checkbox') return raw === true ? 'X' : ''
-  if (typeof raw === 'number' && MONEY_PATH.test(path)) {
+
+  // Year field → integer, never decimal
+  if (path === 'year') return String(Math.round(Number(raw)))
+
+  // Checkbox fields (boxes.13.*)
+  if (path.startsWith('boxes.13.') || field.type === 'checkbox') {
+    return raw === true ? 'X' : ''
+  }
+
+  // Boolean values → never show "false" or "true"
+  if (typeof raw === 'boolean') return raw ? 'X' : ''
+
+  // Money fields (boxes.1 through boxes.20, excluding 13 and non-numeric)
+  if (typeof raw === 'number') {
+    // Zero values → don't show
+    if (raw === 0) return ''
+    // Format as money with 2 decimals
     return raw.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   }
-  if (typeof raw === 'number') return raw.toFixed(2)
+
   return String(raw)
 }
 
@@ -50,17 +66,14 @@ export function resolveFieldValue(data, field) {
 function truncateToFit(text, font, size, maxWidth) {
   if (font.widthOfTextAtSize(text, size) <= maxWidth) return text
   let t = text
-  while (t.length > 0 && font.widthOfTextAtSize(t + '…', size) > maxWidth) {
+  while (t.length > 0 && font.widthOfTextAtSize(t + '...', size) > maxWidth) {
     t = t.slice(0, -1)
   }
-  return t.length < text.length ? t + '…' : text
+  return t.length < text.length ? t + '...' : text
 }
 
 /**
  * Sanitise a string so pdf-lib can encode it.
- * StandardFonts only support WinAnsi (Latin-1-ish). Characters outside
- * that set (e.g. curly quotes, em-dashes, accented letters beyond
- * Latin-1) cause "is not encodable" errors.
  */
 function sanitiseForStandardFont(text) {
   return text
@@ -73,12 +86,6 @@ function sanitiseForStandardFont(text) {
 
 /**
  * Draw all fields for a given page onto a pdf-lib page.
- *
- * @param {PDFPage}  page       – pdf-lib page object
- * @param {Object[]} fields     – mapping fields for this page
- * @param {Object}   fonts      – { helvetica, helveticaBold, courier, courierBold }
- * @param {Object}   data       – adapted document data
- * @returns {{ drawn: number, skipped: number, clipped: string[] }}
  */
 export function drawFieldsOnPage(page, fields, fonts, data) {
   const { height } = page.getSize()
@@ -117,14 +124,12 @@ export function drawFieldsOnPage(page, fields, fonts, data) {
 
 /**
  * Group mapping fields by their page index (0-based).
- * Fields without a page property default to page 0.
  */
 export function groupFieldsByPage(fields, totalPages) {
   const groups = {}
   for (let i = 0; i < (totalPages || 1); i++) groups[i] = []
   for (const field of fields) {
     let pageIdx = field.page ?? 0
-    // Detect 1-based convention (page >= totalPages means 1-based)
     if (totalPages && pageIdx >= totalPages && pageIdx > 0) pageIdx -= 1
     if (!groups[pageIdx]) groups[pageIdx] = []
     groups[pageIdx].push(field)
