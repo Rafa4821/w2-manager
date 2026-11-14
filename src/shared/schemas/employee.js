@@ -14,7 +14,7 @@ export const employeeSchema = z.object({
   zipCode: z.string().regex(/^\d{5}(-\d{4})?$/, 'ZIP must be XXXXX or XXXXX-XXXX'),
   email: z.string().email('Invalid email').optional().or(z.literal('')).default(''),
   phone: z.string().optional().default(''),
-  companyId: z.string().min(1, 'Company is required'),
+  companyId: z.string().optional().default(''),
   position: z.string().optional().default(''),
   department: z.string().optional().default(''),
   hireDate: z.string().optional().default(''),

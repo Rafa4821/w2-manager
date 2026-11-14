@@ -33,7 +33,6 @@ function EmployeeForm({ employee, onSave, onClose }) {
     if (!form.city.trim()) e.city = 'City is required'
     if (!form.state.trim()) e.state = 'State is required'
     if (!form.zipCode.trim()) e.zipCode = 'ZIP code is required'
-    if (!form.companyId) e.companyId = 'Company is required'
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -59,7 +58,7 @@ function EmployeeForm({ employee, onSave, onClose }) {
         <FormField label="SSN" name="ssn" value={form.ssn} onChange={handleChange} error={errors.ssn} required placeholder="000-00-0000" />
         <FormField label="Email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="john@example.com" />
         <FormField label="Phone" name="phone" value={form.phone} onChange={handleChange} placeholder="(XXX) XXX-XXXX" />
-        <FormField label="Company" name="companyId" type="select" value={form.companyId} onChange={handleChange} error={errors.companyId} required options={companyOptions} placeholder="Select company" />
+        <FormField label="Company (optional)" name="companyId" type="select" value={form.companyId} onChange={handleChange} options={companyOptions} placeholder="No company assigned" />
         <FormField label="Position" name="position" value={form.position} onChange={handleChange} placeholder="e.g. Senior Engineer" />
         <FormField label="Department" name="department" value={form.department} onChange={handleChange} placeholder="e.g. Engineering" />
         <FormField label="Hire Date" name="hireDate" type="date" value={form.hireDate} onChange={handleChange} />

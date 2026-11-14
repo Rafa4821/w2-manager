@@ -137,9 +137,9 @@ export function W2EditorPage() {
 
   const selectedCompany = useMemo(() => companies.find((c) => c.id === form.companyId), [companies, form.companyId])
   const selectedEmployee = useMemo(() => employees.find((e) => e.id === form.employeeId), [employees, form.employeeId])
-  const companyEmployees = useMemo(
-    () => employees.filter((e) => e.companyId === form.companyId && e.status === 'active'),
-    [employees, form.companyId]
+  const activeEmployees = useMemo(
+    () => employees.filter((e) => e.status === 'active'),
+    [employees]
   )
   const ssWageBase = useMemo(() => getSSWageBase(form.taxYear), [form.taxYear])
   const formWarnings = useMemo(() => getFormWarnings(form), [form])
@@ -374,30 +374,34 @@ export function W2EditorPage() {
   const renderEmployeeStep = () => (
     <div>
       <h3 className="tw:text-lg tw:font-semibold tw:text-gray-900 tw:mb-1">Select Employee</h3>
-      <p className="tw:text-sm tw:text-gray-500 tw:mb-5">
-        Showing active employees of <strong>{selectedCompany?.name}</strong>.
-      </p>
+      <p className="tw:text-sm tw:text-gray-500 tw:mb-5">Choose the employee for this W-2 document.</p>
       {errors.employeeId && <p className="tw:text-sm tw:text-rose-600 tw:mb-3">{errors.employeeId}</p>}
       <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-3">
-        {companyEmployees.map((e) => (
-          <button key={e.id} onClick={() => setField('employeeId', e.id)}
-            className={`tw:text-left tw:p-4 tw:rounded-xl tw:border-2 tw:transition ${
-              form.employeeId === e.id ? 'tw:border-indigo-500 tw:bg-indigo-50' : 'tw:border-gray-200 hover:tw:border-gray-300 tw:bg-white'
-            }`}>
-            <div className="tw:flex tw:items-center tw:gap-3">
-              <div className={`tw:flex tw:items-center tw:justify-center tw:h-9 tw:w-9 tw:rounded-full tw:text-xs tw:font-semibold ${
-                form.employeeId === e.id ? 'tw:bg-indigo-100 tw:text-indigo-700' : 'tw:bg-gray-100 tw:text-gray-600'
-              }`}>{e.firstName[0]}{e.lastName[0]}</div>
-              <div>
-                <p className="tw:font-medium tw:text-gray-900">{e.firstName} {e.lastName}</p>
-                <p className="tw:text-xs tw:text-gray-500">{e.position || 'No position'} &middot; SSN: {e.ssn}</p>
+        {activeEmployees.map((e) => {
+          const empCompany = companies.find(c => c.id === e.companyId)
+          return (
+            <button key={e.id} onClick={() => setField('employeeId', e.id)}
+              className={`tw:text-left tw:p-4 tw:rounded-xl tw:border-2 tw:transition ${
+                form.employeeId === e.id ? 'tw:border-indigo-500 tw:bg-indigo-50' : 'tw:border-gray-200 hover:tw:border-gray-300 tw:bg-white'
+              }`}>
+              <div className="tw:flex tw:items-center tw:gap-3">
+                <div className={`tw:flex tw:items-center tw:justify-center tw:h-9 tw:w-9 tw:rounded-full tw:text-xs tw:font-semibold ${
+                  form.employeeId === e.id ? 'tw:bg-indigo-100 tw:text-indigo-700' : 'tw:bg-gray-100 tw:text-gray-600'
+                }`}>{e.firstName[0]}{e.lastName[0]}</div>
+                <div>
+                  <p className="tw:font-medium tw:text-gray-900">{e.firstName} {e.lastName}</p>
+                  <p className="tw:text-xs tw:text-gray-500">
+                    SSN: {e.ssn}
+                    {empCompany ? ` · ${empCompany.name}` : ''}
+                  </p>
+                </div>
               </div>
-            </div>
-          </button>
-        ))}
+            </button>
+          )
+        })}
       </div>
-      {companyEmployees.length === 0 && (
-        <p className="tw:text-center tw:text-gray-500 tw:py-8">No active employees for this company.</p>
+      {activeEmployees.length === 0 && (
+        <p className="tw:text-center tw:text-gray-500 tw:py-8">No active employees. Add an employee first.</p>
       )}
     </div>
   )
@@ -488,148 +492,28 @@ export function W2EditorPage() {
         <p className="tw:text-sm tw:text-rose-600 tw:p-3 tw:bg-rose-50 tw:rounded-lg">{errors.box1_wagesTips}</p>
       )}
 
-      {/* ─── Section A: Income ─── */}
+      {/* ─── Group 1: Wages & Earnings (1, 3, 5, 16, 17) ─── */}
       <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Income</h4>
-        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Wages, tips, and other compensation reported by the employer.</p>
-        <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 tw:gap-x-4">
+        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Wages & Earnings</h4>
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Boxes 1, 3, 5, 16, 17 — Total wages, social security wages, medicare wages, and state wages/tax.</p>
+        <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-x-4">
           <CurrencyField label="1 — Wages, tips, other compensation" name="box1_wagesTips" value={form.box1_wagesTips} onChange={setCurrencyField} error={errors.box1_wagesTips} />
-          <CurrencyField label="7 — Social security tips" name="box7_socialSecurityTips" value={form.box7_socialSecurityTips} onChange={setCurrencyField} />
-          <CurrencyField label="8 — Allocated tips" name="box8_allocatedTips" value={form.box8_allocatedTips} onChange={setCurrencyField} />
-        </div>
-      </section>
-
-      {/* ─── Section B: Federal Withholding ─── */}
-      <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Federal Withholding</h4>
-        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Federal income tax withheld during the tax year.</p>
-        <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 tw:gap-x-4">
-          <CurrencyField label="2 — Federal income tax withheld" name="box2_federalTaxWithheld" value={form.box2_federalTaxWithheld} onChange={setCurrencyField} />
-        </div>
-      </section>
-
-      {/* ─── Section C: Social Security ─── */}
-      <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Social Security</h4>
-        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">
-          {form.taxYear} wage base limit: <strong>${ssWageBase.toLocaleString()}</strong>. Box 3 should not exceed this amount.
-        </p>
-        <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 tw:gap-x-4">
           <CurrencyField label="3 — Social security wages" name="box3_socialSecurityWages" value={form.box3_socialSecurityWages} onChange={setCurrencyField} />
-          <CurrencyField label="4 — Social security tax withheld" name="box4_socialSecurityTax" value={form.box4_socialSecurityTax} onChange={setCurrencyField} />
+          <CurrencyField label="5 — Medicare wages and tips" name="box5_medicareWages" value={form.box5_medicareWages} onChange={setCurrencyField} />
         </div>
         {form.box3_socialSecurityWages > ssWageBase && (
           <div className="tw:flex tw:items-center tw:gap-2 tw:mt-2 tw:p-2 tw:bg-amber-50 tw:border tw:border-amber-200 tw:rounded-lg">
             <AlertTriangle className="tw:h-4 tw:w-4 tw:text-amber-500 tw:flex-shrink-0" />
-            <p className="tw:text-xs tw:text-amber-700">Box 3 exceeds the {form.taxYear} SS wage base of ${ssWageBase.toLocaleString()}. Verify with the payroll source.</p>
+            <p className="tw:text-xs tw:text-amber-700">Box 3 exceeds the {form.taxYear} SS wage base of ${ssWageBase.toLocaleString()}.</p>
           </div>
         )}
-      </section>
-
-      {/* ─── Section D: Medicare ─── */}
-      <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Medicare</h4>
-        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Medicare wages, tips, and tax withheld. No wage base limit applies.</p>
-        <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 tw:gap-x-4">
-          <CurrencyField label="5 — Medicare wages and tips" name="box5_medicareWages" value={form.box5_medicareWages} onChange={setCurrencyField} />
-          <CurrencyField label="6 — Medicare tax withheld" name="box6_medicareTax" value={form.box6_medicareTax} onChange={setCurrencyField} />
-        </div>
-      </section>
-
-      {/* ─── Section E: Benefits ─── */}
-      <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Benefits & Other Compensation</h4>
-        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Dependent care benefits and nonqualified deferred compensation plans.</p>
-        <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 tw:gap-x-4">
-          <CurrencyField label="10 — Dependent care benefits" name="box10_dependentCareBenefits" value={form.box10_dependentCareBenefits} onChange={setCurrencyField} />
-          <CurrencyField label="11 — Nonqualified plans" name="box11_nonqualifiedPlans" value={form.box11_nonqualifiedPlans} onChange={setCurrencyField} />
-        </div>
-      </section>
-
-      {/* ─── Section F: Box 12 — Coded Entries ─── */}
-      <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <div className="tw:flex tw:items-center tw:justify-between tw:mb-1">
-          <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800">Box 12 — Coded Entries</h4>
-          {form.box12.length < 4 && (
-            <button type="button" onClick={addBox12} className="tw:text-xs tw:font-medium tw:text-indigo-600 hover:tw:text-indigo-700">+ Add Entry</button>
-          )}
-        </div>
-        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Up to 4 coded entries (12a–12d). Each uses an IRS-defined letter code.</p>
-        {form.box12.length === 0 && <p className="tw:text-sm tw:text-gray-400">No Box 12 entries.</p>}
-        {form.box12.map((entry, i) => (
-          <div key={i} className="tw:flex tw:items-end tw:gap-3 tw:mb-3">
-            <div className="tw:flex-1">
-              <FormField
-                label={`12${String.fromCharCode(97 + i)} — Code`}
-                name={`box12_code_${i}`}
-                type="select"
-                value={entry.code}
-                onChange={(_, v) => updateBox12(i, 'code', v)}
-                options={Object.entries(BOX_12_CODES).map(([code, desc]) => ({ value: code, label: `${code} — ${desc.length > 55 ? desc.substring(0, 55) + '...' : desc}` }))}
-                placeholder="Select code"
-              />
-            </div>
-            <div className="tw:w-40">
-              <CurrencyField label="Amount" name={`box12_amt_${i}`} value={entry.amount} onChange={(_, v) => updateBox12(i, 'amount', v)} />
-            </div>
-            <button type="button" onClick={() => removeBox12(i)} className="tw:mb-4 tw:px-2 tw:py-1 tw:text-xs tw:text-rose-500 hover:tw:text-rose-700 tw:transition">Remove</button>
-          </div>
-        ))}
-      </section>
-
-      {/* ─── Section G: Box 13 — Checkboxes ─── */}
-      <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Box 13 — Status Checkboxes</h4>
-        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Check the boxes that apply to this employee.</p>
-        <div className="tw:space-y-3">
-          {[
-            { key: 'box13_statutoryEmployee', label: 'Statutory employee' },
-            { key: 'box13_retirementPlan', label: 'Retirement plan' },
-            { key: 'box13_thirdPartySickPay', label: 'Third-party sick pay' },
-          ].map(({ key, label }) => (
-            <label key={key} className="tw:flex tw:items-center tw:gap-3 tw:cursor-pointer">
-              <input type="checkbox" checked={form[key]} onChange={(e) => setField(key, e.target.checked)}
-                className="tw:h-4 tw:w-4 tw:rounded tw:border-gray-300 tw:text-indigo-600 focus:tw:ring-indigo-500" />
-              <span className="tw:text-sm tw:text-gray-700">{label}</span>
-            </label>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── Section H: Box 14 — Other ─── */}
-      <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <div className="tw:flex tw:items-center tw:justify-between tw:mb-1">
-          <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800">Box 14 — Other</h4>
-          <button type="button" onClick={addBox14} className="tw:text-xs tw:font-medium tw:text-indigo-600 hover:tw:text-indigo-700">+ Add Entry</button>
-        </div>
-        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Employer-defined items (union dues, health insurance, etc.).</p>
-        {form.box14.length === 0 && <p className="tw:text-sm tw:text-gray-400">No Box 14 entries.</p>}
-        {form.box14.map((entry, i) => (
-          <div key={i} className="tw:flex tw:items-end tw:gap-3 tw:mb-3">
-            <div className="tw:flex-1">
-              <FormField label="Description" name={`box14_desc_${i}`} value={entry.description} onChange={(_, v) => updateBox14(i, 'description', v)} placeholder="e.g. Union dues" />
-            </div>
-            <div className="tw:w-40">
-              <CurrencyField label="Amount" name={`box14_amt_${i}`} value={entry.amount} onChange={(_, v) => updateBox14(i, 'amount', v)} />
-            </div>
-            <button type="button" onClick={() => removeBox14(i)} className="tw:mb-4 tw:px-2 tw:py-1 tw:text-xs tw:text-rose-500 hover:tw:text-rose-700 tw:transition">Remove</button>
-          </div>
-        ))}
-      </section>
-
-      {/* ─── Section I: Boxes 15–20 — State & Local ─── */}
-      <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <div className="tw:flex tw:items-center tw:justify-between tw:mb-1">
-          <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800">Boxes 15–20 — State & Local Tax</h4>
-          {form.stateLocal.length < 2 && (
-            <button type="button" onClick={addStateLocal} className="tw:text-xs tw:font-medium tw:text-indigo-600 hover:tw:text-indigo-700">+ Add State</button>
-          )}
-        </div>
-        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Up to 2 state/local tax entries. Leave blank if not applicable.</p>
         {form.stateLocal.map((sl, i) => (
-          <div key={i} className="tw:mb-4 tw:p-4 tw:bg-gray-50 tw:rounded-lg">
+          <div key={i} className="tw:mt-4 tw:p-3 tw:bg-gray-50 tw:rounded-lg">
             <div className="tw:flex tw:items-center tw:justify-between tw:mb-2">
-              <span className="tw:text-xs tw:font-semibold tw:text-gray-500 tw:uppercase">State Entry {i + 1}</span>
+              <span className="tw:text-xs tw:font-semibold tw:text-gray-500 tw:uppercase">State {i + 1}</span>
+              {i === 0 && form.stateLocal.length < 2 && (
+                <button type="button" onClick={addStateLocal} className="tw:text-xs tw:font-medium tw:text-indigo-600 hover:tw:text-indigo-700">+ Add State</button>
+              )}
               {form.stateLocal.length > 1 && (
                 <button type="button" onClick={() => removeStateLocal(i)} className="tw:text-xs tw:text-rose-500 hover:tw:text-rose-700">Remove</button>
               )}
@@ -639,12 +523,113 @@ export function W2EditorPage() {
               <FormField label="15 — Employer State ID" name={`sl_esid_${i}`} value={sl.employerStateId} onChange={(_, v) => updateStateLocal(i, 'employerStateId', v)} placeholder="State ID number" />
               <CurrencyField label="16 — State wages" name={`sl_sw_${i}`} value={sl.stateWages} onChange={(_, v) => updateStateLocal(i, 'stateWages', v)} />
               <CurrencyField label="17 — State tax withheld" name={`sl_st_${i}`} value={sl.stateTax} onChange={(_, v) => updateStateLocal(i, 'stateTax', v)} />
+            </div>
+          </div>
+        ))}
+      </section>
+
+      {/* ─── Group 2: Tax Withheld (2, 4, 6) ─── */}
+      <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
+        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Tax Withheld</h4>
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Boxes 2, 4, 6 — Federal income tax, social security tax, and medicare tax withheld.</p>
+        <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-3 tw:gap-x-4">
+          <CurrencyField label="2 — Federal income tax withheld" name="box2_federalTaxWithheld" value={form.box2_federalTaxWithheld} onChange={setCurrencyField} />
+          <CurrencyField label="4 — Social security tax withheld" name="box4_socialSecurityTax" value={form.box4_socialSecurityTax} onChange={setCurrencyField} />
+          <CurrencyField label="6 — Medicare tax withheld" name="box6_medicareTax" value={form.box6_medicareTax} onChange={setCurrencyField} />
+        </div>
+      </section>
+
+      {/* ─── Group 3: Other Fields ─── */}
+      <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
+        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Other Fields</h4>
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Tips, benefits, coded entries, checkboxes, local taxes, and other items.</p>
+
+        <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 tw:gap-x-4 tw:mb-4">
+          <CurrencyField label="7 — Social security tips" name="box7_socialSecurityTips" value={form.box7_socialSecurityTips} onChange={setCurrencyField} />
+          <CurrencyField label="8 — Allocated tips" name="box8_allocatedTips" value={form.box8_allocatedTips} onChange={setCurrencyField} />
+          <CurrencyField label="10 — Dependent care benefits" name="box10_dependentCareBenefits" value={form.box10_dependentCareBenefits} onChange={setCurrencyField} />
+          <CurrencyField label="11 — Nonqualified plans" name="box11_nonqualifiedPlans" value={form.box11_nonqualifiedPlans} onChange={setCurrencyField} />
+        </div>
+
+        {/* Local taxes (18, 19, 20) */}
+        {form.stateLocal.map((sl, i) => (
+          <div key={`local-${i}`} className="tw:mb-4 tw:p-3 tw:bg-gray-50 tw:rounded-lg">
+            <span className="tw:text-xs tw:font-semibold tw:text-gray-500 tw:uppercase tw:mb-2 tw:block">Local Tax — State {i + 1}</span>
+            <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-3 tw:gap-x-4">
               <CurrencyField label="18 — Local wages" name={`sl_lw_${i}`} value={sl.localWages} onChange={(_, v) => updateStateLocal(i, 'localWages', v)} />
               <CurrencyField label="19 — Local tax withheld" name={`sl_lt_${i}`} value={sl.localTax} onChange={(_, v) => updateStateLocal(i, 'localTax', v)} />
               <FormField label="20 — Locality name" name={`sl_loc_${i}`} value={sl.localityName} onChange={(_, v) => updateStateLocal(i, 'localityName', v)} placeholder="City / locality" />
             </div>
           </div>
         ))}
+
+        {/* Box 12 */}
+        <div className="tw:border-t tw:border-gray-100 tw:pt-4 tw:mt-4">
+          <div className="tw:flex tw:items-center tw:justify-between tw:mb-3">
+            <h5 className="tw:text-sm tw:font-semibold tw:text-gray-700">Box 12 — Coded Entries</h5>
+            {form.box12.length < 4 && (
+              <button type="button" onClick={addBox12} className="tw:text-xs tw:font-medium tw:text-indigo-600 hover:tw:text-indigo-700">+ Add Entry</button>
+            )}
+          </div>
+          {form.box12.length === 0 && <p className="tw:text-sm tw:text-gray-400">No Box 12 entries.</p>}
+          {form.box12.map((entry, i) => (
+            <div key={i} className="tw:flex tw:items-end tw:gap-3 tw:mb-3">
+              <div className="tw:flex-1">
+                <FormField
+                  label={`12${String.fromCharCode(97 + i)} — Code`}
+                  name={`box12_code_${i}`}
+                  type="select"
+                  value={entry.code}
+                  onChange={(_, v) => updateBox12(i, 'code', v)}
+                  options={Object.entries(BOX_12_CODES).map(([code, desc]) => ({ value: code, label: `${code} — ${desc.length > 55 ? desc.substring(0, 55) + '...' : desc}` }))}
+                  placeholder="Select code"
+                />
+              </div>
+              <div className="tw:w-40">
+                <CurrencyField label="Amount" name={`box12_amt_${i}`} value={entry.amount} onChange={(_, v) => updateBox12(i, 'amount', v)} />
+              </div>
+              <button type="button" onClick={() => removeBox12(i)} className="tw:mb-4 tw:px-2 tw:py-1 tw:text-xs tw:text-rose-500 hover:tw:text-rose-700 tw:transition">Remove</button>
+            </div>
+          ))}
+        </div>
+
+        {/* Box 13 */}
+        <div className="tw:border-t tw:border-gray-100 tw:pt-4 tw:mt-4">
+          <h5 className="tw:text-sm tw:font-semibold tw:text-gray-700 tw:mb-3">Box 13 — Status Checkboxes</h5>
+          <div className="tw:flex tw:flex-wrap tw:gap-6">
+            {[
+              { key: 'box13_statutoryEmployee', label: 'Statutory employee' },
+              { key: 'box13_retirementPlan', label: 'Retirement plan' },
+              { key: 'box13_thirdPartySickPay', label: 'Third-party sick pay' },
+            ].map(({ key, label }) => (
+              <label key={key} className="tw:flex tw:items-center tw:gap-2 tw:cursor-pointer">
+                <input type="checkbox" checked={form[key]} onChange={(e) => setField(key, e.target.checked)}
+                  className="tw:h-4 tw:w-4 tw:rounded tw:border-gray-300 tw:text-indigo-600 focus:tw:ring-indigo-500" />
+                <span className="tw:text-sm tw:text-gray-700">{label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Box 14 */}
+        <div className="tw:border-t tw:border-gray-100 tw:pt-4 tw:mt-4">
+          <div className="tw:flex tw:items-center tw:justify-between tw:mb-3">
+            <h5 className="tw:text-sm tw:font-semibold tw:text-gray-700">Box 14 — Other</h5>
+            <button type="button" onClick={addBox14} className="tw:text-xs tw:font-medium tw:text-indigo-600 hover:tw:text-indigo-700">+ Add Entry</button>
+          </div>
+          {form.box14.length === 0 && <p className="tw:text-sm tw:text-gray-400">No Box 14 entries.</p>}
+          {form.box14.map((entry, i) => (
+            <div key={i} className="tw:flex tw:items-end tw:gap-3 tw:mb-3">
+              <div className="tw:flex-1">
+                <FormField label="Description" name={`box14_desc_${i}`} value={entry.description} onChange={(_, v) => updateBox14(i, 'description', v)} placeholder="e.g. Union dues" />
+              </div>
+              <div className="tw:w-40">
+                <CurrencyField label="Amount" name={`box14_amt_${i}`} value={entry.amount} onChange={(_, v) => updateBox14(i, 'amount', v)} />
+              </div>
+              <button type="button" onClick={() => removeBox14(i)} className="tw:mb-4 tw:px-2 tw:py-1 tw:text-xs tw:text-rose-500 hover:tw:text-rose-700 tw:transition">Remove</button>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* ─── Notes ─── */}

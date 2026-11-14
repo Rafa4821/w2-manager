@@ -65,9 +65,9 @@ describe('employeeSchema', () => {
     expect(r.success).toBe(false)
   })
 
-  it('rejects missing companyId', () => {
+  it('accepts empty companyId (optional)', () => {
     const r = employeeSchema.safeParse({ ...validEmployee, companyId: '' })
-    expect(r.success).toBe(false)
+    expect(r.success).toBe(true)
   })
 
   it('rejects state longer than 2 chars', () => {
