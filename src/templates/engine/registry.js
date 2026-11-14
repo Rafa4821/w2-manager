@@ -113,6 +113,28 @@ export function getPdfBase(templateId) {
   return templates.get(templateId)?.pdfBaseUrl || null
 }
 
+/** Register the original filled PDF URL for a template. */
+export function setOriginalPdf(templateId, url) {
+  const t = templates.get(templateId)
+  if (t) t.originalPdfUrl = url
+}
+
+/** Get the original filled PDF URL for a template. */
+export function getOriginalPdf(templateId) {
+  return templates.get(templateId)?.originalPdfUrl || null
+}
+
+/** Register PDF field mapping for a template. */
+export function setPdfMapping(templateId, mapping) {
+  const t = templates.get(templateId)
+  if (t) t.pdfMapping = mapping
+}
+
+/** Get PDF field mapping for a template. */
+export function getPdfMapping(templateId) {
+  return templates.get(templateId)?.pdfMapping || null
+}
+
 /** Unregister a template (useful for testing). */
 export function unregisterTemplate(id) {
   templates.delete(id)

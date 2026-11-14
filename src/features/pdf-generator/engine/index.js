@@ -1,4 +1,6 @@
 export { generatePdf, generateBatch, createPdfUrl, downloadPdf } from './pdfGenerator'
+export { generateFromOriginal } from './pdfOriginalOverlay'
+export { resolveFieldValue as resolveOriginalFieldValue } from './pdfOriginalOverlay'
 export { generateFromBase } from './pdfOverlayGenerator'
 export { generateFromScratch } from './pdfScratchGenerator'
 export { resolveFieldValue, drawFieldsOnPage, groupFieldsByPage, embedFonts } from './pdfFieldRenderer'

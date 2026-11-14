@@ -9,6 +9,10 @@ export {
   clearRegistry,
   setPdfBase,
   getPdfBase,
+  setOriginalPdf,
+  getOriginalPdf,
+  setPdfMapping,
+  getPdfMapping,
 } from './registry'
 
 export {

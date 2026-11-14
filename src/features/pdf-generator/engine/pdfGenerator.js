@@ -1,48 +1,48 @@
 /**
  * PDF Generator — main orchestrator that selects the best strategy
- * (overlay vs scratch) and produces a downloadable PDF.
+ * and produces a downloadable PDF.
  *
- * This module does NOT claim the output is suitable for official tax
- * filing. The generated PDF is a visual representation only; compliance
- * requires verification with the issuing payroll system.
+ * Strategy priority:
+ * 1. original-overlay: Load original-filled.pdf, blank variable areas, overlay new data
+ * 2. base-overlay: Load blank-base.pdf, overlay fields via mapping coordinates
+ * 3. scratch: Create blank PDF pages and place fields (lowest fidelity)
  */
-import { getTemplate, getPdfBase, adaptDocumentForTemplate } from '../../../templates'
+import { getTemplate, getPdfBase, getOriginalPdf, getPdfMapping, adaptDocumentForTemplate } from '../../../templates'
+import { generateFromOriginal } from './pdfOriginalOverlay'
 import { generateFromBase } from './pdfOverlayGenerator'
 import { generateFromScratch } from './pdfScratchGenerator'
 
 /**
  * Generate a PDF for a W-2 document using the specified template.
- *
- * @param {Object} doc          – W-2 document from the repository
- * @param {string} templateId   – registered template ID
- * @returns {Promise<{
- *   pdfBytes: Uint8Array,
- *   filename: string,
- *   stats: Object,
- *   warnings: string[],
- *   strategy: 'overlay'|'scratch'
- * }>}
  */
 export async function generatePdf(doc, templateId) {
   const template = getTemplate(templateId)
   if (!template) throw new Error(`Template "${templateId}" is not registered.`)
 
-  // Adapt the document data to the template's expected format
   const adaptedData = adaptDocumentForTemplate(doc)
   const mapping = template.mapping
   const manifest = template.manifest
 
-  // Check for a clean base PDF
-  const pdfBaseUrl = getPdfBase(templateId)
+  // Strategy 1: Original overlay (highest fidelity)
+  const originalPdfUrl = getOriginalPdf(templateId)
+  const pdfMapping = getPdfMapping(templateId)
 
   let result
-  if (pdfBaseUrl) {
-    result = await generateFromBase(pdfBaseUrl, mapping, adaptedData)
+  if (originalPdfUrl && pdfMapping) {
+    const resp = await fetch(originalPdfUrl)
+    const originalBytes = new Uint8Array(await resp.arrayBuffer())
+    result = await generateFromOriginal(originalBytes, pdfMapping, doc)
   } else {
-    result = await generateFromScratch(mapping, adaptedData, manifest)
+    // Strategy 2: Base overlay
+    const pdfBaseUrl = getPdfBase(templateId)
+    if (pdfBaseUrl) {
+      result = await generateFromBase(pdfBaseUrl, mapping, adaptedData)
+    } else {
+      // Strategy 3: Scratch
+      result = await generateFromScratch(mapping, adaptedData, manifest)
+    }
   }
 
-  // Build filename
   const empName = doc.employeeSnapshot
     ? `${doc.employeeSnapshot.lastName}_${doc.employeeSnapshot.firstName}`
     : 'Unknown'
@@ -60,18 +60,13 @@ export async function generatePdf(doc, templateId) {
 
 /**
  * Generate PDFs for multiple documents.
- *
- * @param {Object[]} docs        – array of W-2 documents
- * @param {string}   templateId  – template to use for all
- * @param {Function} [onProgress] – callback(index, total, result|error)
- * @returns {Promise<Object[]>} – array of generation results
  */
 export async function generateBatch(docs, templateId, onProgress) {
   const results = []
   for (let i = 0; i < docs.length; i++) {
     try {
-      const result = await generatePdf(docs[i], templateId)
-      results.push({ docId: docs[i].id, success: true, ...result })
+      const r = await generatePdf(docs[i], templateId)
+      results.push({ docId: docs[i].id, success: true, ...r })
     } catch (err) {
       results.push({ docId: docs[i].id, success: false, error: err.message })
     }

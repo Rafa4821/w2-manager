@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Save, Eye, Building2, Users, Calendar, FileText, DollarSign, CheckCircle2, AlertTriangle, Info } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Save, Eye, Building2, Users, Calendar, FileText, DollarSign, CheckCircle2, AlertTriangle, Info, Download, Loader2 } from 'lucide-react'
 import { PageHeader, FormField, CurrencyField } from '../../../shared/components'
 import { useNotificationStore } from '../../../shared/store'
 import { useCompaniesStore } from '../../companies/store/useCompaniesStore'
@@ -12,7 +12,8 @@ import { w2DocumentRepository } from '../../../shared/repositories/w2DocumentRep
 import { BOX_12_CODES } from '../../../shared/schemas/w2Document'
 import { getFormWarnings, getSSWageBase } from '../../../shared/schemas/taxYearRules'
 import { round2 } from '../../../shared/utils/currency'
-import { getTemplatesForYear, getTemplate, TemplateRenderer } from '../../../templates'
+import { getAllTemplates, getTemplate, TemplateRenderer } from '../../../templates'
+import { generatePdf, createPdfUrl, downloadPdf } from '../../pdf-generator/engine/pdfGenerator'
 import { W2Preview } from './W2Preview'
 
 const STEPS = [
@@ -25,7 +26,7 @@ const STEPS = [
 ]
 
 const CURRENT_YEAR = new Date().getFullYear()
-const TAX_YEARS = Array.from({ length: 6 }, (_, i) => CURRENT_YEAR - i)
+const TAX_YEARS = Array.from({ length: 10 }, (_, i) => CURRENT_YEAR - i)
 
 const EMPTY_STATE_LOCAL = { state: '', employerStateId: '', stateWages: 0, stateTax: 0, localWages: 0, localTax: 0, localityName: '' }
 
@@ -426,22 +427,22 @@ export function W2EditorPage() {
     </div>
   )
 
-  // ── Step 4: Template (visual layout only, not tax data) ──
+  // ── Step 4: Template (ALL templates, independent of tax year) ──
   const renderTemplateStep = () => {
-    const registered = getTemplatesForYear(form.taxYear)
-    const defaultTpl = registered.find((t) => t.manifest.isDefault)
+    const allTemplates = getAllTemplates().filter(t => t.manifest.id !== 'demo-w2')
+    const defaultTpl = allTemplates.find((t) => t.manifest.isDefault) || allTemplates[0]
     return (
       <div>
         <h3 className="tw:text-lg tw:font-semibold tw:text-gray-900 tw:mb-1">Choose a Template</h3>
         <p className="tw:text-sm tw:text-gray-500 tw:mb-2">
-          Templates define the <strong>visual layout</strong> for PDF generation.
-          Tax data is entered in the next step and is independent of the template chosen.
+          Select any template regardless of its original year.
+          The tax year <strong>{form.taxYear}</strong> will be applied to the document.
         </p>
-        <p className="tw:text-xs tw:text-gray-400 tw:mb-5">This step is optional — you can skip it.</p>
         <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-3">
-          {registered.map((t) => {
+          {allTemplates.map((t) => {
             const m = t.manifest
-            const isSelected = form.templateId === m.id || (!form.templateId && m.isDefault)
+            const isSelected = form.templateId === m.id
+            const yearMatch = m.taxYears?.includes(form.taxYear)
             return (
               <button key={m.id} onClick={() => setField('templateId', m.id)}
                 className={`tw:text-left tw:p-4 tw:rounded-xl tw:border-2 tw:transition ${
@@ -449,8 +450,8 @@ export function W2EditorPage() {
                 }`}>
                 <div className="tw:flex tw:items-center tw:gap-2 tw:mb-1">
                   <p className="tw:font-medium tw:text-gray-900">{m.name}</p>
-                  {m.isDefault && <span className="tw:text-[10px] tw:bg-amber-100 tw:text-amber-700 tw:px-1.5 tw:py-0.5 tw:rounded tw:font-medium">Default</span>}
-                  <span className="tw:text-[10px] tw:bg-gray-100 tw:text-gray-500 tw:px-1.5 tw:py-0.5 tw:rounded">v{m.version}</span>
+                  {yearMatch && <span className="tw:text-[10px] tw:bg-green-100 tw:text-green-700 tw:px-1.5 tw:py-0.5 tw:rounded tw:font-medium">Year match</span>}
+                  {!yearMatch && <span className="tw:text-[10px] tw:bg-gray-100 tw:text-gray-500 tw:px-1.5 tw:py-0.5 tw:rounded">Year {m.taxYears?.[0] || '?'}</span>}
                 </div>
                 <p className="tw:text-xs tw:text-gray-500">{m.description}</p>
                 {m.pages > 1 && <p className="tw:text-[10px] tw:text-indigo-500 tw:mt-1">{m.pages} pages</p>}
@@ -458,11 +459,10 @@ export function W2EditorPage() {
             )
           })}
         </div>
-        {registered.length === 0 && (
-          <p className="tw:text-center tw:text-gray-500 tw:py-8">No templates registered for tax year {form.taxYear}.</p>
+        {allTemplates.length === 0 && (
+          <p className="tw:text-center tw:text-gray-500 tw:py-8">No templates registered.</p>
         )}
 
-        {/* Live preview of selected template */}
         {(form.templateId || defaultTpl) && (
           <div className="tw:mt-6">
             <h4 className="tw:text-sm tw:font-semibold tw:text-gray-700 tw:mb-2">Template Preview</h4>
@@ -658,29 +658,71 @@ export function W2EditorPage() {
     </div>
   )
 
-  // ── Step 6: Review & Save ──
+  // ── PDF generation state ──
+  const [pdfState, setPdfState] = useState({ generating: false, pdfUrl: null, pdfBytes: null, filename: '', error: null })
+
+  const handleGeneratePdf = async () => {
+    if (!form.templateId) {
+      addNotification({ type: 'error', title: 'No Template', message: 'Select a template before generating PDF.' })
+      return
+    }
+    setPdfState({ generating: true, pdfUrl: null, pdfBytes: null, filename: '', error: null })
+    try {
+      const result = await generatePdf(previewDoc, form.templateId)
+      const url = createPdfUrl(result.pdfBytes)
+      setPdfState({ generating: false, pdfUrl: url, pdfBytes: result.pdfBytes, filename: result.filename, error: null })
+    } catch (err) {
+      setPdfState({ generating: false, pdfUrl: null, pdfBytes: null, filename: '', error: err.message })
+    }
+  }
+
+  const handleDownloadPdf = () => {
+    if (pdfState.pdfBytes && pdfState.filename) {
+      downloadPdf(pdfState.pdfBytes, pdfState.filename)
+    }
+  }
+
+  // ── Step 6: Editable Preview & PDF Generation ──
   const renderPreviewStep = () => (
     <div>
-      <h3 className="tw:text-lg tw:font-semibold tw:text-gray-900 tw:mb-1">Review & Save</h3>
-      <p className="tw:text-sm tw:text-gray-500 tw:mb-5">Review the W-2 form data before saving. The preview below is a reference layout — it is not an official IRS form.</p>
+      <h3 className="tw:text-lg tw:font-semibold tw:text-gray-900 tw:mb-1">Review, Edit & Generate PDF</h3>
+      <p className="tw:text-sm tw:text-gray-500 tw:mb-5">
+        Review the document below. Edit any field directly, then generate the final PDF.
+      </p>
 
-      {/* Warnings */}
       {formWarnings.length > 0 && (
         <div className="tw:mb-5 tw:p-4 tw:bg-amber-50 tw:border tw:border-amber-200 tw:rounded-lg">
           <div className="tw:flex tw:items-center tw:gap-2 tw:mb-2">
             <AlertTriangle className="tw:h-4 tw:w-4 tw:text-amber-600" />
-            <h4 className="tw:text-sm tw:font-semibold tw:text-amber-800">Validation Warnings</h4>
+            <h4 className="tw:text-sm tw:font-semibold tw:text-amber-800">Warnings</h4>
           </div>
           <ul className="tw:list-disc tw:list-inside tw:space-y-1">
-            {formWarnings.map((w, i) => (
-              <li key={i} className="tw:text-xs tw:text-amber-700">{w}</li>
-            ))}
+            {formWarnings.map((w, i) => <li key={i} className="tw:text-xs tw:text-amber-700">{w}</li>)}
           </ul>
-          <p className="tw:text-xs tw:text-amber-600 tw:mt-2">You may still save the document if these values are correct per your payroll records.</p>
         </div>
       )}
 
-      {/* Use template engine if a template is selected, otherwise fallback to built-in preview */}
+      {/* Quick-edit panel for key fields */}
+      <div className="tw:mb-5 tw:p-4 tw:bg-white tw:border tw:border-gray-200 tw:rounded-xl">
+        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-3">Quick Edit</h4>
+        <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-x-4 tw:gap-y-2">
+          <CurrencyField label="Box 1 — Wages" name="box1_wagesTips" value={form.box1_wagesTips} onChange={setCurrencyField} />
+          <CurrencyField label="Box 2 — Federal Tax" name="box2_federalTaxWithheld" value={form.box2_federalTaxWithheld} onChange={setCurrencyField} />
+          <CurrencyField label="Box 3 — SS Wages" name="box3_socialSecurityWages" value={form.box3_socialSecurityWages} onChange={setCurrencyField} />
+          <CurrencyField label="Box 4 — SS Tax" name="box4_socialSecurityTax" value={form.box4_socialSecurityTax} onChange={setCurrencyField} />
+          <CurrencyField label="Box 5 — Medicare Wages" name="box5_medicareWages" value={form.box5_medicareWages} onChange={setCurrencyField} />
+          <CurrencyField label="Box 6 — Medicare Tax" name="box6_medicareTax" value={form.box6_medicareTax} onChange={setCurrencyField} />
+          <FormField label="Control Number" name="controlNumber" value={form.controlNumber} onChange={(_, v) => setField('controlNumber', v)} placeholder="Optional" />
+          {form.stateLocal[0] && (
+            <>
+              <CurrencyField label="Box 16 — State Wages" name="sl_sw_preview" value={form.stateLocal[0].stateWages} onChange={(_, v) => updateStateLocal(0, 'stateWages', v)} />
+              <CurrencyField label="Box 17 — State Tax" name="sl_st_preview" value={form.stateLocal[0].stateTax} onChange={(_, v) => updateStateLocal(0, 'stateTax', v)} />
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Template preview */}
       {form.templateId && getTemplate(form.templateId) ? (
         <div className="tw:border tw:border-gray-200 tw:rounded-lg tw:overflow-hidden tw:bg-gray-50 tw:p-4">
           <TemplateRenderer templateId={form.templateId} doc={previewDoc} />
@@ -689,6 +731,35 @@ export function W2EditorPage() {
         <W2Preview doc={previewDoc} />
       )}
 
+      {/* PDF Generation */}
+      <div className="tw:mt-6 tw:p-4 tw:bg-gray-50 tw:border tw:border-gray-200 tw:rounded-xl">
+        <div className="tw:flex tw:items-center tw:justify-between tw:mb-3">
+          <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800">PDF Generation</h4>
+          <div className="tw:flex tw:gap-2">
+            <button onClick={handleGeneratePdf} disabled={pdfState.generating || !form.templateId}
+              className="tw:flex tw:items-center tw:gap-2 tw:px-4 tw:py-2 tw:text-sm tw:font-medium tw:text-white tw:bg-emerald-600 tw:rounded-lg hover:tw:bg-emerald-700 tw:transition disabled:tw:opacity-50">
+              {pdfState.generating ? <Loader2 className="tw:h-4 tw:w-4 tw:animate-spin" /> : <Eye className="tw:h-4 tw:w-4" />}
+              {pdfState.generating ? 'Generating...' : 'Generate PDF'}
+            </button>
+            {pdfState.pdfBytes && (
+              <button onClick={handleDownloadPdf}
+                className="tw:flex tw:items-center tw:gap-2 tw:px-4 tw:py-2 tw:text-sm tw:font-medium tw:text-white tw:bg-indigo-600 tw:rounded-lg hover:tw:bg-indigo-700 tw:transition">
+                <Download className="tw:h-4 tw:w-4" /> Download PDF
+              </button>
+            )}
+          </div>
+        </div>
+        {pdfState.error && (
+          <div className="tw:p-3 tw:bg-rose-50 tw:border tw:border-rose-200 tw:rounded-lg tw:text-sm tw:text-rose-700">{pdfState.error}</div>
+        )}
+        {pdfState.pdfUrl && (
+          <div className="tw:mt-3 tw:border tw:border-gray-300 tw:rounded-lg tw:overflow-hidden" style={{ height: '600px' }}>
+            <iframe src={pdfState.pdfUrl} title="PDF Preview" className="tw:w-full tw:h-full" />
+          </div>
+        )}
+      </div>
+
+      {/* Save buttons */}
       <div className="tw:flex tw:flex-wrap tw:gap-3 tw:mt-6 tw:justify-end">
         <button onClick={() => handleSave('draft')}
           className="tw:px-5 tw:py-2.5 tw:text-sm tw:font-medium tw:text-gray-700 tw:bg-white tw:border tw:border-gray-300 tw:rounded-lg hover:tw:bg-gray-50 tw:transition">
@@ -696,7 +767,7 @@ export function W2EditorPage() {
         </button>
         <button onClick={() => handleSave('pending')}
           className="tw:px-5 tw:py-2.5 tw:text-sm tw:font-medium tw:text-amber-700 tw:bg-amber-50 tw:border tw:border-amber-200 tw:rounded-lg hover:tw:bg-amber-100 tw:transition">
-          Save as Pending Review
+          Save as Pending
         </button>
         <button onClick={() => handleSave('completed')}
           className="tw:px-5 tw:py-2.5 tw:text-sm tw:font-medium tw:text-white tw:bg-indigo-600 tw:rounded-lg hover:tw:bg-indigo-700 tw:transition">
