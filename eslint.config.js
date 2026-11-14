@@ -26,6 +26,8 @@ export default [
         URL: 'readonly',
         FileReader: 'readonly',
         ResizeObserver: 'readonly',
+        fetch: 'readonly',
+        globalThis: 'readonly',
       },
     },
     plugins: {

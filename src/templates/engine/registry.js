@@ -102,6 +102,17 @@ export function hasTemplates() {
   return templates.size > 0
 }
 
+/** Register a PDF base URL for a template (used by PDF generator). */
+export function setPdfBase(templateId, url) {
+  const t = templates.get(templateId)
+  if (t) t.pdfBaseUrl = url
+}
+
+/** Get the PDF base URL for a template. */
+export function getPdfBase(templateId) {
+  return templates.get(templateId)?.pdfBaseUrl || null
+}
+
 /** Unregister a template (useful for testing). */
 export function unregisterTemplate(id) {
   templates.delete(id)

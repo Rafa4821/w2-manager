@@ -7,6 +7,8 @@ export {
   hasTemplates,
   unregisterTemplate,
   clearRegistry,
+  setPdfBase,
+  getPdfBase,
 } from './registry'
 
 export {

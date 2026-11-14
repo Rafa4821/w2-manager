@@ -34,6 +34,8 @@ export {
   getDefaultTemplate,
   getTemplatesForYear,
   hasTemplates,
+  setPdfBase,
+  getPdfBase,
   TemplateRenderer,
   TemplatePrintRoot,
   mapDocumentToTemplate,
