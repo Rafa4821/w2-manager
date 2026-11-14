@@ -4,7 +4,7 @@
   "description": "Four W-2 copies (C, B, 2-AZ, VOID) stacked vertically on page 1, Notice to Employee on page 2.",
   "version": "1.0.0",
   "category": "standard",
-  "taxYears": [2024],
+  "taxYears": [],
   "pages": 2,
   "pageSize": { "width": 8.5, "height": 11, "unit": "in" },
   "isDefault": false,

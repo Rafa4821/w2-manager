@@ -4,7 +4,7 @@
   "description": "Four W-2 copies arranged 2x2 on a single US Letter page. Background pending clean replacement.",
   "version": "1.0.0",
   "category": "standard",
-  "taxYears": [2022],
+  "taxYears": [],
   "pages": 1,
   "pageSize": { "width": 8.5, "height": 11, "unit": "in" },
   "isDefault": false,

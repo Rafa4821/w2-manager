@@ -4,7 +4,7 @@
   "description": "Three W-2 copies (B, 2, C) on a single US Letter page.",
   "version": "1.0.0",
   "category": "standard",
-  "taxYears": [2021],
+  "taxYears": [],
   "pages": 1,
   "pageSize": { "width": 8.5, "height": 11, "unit": "in" },
   "isDefault": false,

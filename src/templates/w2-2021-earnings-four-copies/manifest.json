@@ -4,7 +4,7 @@
   "description": "Four W-2 copies with Earnings Summary on page 2. Backgrounds pending clean replacement.",
   "version": "1.0.0",
   "category": "standard",
-  "taxYears": [2021],
+  "taxYears": [],
   "pages": 2,
   "pageSize": { "width": 8.5, "height": 11, "unit": "in" },
   "isDefault": false,

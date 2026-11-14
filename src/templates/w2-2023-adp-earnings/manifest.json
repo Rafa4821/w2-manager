@@ -4,7 +4,7 @@
   "description": "Four W-2 copies (C, B, 2-ref, 2-filing) on page 1, Earnings Summary on page 2.",
   "version": "1.0.0",
   "category": "standard",
-  "taxYears": [2023],
+  "taxYears": [],
   "pages": 2,
   "pageSize": { "width": 8.5, "height": 11, "unit": "in" },
   "isDefault": false,
