@@ -1,14 +1,11 @@
 /**
- * PDF Generator — main orchestrator that selects the best strategy
- * and produces a downloadable PDF.
+ * PDF Generator — uses blank-base.pdf + text overlay for maximum fidelity.
  *
- * Strategy priority:
- * 1. original-overlay: Load original-filled.pdf, blank variable areas, overlay new data
- * 2. base-overlay: Load blank-base.pdf, overlay fields via mapping coordinates
- * 3. scratch: Create blank PDF pages and place fields (lowest fidelity)
+ * Strategy:
+ * 1. base-overlay: Load blank-base.pdf, overlay fields via mapping coordinates
+ * 2. scratch: Create blank PDF pages and place fields (lowest fidelity)
  */
-import { getTemplate, getPdfBase, getOriginalPdf, getPdfMapping, adaptDocumentForTemplate } from '../../../templates'
-import { generateFromOriginal } from './pdfOriginalOverlay'
+import { getTemplate, getPdfBase, adaptDocumentForTemplate } from '../../../templates'
 import { generateFromBase } from './pdfOverlayGenerator'
 import { generateFromScratch } from './pdfScratchGenerator'
 
@@ -23,24 +20,12 @@ export async function generatePdf(doc, templateId) {
   const mapping = template.mapping
   const manifest = template.manifest
 
-  // Strategy 1: Original overlay (highest fidelity)
-  const originalPdfUrl = getOriginalPdf(templateId)
-  const pdfMapping = getPdfMapping(templateId)
-
   let result
-  if (originalPdfUrl && pdfMapping) {
-    const resp = await fetch(originalPdfUrl)
-    const originalBytes = new Uint8Array(await resp.arrayBuffer())
-    result = await generateFromOriginal(originalBytes, pdfMapping, doc)
+  const pdfBaseUrl = getPdfBase(templateId)
+  if (pdfBaseUrl) {
+    result = await generateFromBase(pdfBaseUrl, mapping, adaptedData)
   } else {
-    // Strategy 2: Base overlay
-    const pdfBaseUrl = getPdfBase(templateId)
-    if (pdfBaseUrl) {
-      result = await generateFromBase(pdfBaseUrl, mapping, adaptedData)
-    } else {
-      // Strategy 3: Scratch
-      result = await generateFromScratch(mapping, adaptedData, manifest)
-    }
+    result = await generateFromScratch(mapping, adaptedData, manifest)
   }
 
   const empName = doc.employeeSnapshot
