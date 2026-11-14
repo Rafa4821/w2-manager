@@ -3,7 +3,10 @@ import { useCompaniesStore } from '../store/useCompaniesStore'
 
 describe('useCompaniesStore', () => {
   beforeEach(() => {
-    useCompaniesStore.setState({ companies: [], selectedCompany: null })
+    // Reset localStorage and store state before each test
+    window.localStorage.removeItem('w2manager_data')
+    window.localStorage.removeItem('w2manager_meta')
+    useCompaniesStore.setState({ companies: [], error: null })
   })
 
   it('starts with empty companies', () => {
@@ -11,18 +14,27 @@ describe('useCompaniesStore', () => {
     expect(state.companies).toEqual([])
   })
 
-  it('adds a company', () => {
-    const company = { id: '1', name: 'Test Corp', ein: '12-3456789' }
-    useCompaniesStore.getState().addCompany(company)
+  it('creates a company via repository', () => {
+    const data = {
+      name: 'Test Corp', ein: '12-3456789',
+      address: '100 Main St', city: 'New York', state: 'NY', zipCode: '10001',
+      phone: '', email: '', contactName: '', stateEmployerId: '', status: 'active',
+    }
+    const created = useCompaniesStore.getState().create(data)
     const state = useCompaniesStore.getState()
     expect(state.companies).toHaveLength(1)
     expect(state.companies[0].name).toBe('Test Corp')
+    expect(created.id).toBeTruthy()
   })
 
-  it('removes a company', () => {
-    const company = { id: '1', name: 'Test Corp', ein: '12-3456789' }
-    useCompaniesStore.getState().addCompany(company)
-    useCompaniesStore.getState().removeCompany('1')
+  it('removes a company via repository', () => {
+    const data = {
+      name: 'Test Corp', ein: '12-3456789',
+      address: '100 Main St', city: 'New York', state: 'NY', zipCode: '10001',
+      phone: '', email: '', contactName: '', stateEmployerId: '', status: 'active',
+    }
+    const created = useCompaniesStore.getState().create(data)
+    useCompaniesStore.getState().remove(created.id)
     const state = useCompaniesStore.getState()
     expect(state.companies).toHaveLength(0)
   })

@@ -22,6 +22,9 @@ export default [
         clearTimeout: 'readonly',
         setInterval: 'readonly',
         clearInterval: 'readonly',
+        Blob: 'readonly',
+        URL: 'readonly',
+        FileReader: 'readonly',
       },
     },
     plugins: {

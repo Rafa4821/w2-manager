@@ -1,15 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Printer, Download, FileText } from 'lucide-react'
 import { PageHeader, Badge } from '../../../shared/components'
-import { mockDocuments } from '../../../shared/data'
 import { useNotificationStore } from '../../../shared/store'
+import { useW2DocumentsStore } from '../../w2-documents/store/useW2DocumentsStore'
 
 export function PdfGeneratorPage() {
+  const { documents, load } = useW2DocumentsStore()
   const [selected, setSelected] = useState([])
   const [generating, setGenerating] = useState(false)
   const addNotification = useNotificationStore((s) => s.addNotification)
 
-  const completedDocs = mockDocuments.filter((d) => d.status === 'completed')
+  useEffect(() => { load() }, [load])
+
+  const completedDocs = documents.filter((d) => d.status === 'completed')
 
   const toggleSelect = (id) => {
     setSelected((prev) => prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id])
@@ -36,6 +39,13 @@ export function PdfGeneratorPage() {
     }, 1500)
   }
 
+  const getDocName = (doc) => {
+    if (doc.employeeSnapshot) return `${doc.employeeSnapshot.firstName} ${doc.employeeSnapshot.lastName}`
+    return doc.employeeName || '—'
+  }
+  const getDocCompany = (doc) => doc.companySnapshot?.name || doc.companyName || '—'
+  const getDocWages = (doc) => doc.box1_wagesTips || doc.wagesTips || 0
+
   return (
     <div>
       <PageHeader title="PDF Generator" description="Generate and download W2 documents as PDF">
@@ -58,7 +68,6 @@ export function PdfGeneratorPage() {
         </button>
       </PageHeader>
 
-      {/* Info banner */}
       <div className="tw:flex tw:items-start tw:gap-3 tw:p-4 tw:mb-6 tw:bg-blue-50 tw:border tw:border-blue-100 tw:rounded-lg">
         <FileText className="tw:h-5 tw:w-5 tw:text-blue-500 tw:flex-shrink-0 tw:mt-0.5" />
         <div>
@@ -67,7 +76,6 @@ export function PdfGeneratorPage() {
         </div>
       </div>
 
-      {/* Document list */}
       <div className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:shadow-sm">
         <div className="tw:flex tw:items-center tw:justify-between tw:px-4 tw:py-3 tw:border-b tw:border-gray-100">
           <label className="tw:flex tw:items-center tw:gap-2 tw:cursor-pointer">
@@ -77,17 +85,16 @@ export function PdfGeneratorPage() {
               onChange={selectAll}
               className="tw:h-4 tw:w-4 tw:rounded tw:border-gray-300 tw:text-indigo-600 focus:tw:ring-indigo-500"
             />
-            <span className="tw:text-sm tw:font-medium tw:text-gray-700">
-              Select All ({completedDocs.length} available)
-            </span>
+            <span className="tw:text-sm tw:font-medium tw:text-gray-700">Select All ({completedDocs.length} available)</span>
           </label>
-          {selected.length > 0 && (
-            <span className="tw:text-xs tw:font-medium tw:text-indigo-600">{selected.length} selected</span>
-          )}
+          {selected.length > 0 && <span className="tw:text-xs tw:font-medium tw:text-indigo-600">{selected.length} selected</span>}
         </div>
 
         <div className="tw:divide-y tw:divide-gray-50">
-          {mockDocuments.map((doc) => {
+          {documents.length === 0 && (
+            <div className="tw:px-4 tw:py-8 tw:text-center tw:text-gray-400 tw:text-sm">No documents found. Create W2 documents first.</div>
+          )}
+          {documents.map((doc) => {
             const isCompleted = doc.status === 'completed'
             const isSelected = selected.includes(doc.id)
             return (
@@ -109,15 +116,15 @@ export function PdfGeneratorPage() {
                   <FileText className="tw:h-4 tw:w-4 tw:text-gray-500" />
                 </div>
                 <div className="tw:flex-1 tw:min-w-0">
-                  <p className="tw:text-sm tw:font-medium tw:text-gray-900">{doc.employeeName}</p>
-                  <p className="tw:text-xs tw:text-gray-500">{doc.companyName} &middot; Tax Year {doc.taxYear} &middot; ${doc.wagesTips.toLocaleString()}</p>
+                  <p className="tw:text-sm tw:font-medium tw:text-gray-900">{getDocName(doc)}</p>
+                  <p className="tw:text-xs tw:text-gray-500">{getDocCompany(doc)} &middot; Tax Year {doc.taxYear} &middot; ${getDocWages(doc).toLocaleString()}</p>
                 </div>
                 <Badge variant={doc.status}>{doc.status}</Badge>
                 {isCompleted && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
-                      addNotification({ type: 'info', title: 'Download', message: `PDF for ${doc.employeeName} would download here.` })
+                      addNotification({ type: 'info', title: 'Download', message: `PDF for ${getDocName(doc)} would download here.` })
                     }}
                     className="tw:p-1.5 tw:rounded-md tw:text-gray-400 hover:tw:text-indigo-600 hover:tw:bg-indigo-50 tw:transition"
                   >

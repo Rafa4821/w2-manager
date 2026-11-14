@@ -1,17 +1,21 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Plus, Edit2, Trash2 } from 'lucide-react'
 import { PageHeader, DataTable, Badge, FilterBar, ConfirmDialog } from '../../../shared/components'
-import { mockEmployees, mockCompanies } from '../../../shared/data'
 import { useNotificationStore } from '../../../shared/store'
+import { useEmployeesStore } from '../store/useEmployeesStore'
+import { useCompaniesStore } from '../../companies/store/useCompaniesStore'
 import { EmployeeFormModal } from './EmployeeFormModal'
 
 export function EmployeesPage() {
-  const [employees, setEmployees] = useState(mockEmployees)
+  const { employees, load, create, update, remove } = useEmployeesStore()
+  const { companies, load: loadCompanies } = useCompaniesStore()
   const [formOpen, setFormOpen] = useState(false)
   const [editingEmployee, setEditingEmployee] = useState(null)
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [filters, setFilters] = useState({ status: '', companyId: '' })
   const addNotification = useNotificationStore((s) => s.addNotification)
+
+  useEffect(() => { load(); loadCompanies() }, [load, loadCompanies])
 
   const filteredEmployees = useMemo(() => {
     return employees.filter((e) => {
@@ -21,22 +25,35 @@ export function EmployeesPage() {
     })
   }, [employees, filters])
 
+  const companyMap = useMemo(() => {
+    const map = {}
+    companies.forEach((c) => { map[c.id] = c.name })
+    return map
+  }, [companies])
+
   const handleSave = (form) => {
-    if (editingEmployee) {
-      setEmployees((prev) => prev.map((e) => (e.id === editingEmployee.id ? { ...e, ...form } : e)))
-      addNotification({ type: 'success', title: 'Employee Updated', message: `${form.firstName} ${form.lastName} updated.` })
-    } else {
-      const newEmployee = { ...form, id: `e${Date.now()}`, hireDate: new Date().toISOString().split('T')[0] }
-      setEmployees((prev) => [...prev, newEmployee])
-      addNotification({ type: 'success', title: 'Employee Added', message: `${form.firstName} ${form.lastName} has been added.` })
+    try {
+      if (editingEmployee) {
+        update(editingEmployee.id, form)
+        addNotification({ type: 'success', title: 'Employee Updated', message: `${form.firstName} ${form.lastName} updated.` })
+      } else {
+        create(form)
+        addNotification({ type: 'success', title: 'Employee Added', message: `${form.firstName} ${form.lastName} has been added.` })
+      }
+      setEditingEmployee(null)
+    } catch (err) {
+      addNotification({ type: 'error', title: 'Error', message: err.message })
     }
-    setEditingEmployee(null)
   }
 
   const handleDelete = () => {
     if (!deleteTarget) return
-    setEmployees((prev) => prev.filter((e) => e.id !== deleteTarget.id))
-    addNotification({ type: 'success', title: 'Employee Deleted', message: `${deleteTarget.firstName} ${deleteTarget.lastName} removed.` })
+    try {
+      remove(deleteTarget.id)
+      addNotification({ type: 'success', title: 'Employee Deleted', message: `${deleteTarget.firstName} ${deleteTarget.lastName} removed.` })
+    } catch (err) {
+      addNotification({ type: 'error', title: 'Error', message: err.message })
+    }
     setDeleteTarget(null)
   }
 
@@ -58,26 +75,17 @@ export function EmployeesPage() {
     },
     {
       header: 'Company',
-      accessor: 'companyName',
-      render: (row) => <span className="tw:text-gray-600">{row.companyName}</span>,
+      accessor: 'companyId',
+      render: (row) => <span className="tw:text-gray-600">{companyMap[row.companyId] || '—'}</span>,
     },
     {
       header: 'Position',
       accessor: 'position',
       render: (row) => (
         <div>
-          <p className="tw:text-gray-900">{row.position}</p>
-          <p className="tw:text-xs tw:text-gray-500">{row.department}</p>
+          <p className="tw:text-gray-900">{row.position || '—'}</p>
+          {row.department && <p className="tw:text-xs tw:text-gray-500">{row.department}</p>}
         </div>
-      ),
-    },
-    {
-      header: 'Salary',
-      accessor: 'salary',
-      render: (row) => (
-        <span className="tw:font-medium tw:text-gray-900">
-          ${row.salary?.toLocaleString()}
-        </span>
       ),
     },
     {
@@ -127,7 +135,7 @@ export function EmployeesPage() {
       <FilterBar
         filters={[
           { name: 'status', label: 'All Status', options: [{ value: 'active', label: 'Active' }, { value: 'inactive', label: 'Inactive' }] },
-          { name: 'companyId', label: 'All Companies', options: mockCompanies.map((c) => ({ value: c.id, label: c.name })) },
+          { name: 'companyId', label: 'All Companies', options: companies.map((c) => ({ value: c.id, label: c.name })) },
         ]}
         values={filters}
         onChange={(name, value) => setFilters((prev) => ({ ...prev, [name]: value }))}

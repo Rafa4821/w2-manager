@@ -1,15 +1,22 @@
-import { useState, useMemo } from 'react'
-import { FileText, Eye, Download, DollarSign } from 'lucide-react'
-import { PageHeader, DataTable, Badge, FilterBar, StatCard } from '../../../shared/components'
-import { mockDocuments, mockCompanies } from '../../../shared/data'
+import { useState, useMemo, useEffect } from 'react'
+import { FileText, Eye, DollarSign, Plus, Edit2, Trash2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { PageHeader, DataTable, Badge, FilterBar, StatCard, ConfirmDialog } from '../../../shared/components'
 import { useNotificationStore } from '../../../shared/store'
+import { useW2DocumentsStore } from '../store/useW2DocumentsStore'
+import { useCompaniesStore } from '../../companies/store/useCompaniesStore'
 import { DocumentDetailModal } from './DocumentDetailModal'
 
 export function W2DocumentsPage() {
-  const [documents] = useState(mockDocuments)
+  const { documents, load, remove } = useW2DocumentsStore()
+  const { companies, load: loadCompanies } = useCompaniesStore()
   const [detailDoc, setDetailDoc] = useState(null)
+  const [deleteTarget, setDeleteTarget] = useState(null)
   const [filters, setFilters] = useState({ status: '', companyId: '', taxYear: '' })
   const addNotification = useNotificationStore((s) => s.addNotification)
+  const navigate = useNavigate()
+
+  useEffect(() => { load(); loadCompanies() }, [load, loadCompanies])
 
   const filteredDocs = useMemo(() => {
     return documents.filter((d) => {
@@ -22,25 +29,42 @@ export function W2DocumentsPage() {
 
   const completedCount = documents.filter((d) => d.status === 'completed').length
   const pendingCount = documents.filter((d) => d.status === 'pending').length
-  const totalWages = documents.reduce((sum, d) => sum + d.wagesTips, 0)
+  const totalWages = documents.reduce((sum, d) => sum + (d.box1_wagesTips || d.wagesTips || 0), 0)
 
   const fmt = (n) => `$${(n / 1000).toFixed(0)}K`
+
+  const handleDelete = () => {
+    if (!deleteTarget) return
+    try {
+      remove(deleteTarget.id)
+      addNotification({ type: 'success', title: 'Document Deleted', message: 'W2 document has been removed.' })
+    } catch (err) {
+      addNotification({ type: 'error', title: 'Error', message: err.message })
+    }
+    setDeleteTarget(null)
+  }
 
   const columns = [
     {
       header: 'Employee',
       accessor: 'employeeName',
-      render: (row) => (
-        <div className="tw:flex tw:items-center tw:gap-3">
-          <div className="tw:flex tw:items-center tw:justify-center tw:h-9 tw:w-9 tw:rounded-lg tw:bg-indigo-50 tw:flex-shrink-0">
-            <FileText className="tw:h-4 tw:w-4 tw:text-indigo-500" />
+      render: (row) => {
+        const name = row.employeeSnapshot
+          ? `${row.employeeSnapshot.firstName} ${row.employeeSnapshot.lastName}`
+          : row.employeeName || '—'
+        const company = row.companySnapshot?.name || row.companyName || '—'
+        return (
+          <div className="tw:flex tw:items-center tw:gap-3">
+            <div className="tw:flex tw:items-center tw:justify-center tw:h-9 tw:w-9 tw:rounded-lg tw:bg-indigo-50 tw:flex-shrink-0">
+              <FileText className="tw:h-4 tw:w-4 tw:text-indigo-500" />
+            </div>
+            <div>
+              <p className="tw:font-medium tw:text-gray-900">{name}</p>
+              <p className="tw:text-xs tw:text-gray-500">{company}</p>
+            </div>
           </div>
-          <div>
-            <p className="tw:font-medium tw:text-gray-900">{row.employeeName}</p>
-            <p className="tw:text-xs tw:text-gray-500">{row.companyName}</p>
-          </div>
-        </div>
-      ),
+        )
+      },
     },
     {
       header: 'Tax Year',
@@ -49,19 +73,19 @@ export function W2DocumentsPage() {
     },
     {
       header: 'Wages',
-      accessor: 'wagesTips',
+      accessor: 'box1_wagesTips',
       render: (row) => (
         <span className="tw:font-medium tw:text-gray-900">
-          ${row.wagesTips.toLocaleString()}
+          ${(row.box1_wagesTips || row.wagesTips || 0).toLocaleString()}
         </span>
       ),
     },
     {
       header: 'Fed. Tax',
-      accessor: 'federalTaxWithheld',
+      accessor: 'box2_federalTaxWithheld',
       render: (row) => (
         <span className="tw:text-gray-600">
-          ${row.federalTaxWithheld.toLocaleString()}
+          ${(row.box2_federalTaxWithheld || row.federalTaxWithheld || 0).toLocaleString()}
         </span>
       ),
     },
@@ -73,14 +97,14 @@ export function W2DocumentsPage() {
     {
       header: 'Updated',
       accessor: 'updatedAt',
-      render: (row) => <span className="tw:text-gray-500 tw:text-xs">{row.updatedAt}</span>,
+      render: (row) => <span className="tw:text-gray-500 tw:text-xs">{row.updatedAt?.split('T')[0]}</span>,
     },
     {
       header: '',
       accessor: 'actions',
       sortable: false,
       searchable: false,
-      className: 'tw:w-24 tw:text-right',
+      className: 'tw:w-32 tw:text-right',
       render: (row) => (
         <div className="tw:flex tw:items-center tw:justify-end tw:gap-1">
           <button
@@ -91,14 +115,18 @@ export function W2DocumentsPage() {
             <Eye className="tw:h-4 tw:w-4" />
           </button>
           <button
-            onClick={(e) => {
-              e.stopPropagation()
-              addNotification({ type: 'info', title: 'Download', message: `PDF for ${row.employeeName} would be generated here.` })
-            }}
-            className="tw:p-1.5 tw:rounded-md tw:text-gray-400 hover:tw:text-emerald-600 hover:tw:bg-emerald-50 tw:transition"
-            title="Download PDF"
+            onClick={(e) => { e.stopPropagation(); navigate(`/w2-documents/edit/${row.id}`) }}
+            className="tw:p-1.5 tw:rounded-md tw:text-gray-400 hover:tw:text-blue-600 hover:tw:bg-blue-50 tw:transition"
+            title="Edit"
           >
-            <Download className="tw:h-4 tw:w-4" />
+            <Edit2 className="tw:h-4 tw:w-4" />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); setDeleteTarget(row) }}
+            className="tw:p-1.5 tw:rounded-md tw:text-gray-400 hover:tw:text-rose-600 hover:tw:bg-rose-50 tw:transition"
+            title="Delete"
+          >
+            <Trash2 className="tw:h-4 tw:w-4" />
           </button>
         </div>
       ),
@@ -109,9 +137,16 @@ export function W2DocumentsPage() {
 
   return (
     <div>
-      <PageHeader title="W2 Documents" description="Create and manage W2 tax documents" />
+      <PageHeader title="W2 Documents" description="Create and manage W2 tax documents">
+        <button
+          onClick={() => navigate('/w2-documents/new')}
+          className="tw:flex tw:items-center tw:gap-2 tw:px-4 tw:py-2 tw:text-sm tw:font-medium tw:text-white tw:bg-indigo-600 tw:rounded-lg hover:tw:bg-indigo-700 tw:transition tw:shadow-sm"
+        >
+          <Plus className="tw:h-4 tw:w-4" />
+          New W2 Document
+        </button>
+      </PageHeader>
 
-      {/* Quick stats */}
       <div className="tw:grid tw:grid-cols-2 lg:tw:grid-cols-4 tw:gap-4 tw:mb-6">
         <StatCard title="Total Documents" value={documents.length} icon={FileText} color="indigo" />
         <StatCard title="Completed" value={completedCount} color="green" />
@@ -127,7 +162,7 @@ export function W2DocumentsPage() {
             { value: 'draft', label: 'Draft' },
             { value: 'error', label: 'Error' },
           ]},
-          { name: 'companyId', label: 'All Companies', options: mockCompanies.map((c) => ({ value: c.id, label: c.name })) },
+          { name: 'companyId', label: 'All Companies', options: companies.map((c) => ({ value: c.id, label: c.name })) },
           { name: 'taxYear', label: 'All Years', options: uniqueYears.map((y) => ({ value: y, label: y })) },
         ]}
         values={filters}
@@ -139,7 +174,7 @@ export function W2DocumentsPage() {
         data={filteredDocs}
         searchPlaceholder="Search documents..."
         emptyTitle="No documents found"
-        emptyDescription="Create your first W2 document or adjust filters."
+        emptyDescription="Create your first W2 document to get started."
         onRowClick={(row) => setDetailDoc(row)}
       />
 
@@ -147,6 +182,15 @@ export function W2DocumentsPage() {
         isOpen={!!detailDoc}
         onClose={() => setDetailDoc(null)}
         document={detailDoc}
+      />
+
+      <ConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete W2 Document"
+        message="Are you sure you want to delete this W2 document? This action cannot be undone."
+        confirmLabel="Delete Document"
       />
     </div>
   )

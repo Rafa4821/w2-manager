@@ -4,7 +4,7 @@ import { ROUTES } from '../shared/constants'
 import { DashboardPage } from '../features/dashboard'
 import { CompaniesPage } from '../features/companies'
 import { EmployeesPage } from '../features/employees'
-import { W2DocumentsPage } from '../features/w2-documents'
+import { W2DocumentsPage, W2EditorPage } from '../features/w2-documents'
 import { TemplateLibraryPage } from '../features/template-library'
 import { PdfGeneratorPage } from '../features/pdf-generator'
 import { DataImportExportPage } from '../features/data-import-export'
@@ -19,6 +19,8 @@ const router = createBrowserRouter([
       { path: ROUTES.COMPANIES.slice(1), element: <CompaniesPage /> },
       { path: ROUTES.EMPLOYEES.slice(1), element: <EmployeesPage /> },
       { path: ROUTES.W2_DOCUMENTS.slice(1), element: <W2DocumentsPage /> },
+      { path: 'w2-documents/new', element: <W2EditorPage /> },
+      { path: 'w2-documents/edit/:id', element: <W2EditorPage /> },
       { path: ROUTES.TEMPLATE_LIBRARY.slice(1), element: <TemplateLibraryPage /> },
       { path: ROUTES.PDF_GENERATOR.slice(1), element: <PdfGeneratorPage /> },
       { path: ROUTES.DATA_IMPORT_EXPORT.slice(1), element: <DataImportExportPage /> },

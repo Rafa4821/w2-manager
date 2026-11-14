@@ -1,17 +1,20 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Plus, Edit2, Trash2, Building2 } from 'lucide-react'
 import { PageHeader, DataTable, Badge, FilterBar, ConfirmDialog } from '../../../shared/components'
-import { mockCompanies } from '../../../shared/data'
 import { useNotificationStore } from '../../../shared/store'
+import { useCompaniesStore } from '../store/useCompaniesStore'
+import { employeeRepository } from '../../../shared/repositories'
 import { CompanyFormModal } from './CompanyFormModal'
 
 export function CompaniesPage() {
-  const [companies, setCompanies] = useState(mockCompanies)
+  const { companies, load, create, update, remove } = useCompaniesStore()
   const [formOpen, setFormOpen] = useState(false)
   const [editingCompany, setEditingCompany] = useState(null)
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [filters, setFilters] = useState({ status: '', state: '' })
   const addNotification = useNotificationStore((s) => s.addNotification)
+
+  useEffect(() => { load() }, [load])
 
   const filteredCompanies = useMemo(() => {
     return companies.filter((c) => {
@@ -24,21 +27,28 @@ export function CompaniesPage() {
   const uniqueStates = [...new Set(companies.map((c) => c.state))].sort()
 
   const handleSave = (form) => {
-    if (editingCompany) {
-      setCompanies((prev) => prev.map((c) => (c.id === editingCompany.id ? { ...c, ...form } : c)))
-      addNotification({ type: 'success', title: 'Company Updated', message: `${form.name} has been updated successfully.` })
-    } else {
-      const newCompany = { ...form, id: `c${Date.now()}`, employeeCount: 0, createdAt: new Date().toISOString().split('T')[0] }
-      setCompanies((prev) => [...prev, newCompany])
-      addNotification({ type: 'success', title: 'Company Created', message: `${form.name} has been added successfully.` })
+    try {
+      if (editingCompany) {
+        update(editingCompany.id, form)
+        addNotification({ type: 'success', title: 'Company Updated', message: `${form.name} has been updated successfully.` })
+      } else {
+        create(form)
+        addNotification({ type: 'success', title: 'Company Created', message: `${form.name} has been added successfully.` })
+      }
+      setEditingCompany(null)
+    } catch (err) {
+      addNotification({ type: 'error', title: 'Error', message: err.message })
     }
-    setEditingCompany(null)
   }
 
   const handleDelete = () => {
     if (!deleteTarget) return
-    setCompanies((prev) => prev.filter((c) => c.id !== deleteTarget.id))
-    addNotification({ type: 'success', title: 'Company Deleted', message: `${deleteTarget.name} has been removed.` })
+    try {
+      remove(deleteTarget.id)
+      addNotification({ type: 'success', title: 'Company Deleted', message: `${deleteTarget.name} has been removed.` })
+    } catch (err) {
+      addNotification({ type: 'error', title: 'Error', message: err.message })
+    }
     setDeleteTarget(null)
   }
 
@@ -72,9 +82,10 @@ export function CompaniesPage() {
     {
       header: 'Employees',
       accessor: 'employeeCount',
-      render: (row) => (
-        <span className="tw:font-medium tw:text-gray-900">{row.employeeCount}</span>
-      ),
+      render: (row) => {
+        const count = employeeRepository.getByCompany(row.id).length
+        return <span className="tw:font-medium tw:text-gray-900">{count}</span>
+      },
     },
     {
       header: 'Status',
@@ -84,7 +95,7 @@ export function CompaniesPage() {
     {
       header: 'Created',
       accessor: 'createdAt',
-      render: (row) => <span className="tw:text-gray-500">{row.createdAt}</span>,
+      render: (row) => <span className="tw:text-gray-500">{row.createdAt?.split('T')[0]}</span>,
     },
     {
       header: '',
