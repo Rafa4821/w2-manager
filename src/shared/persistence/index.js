@@ -1,4 +1,6 @@
 export {
+  initStorage,
+  isStorageReady,
   loadStore,
   saveStore,
   getCollection,

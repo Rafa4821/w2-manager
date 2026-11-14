@@ -1,8 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { loadStore, saveStore, getCollection, saveCollection, exportBackup, importBackup, clearAllData, getStorageInfo } from '../storageEngine'
 
+// In test environment (jsdom) IndexedDB is not available, so the engine
+// falls back to in-memory cache. This is fine for testing the CRUD logic.
+
 beforeEach(() => {
-  localStorage.clear()
+  clearAllData()
 })
 
 describe('storageEngine', () => {
@@ -54,7 +57,6 @@ describe('backup / restore', () => {
     const result = importBackup(backup)
     expect(result.companies).toBe(2)
     expect(result.employees).toBe(1)
-    // Old data replaced
     expect(getCollection('companies')).toHaveLength(2)
   })
 
@@ -71,7 +73,8 @@ describe('clearAllData', () => {
   it('removes all stored data', () => {
     saveStore({ companies: [{ id: '1' }], employees: [], w2Documents: [], templates: [] })
     clearAllData()
-    expect(localStorage.getItem('w2manager_data')).toBeNull()
+    const data = loadStore()
+    expect(data.companies).toEqual([])
   })
 })
 
@@ -81,6 +84,6 @@ describe('getStorageInfo', () => {
     const info = getStorageInfo()
     expect(info.schemaVersion).toBe(1)
     expect(Number(info.sizeKB)).toBeGreaterThan(0)
-    expect(info.lastSaved).toBeTruthy()
+    expect(info.storageType).toBe('IndexedDB')
   })
 })

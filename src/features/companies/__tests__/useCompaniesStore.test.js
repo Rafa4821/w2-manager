@@ -1,11 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCompaniesStore } from '../store/useCompaniesStore'
+import { clearAllData } from '../../../shared/persistence'
 
 describe('useCompaniesStore', () => {
   beforeEach(() => {
-    // Reset localStorage and store state before each test
-    window.localStorage.removeItem('w2manager_data')
-    window.localStorage.removeItem('w2manager_meta')
+    clearAllData()
     useCompaniesStore.setState({ companies: [], error: null })
   })
 

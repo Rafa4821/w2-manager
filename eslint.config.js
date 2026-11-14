@@ -29,6 +29,7 @@ export default [
         fetch: 'readonly',
         globalThis: 'readonly',
         localStorage: 'readonly',
+        indexedDB: 'readonly',
       },
     },
     plugins: {
