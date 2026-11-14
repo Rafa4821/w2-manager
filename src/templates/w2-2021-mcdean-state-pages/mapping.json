@@ -1,0 +1,1242 @@
+{
+  "coordinateSystem": "PDF points, top-left origin; baselineY is SVG baseline in same units",
+  "pageSizePt": [
+    779.76,
+    576.0
+  ],
+  "pages": 3,
+  "fields": [
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "employer.name",
+      "x": 111.528,
+      "baselineY": 123.552,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.53,
+        115.84,
+        187.12,
+        125.8
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "employer.addressLine1",
+      "x": 111.528,
+      "baselineY": 133.776,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.53,
+        126.06,
+        235.71,
+        136.03
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "employer.addressLine2",
+      "x": 111.528,
+      "baselineY": 144.0,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.53,
+        136.29,
+        138.52,
+        146.25
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "employer.cityStateZip",
+      "x": 111.528,
+      "baselineY": 154.224,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.53,
+        146.51,
+        192.52,
+        156.47
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "employee.name",
+      "x": 111.222,
+      "baselineY": 213.394,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.22,
+        205.68,
+        235.41,
+        215.64
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "employee.addressLine1",
+      "x": 111.222,
+      "baselineY": 223.618,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.22,
+        215.91,
+        273.2,
+        225.87
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "employee.cityStateZip",
+      "x": 111.222,
+      "baselineY": 233.842,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.22,
+        226.13,
+        208.41,
+        236.09
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "box2",
+      "x": 656.712,
+      "baselineY": 93.6,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        656.71,
+        85.89,
+        705.31,
+        95.85
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "box4",
+      "x": 662.112,
+      "baselineY": 123.552,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        662.11,
+        115.84,
+        705.31,
+        125.8
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "box6",
+      "x": 667.512,
+      "baselineY": 153.648,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        667.51,
+        145.94,
+        705.31,
+        155.9
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "box12a.code",
+      "x": 598.464,
+      "baselineY": 183.816,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        598.46,
+        176.1,
+        603.86,
+        186.07
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "box12a.amount",
+      "x": 683.712,
+      "baselineY": 183.816,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        683.71,
+        176.1,
+        705.31,
+        186.07
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "box12b.code",
+      "x": 598.464,
+      "baselineY": 213.48,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        598.46,
+        205.77,
+        603.86,
+        215.73
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "box12b.amount",
+      "x": 662.112,
+      "baselineY": 213.48,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        662.11,
+        205.77,
+        705.31,
+        215.73
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "box13.retirementPlanMark",
+      "x": 408.384,
+      "baselineY": 226.368,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        408.38,
+        218.66,
+        413.78,
+        228.62
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "employer.ein",
+      "x": 340.344,
+      "baselineY": 255.672,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        340.34,
+        247.96,
+        394.34,
+        257.92
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "employee.ssn",
+      "x": 340.344,
+      "baselineY": 285.84,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        340.34,
+        278.13,
+        399.74,
+        288.09
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "box1",
+      "x": 535.824,
+      "baselineY": 93.6,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        535.82,
+        85.89,
+        589.82,
+        95.85
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "box3",
+      "x": 535.824,
+      "baselineY": 123.552,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        535.82,
+        115.84,
+        589.82,
+        125.8
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "box5",
+      "x": 535.824,
+      "baselineY": 153.72,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        535.82,
+        146.01,
+        589.82,
+        155.97
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "state.code",
+      "x": 85.392,
+      "baselineY": 321.408,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        85.39,
+        313.7,
+        96.19,
+        323.66
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "state.employerId",
+      "x": 135.0,
+      "baselineY": 321.408,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        135.0,
+        313.7,
+        188.99,
+        323.66
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "state.wages",
+      "x": 262.944,
+      "baselineY": 321.408,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        262.94,
+        313.7,
+        311.54,
+        323.66
+      ]
+    },
+    {
+      "page": 0,
+      "copy": "state-page-1",
+      "path": "state.incomeTax",
+      "x": 359.136,
+      "baselineY": 321.408,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        359.14,
+        313.7,
+        402.33,
+        323.66
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "employer.name",
+      "x": 111.528,
+      "baselineY": 123.552,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.53,
+        115.84,
+        187.12,
+        125.8
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "employer.addressLine1",
+      "x": 111.528,
+      "baselineY": 133.776,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.53,
+        126.06,
+        235.71,
+        136.03
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "employer.addressLine2",
+      "x": 111.528,
+      "baselineY": 144.0,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.53,
+        136.29,
+        138.52,
+        146.25
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "employer.cityStateZip",
+      "x": 111.528,
+      "baselineY": 154.224,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.53,
+        146.51,
+        192.52,
+        156.47
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "employee.name",
+      "x": 111.222,
+      "baselineY": 213.394,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.22,
+        205.68,
+        235.41,
+        215.64
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "employee.addressLine1",
+      "x": 111.222,
+      "baselineY": 223.618,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.22,
+        215.91,
+        278.6,
+        225.87
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "employee.cityStateZip",
+      "x": 111.222,
+      "baselineY": 233.842,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.22,
+        226.13,
+        208.41,
+        236.09
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "box2",
+      "x": 656.712,
+      "baselineY": 93.6,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        656.71,
+        85.89,
+        705.31,
+        95.85
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "box4",
+      "x": 662.112,
+      "baselineY": 123.552,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        662.11,
+        115.84,
+        705.31,
+        125.8
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "box6",
+      "x": 667.512,
+      "baselineY": 153.648,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        667.51,
+        145.94,
+        705.31,
+        155.9
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "box12a.code",
+      "x": 598.464,
+      "baselineY": 183.816,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        598.46,
+        176.1,
+        603.86,
+        186.07
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "box12a.amount",
+      "x": 683.712,
+      "baselineY": 183.816,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        683.71,
+        176.1,
+        705.31,
+        186.07
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "box12b.code",
+      "x": 598.464,
+      "baselineY": 213.48,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        598.46,
+        205.77,
+        603.86,
+        215.73
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "box12b.amount",
+      "x": 662.112,
+      "baselineY": 213.48,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        662.11,
+        205.77,
+        705.31,
+        215.73
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "box13.retirementPlanMark",
+      "x": 408.384,
+      "baselineY": 226.368,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        408.38,
+        218.66,
+        413.78,
+        228.62
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "employer.ein",
+      "x": 340.344,
+      "baselineY": 255.672,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        340.34,
+        247.96,
+        394.34,
+        257.92
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "employee.ssn",
+      "x": 340.344,
+      "baselineY": 284.734,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        340.34,
+        277.02,
+        399.74,
+        286.98
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "box1",
+      "x": 535.824,
+      "baselineY": 93.6,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        535.82,
+        85.89,
+        589.82,
+        95.85
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "box3",
+      "x": 535.824,
+      "baselineY": 123.552,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        535.82,
+        115.84,
+        589.82,
+        125.8
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "box5",
+      "x": 535.824,
+      "baselineY": 153.72,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        535.82,
+        146.01,
+        589.82,
+        155.97
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "state.code",
+      "x": 85.392,
+      "baselineY": 321.408,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        85.39,
+        313.7,
+        96.19,
+        323.66
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "state.employerId",
+      "x": 137.736,
+      "baselineY": 321.408,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        137.74,
+        313.7,
+        186.33,
+        323.66
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "state.wages",
+      "x": 262.944,
+      "baselineY": 321.408,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        262.94,
+        313.7,
+        311.54,
+        323.66
+      ]
+    },
+    {
+      "page": 1,
+      "copy": "state-page-2",
+      "path": "state.incomeTax",
+      "x": 359.136,
+      "baselineY": 321.408,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        359.14,
+        313.7,
+        402.33,
+        323.66
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "employer.name",
+      "x": 111.528,
+      "baselineY": 123.552,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.53,
+        115.84,
+        187.12,
+        125.8
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "employer.addressLine1",
+      "x": 111.528,
+      "baselineY": 133.776,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.53,
+        126.06,
+        235.71,
+        136.03
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "employer.addressLine2",
+      "x": 111.528,
+      "baselineY": 144.0,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.53,
+        136.29,
+        138.52,
+        146.25
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "employer.cityStateZip",
+      "x": 111.528,
+      "baselineY": 154.224,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        111.53,
+        146.51,
+        192.52,
+        156.47
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "employee.name",
+      "x": 112.535,
+      "baselineY": 213.552,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        112.54,
+        205.84,
+        236.72,
+        215.8
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "employee.addressLine1",
+      "x": 112.535,
+      "baselineY": 223.776,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        112.54,
+        216.06,
+        279.92,
+        226.03
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "employee.cityStateZip",
+      "x": 112.535,
+      "baselineY": 234.0,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        112.54,
+        226.29,
+        209.72,
+        236.25
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "box2",
+      "x": 656.712,
+      "baselineY": 93.6,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        656.71,
+        85.89,
+        705.31,
+        95.85
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "box4",
+      "x": 662.112,
+      "baselineY": 123.552,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        662.11,
+        115.84,
+        705.31,
+        125.8
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "box6",
+      "x": 667.512,
+      "baselineY": 153.648,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        667.51,
+        145.94,
+        705.31,
+        155.9
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "box12a.code",
+      "x": 598.464,
+      "baselineY": 183.816,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        598.46,
+        176.1,
+        603.86,
+        186.07
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "box12a.amount",
+      "x": 683.712,
+      "baselineY": 183.816,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        683.71,
+        176.1,
+        705.31,
+        186.07
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "box12b.code",
+      "x": 598.464,
+      "baselineY": 213.48,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        598.46,
+        205.77,
+        603.86,
+        215.73
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "box12b.amount",
+      "x": 662.112,
+      "baselineY": 213.48,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        662.11,
+        205.77,
+        705.31,
+        215.73
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "box13.retirementPlanMark",
+      "x": 408.384,
+      "baselineY": 226.368,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        408.38,
+        218.66,
+        413.78,
+        228.62
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "employer.ein",
+      "x": 340.344,
+      "baselineY": 255.672,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        340.34,
+        247.96,
+        394.34,
+        257.92
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "employee.ssn",
+      "x": 340.344,
+      "baselineY": 284.734,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        340.34,
+        277.02,
+        399.74,
+        286.98
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "box1",
+      "x": 535.824,
+      "baselineY": 93.6,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        535.82,
+        85.89,
+        589.82,
+        95.85
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "box3",
+      "x": 535.824,
+      "baselineY": 123.552,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        535.82,
+        115.84,
+        589.82,
+        125.8
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "box5",
+      "x": 535.824,
+      "baselineY": 153.72,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        535.82,
+        146.01,
+        589.82,
+        155.97
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "state.code",
+      "x": 85.392,
+      "baselineY": 321.408,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        85.39,
+        313.7,
+        96.19,
+        323.66
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "state.employerId",
+      "x": 140.4,
+      "baselineY": 321.408,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        140.4,
+        313.7,
+        183.6,
+        323.66
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "state.wages",
+      "x": 262.944,
+      "baselineY": 321.408,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        262.94,
+        313.7,
+        311.54,
+        323.66
+      ]
+    },
+    {
+      "page": 2,
+      "copy": "state-page-3",
+      "path": "state.incomeTax",
+      "x": 359.136,
+      "baselineY": 321.408,
+      "fontSize": 9.0,
+      "fontFamily": "Courier New, Courier, monospace",
+      "fontWeight": "normal",
+      "positionStatus": "measured",
+      "sourceBBox": [
+        359.14,
+        313.7,
+        402.33,
+        323.66
+      ]
+    }
+  ],
+  "unmappedEmptyFields": [
+    "Boxes 7–11",
+    "Boxes 12c–12d",
+    "Box 14",
+    "Boxes 18–20",
+    "Boxes 13 statutory/third-party sick pay"
+  ],
+  "notes": "Positions are measured from source text. Blank positions are NOT calibrated; extend mapping after visual QA."
+}

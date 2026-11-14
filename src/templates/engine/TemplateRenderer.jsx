@@ -2,16 +2,16 @@
  * TemplateRenderer — renders a registered template at real page dimensions
  * with style isolation, preview scaling, and multi-page support.
  *
- * Usage:
- *   <TemplateRenderer templateId="demo-w2" doc={w2Document} scale={0.5} />
- *
- * For PDF generation the consumer should render at scale={1} inside a
- * print-specific container. This component only handles screen display.
+ * Supports two rendering modes:
+ * 1. Page-by-page (default): renderer wraps each page in a sized container
+ * 2. Self-contained (manifest.selfContained=true): template handles its own
+ *    layout, pages, backgrounds, and scaling internally
  */
 
 import { useMemo, useRef, useEffect, useState } from 'react'
 import { getTemplate } from './registry'
 import { mapDocumentToTemplate } from './fieldMapper'
+import { adaptDocumentForTemplate } from './documentAdapter'
 
 // Convert page dimensions to CSS pixels (96 dpi)
 function toPixels(value, unit) {
@@ -28,11 +28,14 @@ export function TemplateRenderer({ templateId, doc, scale, className = '' }) {
   const [autoScale, setAutoScale] = useState(1)
   const template = getTemplate(templateId)
 
-  // Map document data to template fields
+  const isSelfContained = template?.manifest?.selfContained === true
+
+  // Map document data depending on template type
   const mappedData = useMemo(() => {
     if (!template || !doc) return {}
+    if (isSelfContained) return adaptDocumentForTemplate(doc)
     return mapDocumentToTemplate(doc, template.mapping)
-  }, [template, doc])
+  }, [template, doc, isSelfContained])
 
   // Compute real page dimensions in CSS px
   const pageWidthPx = useMemo(() => {
@@ -62,8 +65,6 @@ export function TemplateRenderer({ templateId, doc, scale, className = '' }) {
     return () => observer.disconnect()
   }, [scale, pageWidthPx])
 
-  const effectiveScale = scale ?? autoScale
-
   if (!template) {
     return (
       <div className="tw:p-8 tw:text-center tw:text-gray-400 tw:border tw:border-dashed tw:border-gray-200 tw:rounded-lg">
@@ -73,16 +74,27 @@ export function TemplateRenderer({ templateId, doc, scale, className = '' }) {
   }
 
   const Component = template.component
+
+  // Self-contained templates handle their own layout, pages, and scaling
+  if (isSelfContained) {
+    return (
+      <div ref={containerRef} className={`tw:overflow-hidden ${className}`}>
+        {template.css && <style dangerouslySetInnerHTML={{ __html: template.css }} />}
+        <Component data={mappedData} doc={doc} />
+      </div>
+    )
+  }
+
+  // Page-by-page rendering for simple templates
+  const effectiveScale = scale ?? autoScale
   const pageCount = template.manifest.pages || 1
 
   return (
     <div ref={containerRef} className={`tw:overflow-hidden ${className}`}>
-      {/* Inject template CSS into a scoped style tag */}
       {template.css && (
         <style dangerouslySetInnerHTML={{ __html: template.css }} />
       )}
 
-      {/* Render each page */}
       {Array.from({ length: pageCount }, (_, pageIndex) => (
         <div
           key={pageIndex}
@@ -93,7 +105,6 @@ export function TemplateRenderer({ templateId, doc, scale, className = '' }) {
             overflow: 'hidden',
           }}
         >
-          {/* Inner container at real size, scaled down with CSS transform */}
           <div
             className="template-page-root"
             data-template-id={template.manifest.id}
@@ -124,15 +135,17 @@ export function TemplateRenderer({ templateId, doc, scale, className = '' }) {
 
 /**
  * TemplatePrintRoot — renders at scale=1 for print/PDF capture.
- * No scrolling, no shadow, no overflow clipping.
  */
 export function TemplatePrintRoot({ templateId, doc }) {
   const template = getTemplate(templateId)
 
+  const isSelfContained = template?.manifest?.selfContained === true
+
   const mappedData = useMemo(() => {
     if (!template || !doc) return {}
+    if (isSelfContained) return adaptDocumentForTemplate(doc)
     return mapDocumentToTemplate(doc, template.mapping)
-  }, [template, doc])
+  }, [template, doc, isSelfContained])
 
   const pageWidthPx = useMemo(() => {
     if (!template) return 816
@@ -147,6 +160,16 @@ export function TemplatePrintRoot({ templateId, doc }) {
   if (!template) return null
 
   const Component = template.component
+
+  if (isSelfContained) {
+    return (
+      <>
+        {template.css && <style dangerouslySetInnerHTML={{ __html: template.css }} />}
+        <Component data={mappedData} doc={doc} />
+      </>
+    )
+  }
+
   const pageCount = template.manifest.pages || 1
 
   return (

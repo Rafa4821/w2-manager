@@ -1,0 +1,14 @@
+{
+  "id": "w2-2023-mmr-reissued",
+  "name": "W-2 2023 — MMR Reissued",
+  "description": "Reissued W-2 2023 with four copies (B, 2-top, C, 2-bottom). Background pending clean replacement.",
+  "version": "1.0.0",
+  "category": "standard",
+  "taxYears": [2023],
+  "pages": 1,
+  "pageSize": { "width": 8.5, "height": 11, "unit": "in" },
+  "isDefault": false,
+  "selfContained": true,
+  "copyIds": ["B", "2-top", "C", "2-bottom"],
+  "backgroundStatus": "watermarked-pending-clean-replacement"
+}

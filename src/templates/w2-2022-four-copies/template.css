@@ -1,0 +1,9 @@
+.w2-2022-document { width: 100%; max-width: 816px; margin: 0 auto; background: #fff; }
+.w2-2022-sheet { width: 100%; height: auto; display: block; background: white; }
+.w2-2022-sheet text { font-kerning: none; text-rendering: geometricPrecision; }
+@page { size: letter portrait; margin: 0; }
+@media print {
+  body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
+  .w2-2022-document { width: 8.5in !important; max-width: none !important; margin: 0 !important; }
+  .w2-2022-sheet { width: 8.5in !important; height: 11in !important; }
+}

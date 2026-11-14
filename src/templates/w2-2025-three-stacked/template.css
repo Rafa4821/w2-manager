@@ -1,0 +1,8 @@
+.w2-2025-document {display:flex;justify-content:center;width:100%;}
+.w2-2025-page {width:100%;max-width:816px;aspect-ratio:612 / 792;background:#fff;box-shadow:0 3px 14px rgba(0,0,0,.14);}
+.w2-2025-svg {display:block;width:100%;height:100%;background:white;}
+.w2-2025-svg text {font-kerning:none;text-rendering:geometricPrecision;}
+@page {size:letter portrait;margin:0;}
+@media print {html,body{padding:0!important;margin:0!important;background:white!important;}
+.w2-2025-page {width:8.5in!important;height:11in!important;max-width:none!important;box-shadow:none!important;}
+.w2-2025-svg {width:8.5in;height:11in;}}

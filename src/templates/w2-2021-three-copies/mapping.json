@@ -1,0 +1,1207 @@
+{
+  "schemaVersion": 1,
+  "templateId": "w2-2021-three-copies",
+  "page": {
+    "width": 612,
+    "height": 792,
+    "unit": "pt",
+    "orientation": "portrait",
+    "format": "US-Letter"
+  },
+  "copies": [
+    {
+      "id": "B",
+      "label": "Federal employee copy",
+      "sectionTop": 36
+    },
+    {
+      "id": "2",
+      "label": "State/city/local employee copy",
+      "sectionTop": 300
+    },
+    {
+      "id": "C",
+      "label": "Employee records copy",
+      "sectionTop": 551
+    }
+  ],
+  "fields": [
+    {
+      "copy": "B",
+      "path": "employee.ssn",
+      "x": 104.1,
+      "y": 43.28,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "company.ein",
+      "x": 378.0,
+      "y": 43.5,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "company.name",
+      "x": 40.8,
+      "y": 61.832,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 42
+    },
+    {
+      "copy": "B",
+      "path": "boxes.1",
+      "x": 329.9,
+      "y": 63.75,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "boxes.3",
+      "x": 487.699,
+      "y": 63.75,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "boxes.2",
+      "x": 409.099,
+      "y": 63.98,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "company.addressLine1",
+      "x": 40.8,
+      "y": 81.531,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "boxes.4",
+      "x": 329.9,
+      "y": 85.68,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "boxes.5",
+      "x": 409.1,
+      "y": 86.55,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "boxes.6",
+      "x": 487.729,
+      "y": 87.539,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "company.addressLine2",
+      "x": 40.8,
+      "y": 92.581,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "company.city",
+      "x": 40.8,
+      "y": 103.631,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "company.stateZip",
+      "x": 144.4,
+      "y": 105.67,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "year",
+      "x": 508.0,
+      "y": 132.0,
+      "fontSize": 18,
+      "align": "start",
+      "fontFamily": "Arial",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "employee.name",
+      "x": 43.985,
+      "y": 156.254,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 42
+    },
+    {
+      "copy": "B",
+      "path": "employee.addressLine1",
+      "x": 43.985,
+      "y": 164.986,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "employee.city",
+      "x": 40.984,
+      "y": 181.288,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "employee.stateZip",
+      "x": 142.984,
+      "y": 182.518,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "stateTax.combinedStateAndEmployerId",
+      "x": 39.014,
+      "y": 214.207,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "boxes.16",
+      "x": 230.209,
+      "y": 215.763,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "company.ein",
+      "x": 378.0,
+      "y": 307.0,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "employee.ssn",
+      "x": 104.1,
+      "y": 307.62,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "company.name",
+      "x": 40.8,
+      "y": 325.96,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 42
+    },
+    {
+      "copy": "2",
+      "path": "boxes.2",
+      "x": 409.5,
+      "y": 327.05,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "boxes.1",
+      "x": 330.1,
+      "y": 327.95,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "boxes.3",
+      "x": 488.499,
+      "y": 328.05,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "company.addressLine1",
+      "x": 40.8,
+      "y": 345.691,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "boxes.4",
+      "x": 330.1,
+      "y": 348.75,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "boxes.5",
+      "x": 409.499,
+      "y": 349.75,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "boxes.6",
+      "x": 487.499,
+      "y": 349.75,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "company.addressLine2",
+      "x": 40.8,
+      "y": 356.791,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "company.city",
+      "x": 40.8,
+      "y": 367.891,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "company.stateZip",
+      "x": 144.4,
+      "y": 369.87,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "year",
+      "x": 508.0,
+      "y": 396.0,
+      "fontSize": 18,
+      "align": "start",
+      "fontFamily": "Arial",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "employee.name",
+      "x": 45.167,
+      "y": 419.892,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 42
+    },
+    {
+      "copy": "2",
+      "path": "employee.addressLine1",
+      "x": 45.167,
+      "y": 428.002,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "employee.city",
+      "x": 41.988,
+      "y": 443.498,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "employee.stateZip",
+      "x": 143.988,
+      "y": 444.728,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "stateTax.combinedStateAndEmployerId",
+      "x": 38.226,
+      "y": 476.705,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "2",
+      "path": "boxes.16",
+      "x": 230.357,
+      "y": 479.108,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "company.ein",
+      "x": 378.0,
+      "y": 558.5,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "employee.ssn",
+      "x": 104.1,
+      "y": 558.62,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "company.name",
+      "x": 40.8,
+      "y": 577.687,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 42
+    },
+    {
+      "copy": "C",
+      "path": "boxes.3",
+      "x": 487.999,
+      "y": 592.35,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "boxes.1",
+      "x": 331.1,
+      "y": 592.48,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "boxes.2",
+      "x": 409.5,
+      "y": 592.58,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "company.addressLine1",
+      "x": 40.8,
+      "y": 599.0,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "company.addressLine2",
+      "x": 40.8,
+      "y": 610.6,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "boxes.5",
+      "x": 409.5,
+      "y": 612.65,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "boxes.4",
+      "x": 330.1,
+      "y": 613.78,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "boxes.6",
+      "x": 487.999,
+      "y": 613.88,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "company.city",
+      "x": 40.8,
+      "y": 622.2,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "company.stateZip",
+      "x": 144.4,
+      "y": 624.17,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "year",
+      "x": 508.0,
+      "y": 662.0,
+      "fontSize": 18,
+      "align": "start",
+      "fontFamily": "Arial",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "employee.name",
+      "x": 43.985,
+      "y": 684.319,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 42
+    },
+    {
+      "copy": "C",
+      "path": "employee.addressLine1",
+      "x": 43.985,
+      "y": 692.429,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "employee.city",
+      "x": 40.984,
+      "y": 707.78,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "employee.stateZip",
+      "x": 142.984,
+      "y": 709.01,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "boxes.16",
+      "x": 230.899,
+      "y": 741.077,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "C",
+      "path": "stateTax.combinedStateAndEmployerId",
+      "x": 38.226,
+      "y": 741.285,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "maxChars": 30
+    },
+    {
+      "copy": "B",
+      "path": "controlNumber",
+      "x": 65,
+      "y": 128,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "employee.suffix",
+      "x": 229,
+      "y": 154,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.7",
+      "x": 330,
+      "y": 107,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.8",
+      "x": 409,
+      "y": 107,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.9",
+      "x": 487,
+      "y": 107,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.10",
+      "x": 329,
+      "y": 128,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.11",
+      "x": 409,
+      "y": 128,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.12a",
+      "x": 482,
+      "y": 129,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.12b",
+      "x": 482,
+      "y": 151,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.12c",
+      "x": 482,
+      "y": 173,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.12d",
+      "x": 482,
+      "y": 194,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.14",
+      "x": 405,
+      "y": 158,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.17",
+      "x": 328,
+      "y": 217,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.18",
+      "x": 415,
+      "y": 217,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.19",
+      "x": 486,
+      "y": 217,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.20",
+      "x": 557,
+      "y": 217,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.13.statutoryEmployee",
+      "x": 320.5,
+      "y": 153,
+      "fontSize": 11,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.13.retirementPlan",
+      "x": 320.5,
+      "y": 175,
+      "fontSize": 11,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "B",
+      "path": "boxes.13.thirdPartySickPay",
+      "x": 320.5,
+      "y": 197,
+      "fontSize": 11,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "controlNumber",
+      "x": 65,
+      "y": 392,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "employee.suffix",
+      "x": 229,
+      "y": 418,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.7",
+      "x": 330,
+      "y": 371,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.8",
+      "x": 409,
+      "y": 371,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.9",
+      "x": 487,
+      "y": 371,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.10",
+      "x": 329,
+      "y": 392,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.11",
+      "x": 409,
+      "y": 392,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.12a",
+      "x": 482,
+      "y": 393,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.12b",
+      "x": 482,
+      "y": 415,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.12c",
+      "x": 482,
+      "y": 437,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.12d",
+      "x": 482,
+      "y": 458,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.14",
+      "x": 405,
+      "y": 422,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.17",
+      "x": 328,
+      "y": 481,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.18",
+      "x": 415,
+      "y": 481,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.19",
+      "x": 486,
+      "y": 481,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.20",
+      "x": 557,
+      "y": 481,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.13.statutoryEmployee",
+      "x": 320.5,
+      "y": 417,
+      "fontSize": 11,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.13.retirementPlan",
+      "x": 320.5,
+      "y": 439,
+      "fontSize": 11,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "2",
+      "path": "boxes.13.thirdPartySickPay",
+      "x": 320.5,
+      "y": 461,
+      "fontSize": 11,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "controlNumber",
+      "x": 65,
+      "y": 655,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "employee.suffix",
+      "x": 229,
+      "y": 681,
+      "fontSize": 10,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.7",
+      "x": 330,
+      "y": 634,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.8",
+      "x": 409,
+      "y": 634,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.9",
+      "x": 487,
+      "y": 634,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.10",
+      "x": 329,
+      "y": 655,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.11",
+      "x": 409,
+      "y": 655,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.12a",
+      "x": 482,
+      "y": 656,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.12b",
+      "x": 482,
+      "y": 678,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.12c",
+      "x": 482,
+      "y": 700,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.12d",
+      "x": 482,
+      "y": 721,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.14",
+      "x": 405,
+      "y": 685,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.17",
+      "x": 328,
+      "y": 744,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.18",
+      "x": 415,
+      "y": 744,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.19",
+      "x": 486,
+      "y": 744,
+      "fontSize": 10,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.20",
+      "x": 557,
+      "y": 744,
+      "fontSize": 9,
+      "align": "end",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.13.statutoryEmployee",
+      "x": 320.5,
+      "y": 680,
+      "fontSize": 11,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.13.retirementPlan",
+      "x": 320.5,
+      "y": 702,
+      "fontSize": 11,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    },
+    {
+      "copy": "C",
+      "path": "boxes.13.thirdPartySickPay",
+      "x": 320.5,
+      "y": 724,
+      "fontSize": 11,
+      "align": "start",
+      "fontFamily": "Courier",
+      "optional": true
+    }
+  ],
+  "notes": [
+    "SVG coordinates are PDF points with origin top-left.",
+    "Values absent from input are not rendered.",
+    "All three copies reuse the same data path.",
+    "Year-specific template: 2021 only.",
+    "Blank cells optional positions are draft placements; use QA before production."
+  ]
+}

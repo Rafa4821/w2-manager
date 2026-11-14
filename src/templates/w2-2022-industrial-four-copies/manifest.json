@@ -1,0 +1,14 @@
+{
+  "id": "w2-2022-industrial-four-copies",
+  "name": "W-2 2022 — Industrial Four Copies 2x2",
+  "description": "Four W-2 copies arranged 2x2 on a single US Letter page. Background pending clean replacement.",
+  "version": "1.0.0",
+  "category": "standard",
+  "taxYears": [2022],
+  "pages": 1,
+  "pageSize": { "width": 8.5, "height": 11, "unit": "in" },
+  "isDefault": false,
+  "selfContained": true,
+  "copyIds": ["B", "2-top", "C", "2-right"],
+  "backgroundStatus": "watermarked-pending-clean-replacement"
+}
