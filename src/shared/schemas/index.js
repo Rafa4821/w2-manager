@@ -6,3 +6,4 @@ export {
   BOX_12_CODES,
   W2_BOX_LABELS,
 } from './w2Document'
+export { getSSWageBase, getFormWarnings, SS_WAGE_BASE } from './taxYearRules'

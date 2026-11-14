@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Save, Eye, Building2, Users, Calendar, FileText, DollarSign, CheckCircle2 } from 'lucide-react'
-import { PageHeader, FormField } from '../../../shared/components'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { ArrowLeft, ArrowRight, Save, Eye, Building2, Users, Calendar, FileText, DollarSign, CheckCircle2, AlertTriangle, Info } from 'lucide-react'
+import { PageHeader, FormField, CurrencyField } from '../../../shared/components'
 import { useNotificationStore } from '../../../shared/store'
 import { useCompaniesStore } from '../../companies/store/useCompaniesStore'
 import { useEmployeesStore } from '../../employees/store/useEmployeesStore'
@@ -10,7 +10,9 @@ import { companyRepository } from '../../../shared/repositories/companyRepositor
 import { employeeRepository } from '../../../shared/repositories/employeeRepository'
 import { w2DocumentRepository } from '../../../shared/repositories/w2DocumentRepository'
 import { mockTemplates } from '../../../shared/data'
-import { BOX_12_CODES, W2_BOX_LABELS } from '../../../shared/schemas/w2Document'
+import { BOX_12_CODES } from '../../../shared/schemas/w2Document'
+import { getFormWarnings, getSSWageBase } from '../../../shared/schemas/taxYearRules'
+import { round2 } from '../../../shared/utils/currency'
 import { W2Preview } from './W2Preview'
 
 const STEPS = [
@@ -18,12 +20,14 @@ const STEPS = [
   { id: 'employee', label: 'Employee', icon: Users },
   { id: 'year', label: 'Tax Year', icon: Calendar },
   { id: 'template', label: 'Template', icon: FileText },
-  { id: 'wages', label: 'Wages & Tax', icon: DollarSign },
+  { id: 'wages', label: 'Tax Data', icon: DollarSign },
   { id: 'preview', label: 'Review', icon: CheckCircle2 },
 ]
 
 const CURRENT_YEAR = new Date().getFullYear()
-const TAX_YEARS = Array.from({ length: 5 }, (_, i) => CURRENT_YEAR - i)
+const TAX_YEARS = Array.from({ length: 6 }, (_, i) => CURRENT_YEAR - i)
+
+const EMPTY_STATE_LOCAL = { state: '', employerStateId: '', stateWages: 0, stateTax: 0, localWages: 0, localTax: 0, localityName: '' }
 
 function emptyFormData() {
   return {
@@ -47,7 +51,7 @@ function emptyFormData() {
     box13_retirementPlan: false,
     box13_thirdPartySickPay: false,
     box14: [],
-    stateLocal: [{ state: '', employerStateId: '', stateWages: 0, stateTax: 0, localWages: 0, localTax: 0, localityName: '' }],
+    stateLocal: [{ ...EMPTY_STATE_LOCAL }],
     status: 'draft',
     notes: '',
   }
@@ -75,37 +79,47 @@ function docToForm(doc) {
     box13_retirementPlan: doc.box13_retirementPlan || false,
     box13_thirdPartySickPay: doc.box13_thirdPartySickPay || false,
     box14: doc.box14 || [],
-    stateLocal: doc.stateLocal?.length ? doc.stateLocal : [{ state: '', employerStateId: '', stateWages: 0, stateTax: 0, localWages: 0, localTax: 0, localityName: '' }],
-    status: doc.status,
+    stateLocal: doc.stateLocal?.length ? doc.stateLocal : [{ ...EMPTY_STATE_LOCAL }],
+    status: doc.status || 'draft',
     notes: doc.notes || '',
   }
 }
 
+/** Load a source document for editing or duplicating. */
+function loadSourceDoc(id, duplicateId) {
+  if (id) return w2DocumentRepository.getById(id)
+  if (duplicateId) return w2DocumentRepository.getById(duplicateId)
+  return null
+}
+
 export function W2EditorPage() {
   const { id } = useParams()
+  const [searchParams] = useSearchParams()
+  const duplicateId = searchParams.get('duplicate')
   const navigate = useNavigate()
   const isEditing = !!id
+  const isDuplicating = !!duplicateId
   const addNotification = useNotificationStore((s) => s.addNotification)
   const { companies, load: loadCompanies } = useCompaniesStore()
   const { employees, load: loadEmployees } = useEmployeesStore()
   const { create, update, load: loadDocs } = useW2DocumentsStore()
 
-  // Lazy initialization: read from repository directly (no setState in effect)
+  // Lazy initialization from repository (no setState in effect)
   const [step, setStep] = useState(() => {
-    if (isEditing) {
-      const doc = w2DocumentRepository.getById(id)
-      return doc ? 4 : 0
-    }
-    return 0
+    const doc = loadSourceDoc(id, duplicateId)
+    return doc ? 4 : 0
   })
   const [form, setForm] = useState(() => {
-    if (isEditing) {
-      const doc = w2DocumentRepository.getById(id)
-      if (doc) return docToForm(doc)
+    const doc = loadSourceDoc(id, duplicateId)
+    if (doc) {
+      const f = docToForm(doc)
+      if (isDuplicating) f.status = 'draft' // duplicates always start as draft
+      return f
     }
     return emptyFormData()
   })
-  const [notFound] = useState(() => isEditing && !w2DocumentRepository.getById(id))
+  const [errors, setErrors] = useState({})
+  const [notFound] = useState(() => (id || duplicateId) && !loadSourceDoc(id, duplicateId))
 
   useEffect(() => {
     loadCompanies()
@@ -120,21 +134,24 @@ export function W2EditorPage() {
     }
   }, [notFound, addNotification, navigate])
 
-  const selectedCompany = useMemo(
-    () => companies.find((c) => c.id === form.companyId),
-    [companies, form.companyId]
-  )
-  const selectedEmployee = useMemo(
-    () => employees.find((e) => e.id === form.employeeId),
-    [employees, form.employeeId]
-  )
+  const selectedCompany = useMemo(() => companies.find((c) => c.id === form.companyId), [companies, form.companyId])
+  const selectedEmployee = useMemo(() => employees.find((e) => e.id === form.employeeId), [employees, form.employeeId])
   const companyEmployees = useMemo(
     () => employees.filter((e) => e.companyId === form.companyId && e.status === 'active'),
     [employees, form.companyId]
   )
+  const ssWageBase = useMemo(() => getSSWageBase(form.taxYear), [form.taxYear])
+  const formWarnings = useMemo(() => getFormWarnings(form), [form])
 
-  const setField = (name, value) => setForm((prev) => ({ ...prev, [name]: value }))
-  const setNumField = (name, value) => setForm((prev) => ({ ...prev, [name]: Number(value) || 0 }))
+  // ── Field setters with proper decimal rounding ──
+  const setField = (name, value) => {
+    setForm((prev) => ({ ...prev, [name]: value }))
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }))
+  }
+  const setCurrencyField = (name, value) => {
+    setForm((prev) => ({ ...prev, [name]: round2(value) }))
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }))
+  }
 
   // ── Box 12 helpers ──
   const addBox12 = () => {
@@ -144,7 +161,7 @@ export function W2EditorPage() {
   const updateBox12 = (index, field, value) => {
     setForm((prev) => {
       const arr = [...prev.box12]
-      arr[index] = { ...arr[index], [field]: field === 'amount' ? (Number(value) || 0) : value }
+      arr[index] = { ...arr[index], [field]: field === 'amount' ? round2(value) : value }
       return { ...prev, box12: arr }
     })
   }
@@ -159,7 +176,7 @@ export function W2EditorPage() {
   const updateBox14 = (index, field, value) => {
     setForm((prev) => {
       const arr = [...prev.box14]
-      arr[index] = { ...arr[index], [field]: field === 'amount' ? (Number(value) || 0) : value }
+      arr[index] = { ...arr[index], [field]: field === 'amount' ? round2(value) : value }
       return { ...prev, box14: arr }
     })
   }
@@ -169,41 +186,91 @@ export function W2EditorPage() {
 
   // ── State/Local helpers ──
   const updateStateLocal = (index, field, value) => {
+    const isNumeric = ['stateWages', 'stateTax', 'localWages', 'localTax'].includes(field)
     setForm((prev) => {
       const arr = [...prev.stateLocal]
-      arr[index] = {
-        ...arr[index],
-        [field]: ['stateWages', 'stateTax', 'localWages', 'localTax'].includes(field) ? (Number(value) || 0) : value,
-      }
+      arr[index] = { ...arr[index], [field]: isNumeric ? round2(value) : value }
       return { ...prev, stateLocal: arr }
     })
   }
   const addStateLocal = () => {
     if (form.stateLocal.length >= 2) return
-    setForm((prev) => ({
-      ...prev,
-      stateLocal: [...prev.stateLocal, { state: '', employerStateId: '', stateWages: 0, stateTax: 0, localWages: 0, localTax: 0, localityName: '' }],
-    }))
+    setForm((prev) => ({ ...prev, stateLocal: [...prev.stateLocal, { ...EMPTY_STATE_LOCAL }] }))
   }
   const removeStateLocal = (index) => {
     setForm((prev) => ({ ...prev, stateLocal: prev.stateLocal.filter((_, i) => i !== index) }))
   }
 
-  // ── Auto-fill wages ──
-  const autoFillFromBox1 = () => {
-    const wages = form.box1_wagesTips
-    const ssLimit = 168600 // 2024 SS wage base
-    setForm((prev) => ({
-      ...prev,
-      box3_socialSecurityWages: Math.min(wages, ssLimit),
-      box4_socialSecurityTax: Math.round(Math.min(wages, ssLimit) * 0.062 * 100) / 100,
-      box5_medicareWages: wages,
-      box6_medicareTax: Math.round(wages * 0.0145 * 100) / 100,
-    }))
+  // ── Per-step validation ──
+  const validateStep = (s) => {
+    const e = {}
+    switch (s) {
+      case 0:
+        if (!form.companyId) e.companyId = 'Select an employer to continue.'
+        break
+      case 1:
+        if (!form.employeeId) e.employeeId = 'Select an employee to continue.'
+        break
+      case 2:
+        if (!form.taxYear) e.taxYear = 'Select a tax year.'
+        break
+      case 4:
+        // Only warn if Box 3 exceeds SS base — don't block save
+        if (form.box3_socialSecurityWages > ssWageBase) {
+          e._warnBox3 = `Box 3 exceeds the ${form.taxYear} SS wage base ($${ssWageBase.toLocaleString()}).`
+        }
+        break
+      default:
+        break
+    }
+    return e
+  }
+
+  /** Stricter validation applied when saving as completed. */
+  const validateForCompleted = () => {
+    const e = {}
+    if (!form.companyId) e.companyId = 'Company is required.'
+    if (!form.employeeId) e.employeeId = 'Employee is required.'
+    if (!form.taxYear) e.taxYear = 'Tax year is required.'
+    if (form.box1_wagesTips <= 0) e.box1_wagesTips = 'Box 1 (wages) must be greater than zero for a completed document.'
+    return e
+  }
+
+  const canProceed = () => {
+    const stepErrors = validateStep(step)
+    // Ignore soft warnings (keys starting with _warn)
+    return Object.keys(stepErrors).filter((k) => !k.startsWith('_warn')).length === 0
+  }
+
+  const handleNext = () => {
+    const stepErrors = validateStep(step)
+    const hardErrors = Object.fromEntries(Object.entries(stepErrors).filter(([k]) => !k.startsWith('_warn')))
+    if (Object.keys(hardErrors).length > 0) {
+      setErrors(hardErrors)
+      return
+    }
+    setErrors({})
+    setStep(step + 1)
   }
 
   // ── Save ──
   const handleSave = (saveStatus) => {
+    // For "completed" status, apply stricter validation
+    if (saveStatus === 'completed') {
+      const completedErrors = validateForCompleted()
+      if (Object.keys(completedErrors).length > 0) {
+        setErrors(completedErrors)
+        addNotification({ type: 'error', title: 'Validation Error', message: 'Please fix the highlighted fields before marking as completed.' })
+        return
+      }
+    }
+
+    // Draft and pending only need company + employee
+    if (!form.companyId || !form.employeeId) {
+      addNotification({ type: 'error', title: 'Missing Data', message: 'Company and employee are required even for drafts.' })
+      return
+    }
+
     try {
       const companySnap = companyRepository.getById(form.companyId)
       const employeeSnap = employeeRepository.getById(form.employeeId)
@@ -216,43 +283,29 @@ export function W2EditorPage() {
         ...form,
         status: saveStatus,
         companySnapshot: {
-          id: companySnap.id,
-          name: companySnap.name,
-          ein: companySnap.ein,
-          address: companySnap.address,
-          address2: companySnap.address2 || '',
-          city: companySnap.city,
-          state: companySnap.state,
-          zipCode: companySnap.zipCode,
-          stateEmployerId: companySnap.stateEmployerId || '',
-          contactName: companySnap.contactName || '',
+          id: companySnap.id, name: companySnap.name, ein: companySnap.ein,
+          address: companySnap.address, address2: companySnap.address2 || '',
+          city: companySnap.city, state: companySnap.state, zipCode: companySnap.zipCode,
+          stateEmployerId: companySnap.stateEmployerId || '', contactName: companySnap.contactName || '',
         },
         employeeSnapshot: {
-          id: employeeSnap.id,
-          firstName: employeeSnap.firstName,
-          middleInitial: employeeSnap.middleInitial || '',
-          lastName: employeeSnap.lastName,
-          suffix: employeeSnap.suffix || '',
-          ssn: employeeSnap.ssn,
-          address: employeeSnap.address,
-          address2: employeeSnap.address2 || '',
-          city: employeeSnap.city,
-          state: employeeSnap.state,
-          zipCode: employeeSnap.zipCode,
+          id: employeeSnap.id, firstName: employeeSnap.firstName,
+          middleInitial: employeeSnap.middleInitial || '', lastName: employeeSnap.lastName,
+          suffix: employeeSnap.suffix || '', ssn: employeeSnap.ssn,
+          address: employeeSnap.address, address2: employeeSnap.address2 || '',
+          city: employeeSnap.city, state: employeeSnap.state, zipCode: employeeSnap.zipCode,
         },
-        // Filter out empty stateLocal entries
         stateLocal: form.stateLocal.filter((sl) => sl.state || sl.stateWages || sl.stateTax || sl.localWages || sl.localTax),
-        // Filter out empty box12 entries
         box12: form.box12.filter((b) => b.code),
         box14: form.box14.filter((b) => b.description),
       }
 
       if (isEditing) {
         update(id, docData)
-        addNotification({ type: 'success', title: 'Document Updated', message: `W2 document saved as ${saveStatus}.` })
+        addNotification({ type: 'success', title: 'Document Updated', message: `W-2 saved as ${saveStatus}.` })
       } else {
         create(docData)
-        addNotification({ type: 'success', title: 'Document Created', message: `W2 document created as ${saveStatus}.` })
+        addNotification({ type: 'success', title: 'Document Created', message: `W-2 created as ${saveStatus}.` })
       }
       navigate('/w2-documents')
     } catch (err) {
@@ -260,18 +313,7 @@ export function W2EditorPage() {
     }
   }
 
-  const canProceed = () => {
-    switch (step) {
-      case 0: return !!form.companyId
-      case 1: return !!form.employeeId
-      case 2: return !!form.taxYear
-      case 3: return true // template is optional
-      case 4: return form.box1_wagesTips > 0
-      default: return true
-    }
-  }
-
-  // ── Build document object for preview ──
+  // ── Build preview document ──
   const previewDoc = useMemo(() => {
     const comp = selectedCompany || {}
     const emp = selectedEmployee || {}
@@ -292,18 +334,9 @@ export function W2EditorPage() {
     }
   }, [form, selectedCompany, selectedEmployee])
 
-  // ── Render steps ──
-  const renderStep = () => {
-    switch (step) {
-      case 0: return renderCompanyStep()
-      case 1: return renderEmployeeStep()
-      case 2: return renderYearStep()
-      case 3: return renderTemplateStep()
-      case 4: return renderWagesStep()
-      case 5: return renderPreviewStep()
-      default: return null
-    }
-  }
+  // ═══════════════════════════════════════════════════════════════
+  //  STEP RENDERERS
+  // ═══════════════════════════════════════════════════════════════
 
   // ── Step 1: Select Company ──
   const renderCompanyStep = () => {
@@ -312,17 +345,13 @@ export function W2EditorPage() {
       <div>
         <h3 className="tw:text-lg tw:font-semibold tw:text-gray-900 tw:mb-1">Select Employer</h3>
         <p className="tw:text-sm tw:text-gray-500 tw:mb-5">Choose the employer company for this W-2 document.</p>
+        {errors.companyId && <p className="tw:text-sm tw:text-rose-600 tw:mb-3">{errors.companyId}</p>}
         <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-3">
           {activeCompanies.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => { setField('companyId', c.id); setField('employeeId', '') }}
+            <button key={c.id} onClick={() => { setField('companyId', c.id); setField('employeeId', '') }}
               className={`tw:text-left tw:p-4 tw:rounded-xl tw:border-2 tw:transition ${
-                form.companyId === c.id
-                  ? 'tw:border-indigo-500 tw:bg-indigo-50'
-                  : 'tw:border-gray-200 hover:tw:border-gray-300 tw:bg-white'
-              }`}
-            >
+                form.companyId === c.id ? 'tw:border-indigo-500 tw:bg-indigo-50' : 'tw:border-gray-200 hover:tw:border-gray-300 tw:bg-white'
+              }`}>
               <div className="tw:flex tw:items-center tw:gap-3">
                 <Building2 className={`tw:h-5 tw:w-5 ${form.companyId === c.id ? 'tw:text-indigo-500' : 'tw:text-gray-400'}`} />
                 <div>
@@ -347,23 +376,17 @@ export function W2EditorPage() {
       <p className="tw:text-sm tw:text-gray-500 tw:mb-5">
         Showing active employees of <strong>{selectedCompany?.name}</strong>.
       </p>
+      {errors.employeeId && <p className="tw:text-sm tw:text-rose-600 tw:mb-3">{errors.employeeId}</p>}
       <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-3">
         {companyEmployees.map((e) => (
-          <button
-            key={e.id}
-            onClick={() => setField('employeeId', e.id)}
+          <button key={e.id} onClick={() => setField('employeeId', e.id)}
             className={`tw:text-left tw:p-4 tw:rounded-xl tw:border-2 tw:transition ${
-              form.employeeId === e.id
-                ? 'tw:border-indigo-500 tw:bg-indigo-50'
-                : 'tw:border-gray-200 hover:tw:border-gray-300 tw:bg-white'
-            }`}
-          >
+              form.employeeId === e.id ? 'tw:border-indigo-500 tw:bg-indigo-50' : 'tw:border-gray-200 hover:tw:border-gray-300 tw:bg-white'
+            }`}>
             <div className="tw:flex tw:items-center tw:gap-3">
               <div className={`tw:flex tw:items-center tw:justify-center tw:h-9 tw:w-9 tw:rounded-full tw:text-xs tw:font-semibold ${
                 form.employeeId === e.id ? 'tw:bg-indigo-100 tw:text-indigo-700' : 'tw:bg-gray-100 tw:text-gray-600'
-              }`}>
-                {e.firstName[0]}{e.lastName[0]}
-              </div>
+              }`}>{e.firstName[0]}{e.lastName[0]}</div>
               <div>
                 <p className="tw:font-medium tw:text-gray-900">{e.firstName} {e.lastName}</p>
                 <p className="tw:text-xs tw:text-gray-500">{e.position || 'No position'} &middot; SSN: {e.ssn}</p>
@@ -383,54 +406,48 @@ export function W2EditorPage() {
     <div>
       <h3 className="tw:text-lg tw:font-semibold tw:text-gray-900 tw:mb-1">Select Tax Year</h3>
       <p className="tw:text-sm tw:text-gray-500 tw:mb-5">Choose the fiscal year for this W-2.</p>
-      <div className="tw:grid tw:grid-cols-2 sm:tw:grid-cols-3 md:tw:grid-cols-5 tw:gap-3">
+      <div className="tw:grid tw:grid-cols-2 sm:tw:grid-cols-3 md:tw:grid-cols-6 tw:gap-3">
         {TAX_YEARS.map((year) => (
-          <button
-            key={year}
-            onClick={() => setField('taxYear', year)}
+          <button key={year} onClick={() => setField('taxYear', year)}
             className={`tw:p-4 tw:rounded-xl tw:border-2 tw:text-center tw:font-semibold tw:text-lg tw:transition ${
               form.taxYear === year
                 ? 'tw:border-indigo-500 tw:bg-indigo-50 tw:text-indigo-700'
                 : 'tw:border-gray-200 hover:tw:border-gray-300 tw:text-gray-700 tw:bg-white'
-            }`}
-          >
-            {year}
-          </button>
+            }`}>{year}</button>
         ))}
       </div>
+      <div className="tw:mt-4 tw:p-3 tw:bg-blue-50 tw:border tw:border-blue-100 tw:rounded-lg tw:flex tw:items-start tw:gap-2">
+        <Info className="tw:h-4 tw:w-4 tw:text-blue-500 tw:mt-0.5 tw:flex-shrink-0" />
+        <p className="tw:text-xs tw:text-blue-700">SS wage base for {form.taxYear}: <strong>${ssWageBase.toLocaleString()}</strong>. Box 3 values above this limit will be flagged.</p>
+      </div>
       <div className="tw:mt-4">
-        <FormField label="Control Number (Box d)" name="controlNumber" value={form.controlNumber} onChange={(_, v) => setField('controlNumber', v)} placeholder="Optional employer reference" />
+        <FormField label="Control Number (Box d — optional)" name="controlNumber" value={form.controlNumber} onChange={(_, v) => setField('controlNumber', v)} placeholder="Employer reference number" />
       </div>
     </div>
   )
 
-  // ── Step 4: Template (optional) ──
+  // ── Step 4: Template (visual layout only, not tax data) ──
   const renderTemplateStep = () => (
     <div>
       <h3 className="tw:text-lg tw:font-semibold tw:text-gray-900 tw:mb-1">Choose a Template</h3>
-      <p className="tw:text-sm tw:text-gray-500 tw:mb-5">Optionally select a template. You can skip this step.</p>
+      <p className="tw:text-sm tw:text-gray-500 tw:mb-2">
+        Templates define the <strong>visual layout</strong> for PDF generation.
+        Tax data is entered in the next step and is independent of the template chosen.
+      </p>
+      <p className="tw:text-xs tw:text-gray-400 tw:mb-5">This step is optional — you can skip it.</p>
       <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-3">
-        <button
-          onClick={() => setField('templateId', '')}
+        <button onClick={() => setField('templateId', '')}
           className={`tw:text-left tw:p-4 tw:rounded-xl tw:border-2 tw:transition ${
-            !form.templateId
-              ? 'tw:border-indigo-500 tw:bg-indigo-50'
-              : 'tw:border-gray-200 hover:tw:border-gray-300 tw:bg-white'
-          }`}
-        >
-          <p className="tw:font-medium tw:text-gray-900">Blank Form</p>
-          <p className="tw:text-xs tw:text-gray-500">Start with an empty W-2 form</p>
+            !form.templateId ? 'tw:border-indigo-500 tw:bg-indigo-50' : 'tw:border-gray-200 hover:tw:border-gray-300 tw:bg-white'
+          }`}>
+          <p className="tw:font-medium tw:text-gray-900">Default Layout</p>
+          <p className="tw:text-xs tw:text-gray-500">Standard W-2 form layout</p>
         </button>
         {mockTemplates.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setField('templateId', t.id)}
+          <button key={t.id} onClick={() => setField('templateId', t.id)}
             className={`tw:text-left tw:p-4 tw:rounded-xl tw:border-2 tw:transition ${
-              form.templateId === t.id
-                ? 'tw:border-indigo-500 tw:bg-indigo-50'
-                : 'tw:border-gray-200 hover:tw:border-gray-300 tw:bg-white'
-            }`}
-          >
+              form.templateId === t.id ? 'tw:border-indigo-500 tw:bg-indigo-50' : 'tw:border-gray-200 hover:tw:border-gray-300 tw:bg-white'
+            }`}>
             <p className="tw:font-medium tw:text-gray-900">{t.name}</p>
             <p className="tw:text-xs tw:text-gray-500">{t.description}</p>
           </button>
@@ -439,76 +456,112 @@ export function W2EditorPage() {
     </div>
   )
 
-  // ── Step 5: Wages & Tax (all boxes) ──
-  const renderWagesStep = () => (
+  // ── Step 5: Tax Data (all W-2 boxes) ──
+  const renderTaxDataStep = () => (
     <div className="tw:space-y-6">
       <div>
-        <h3 className="tw:text-lg tw:font-semibold tw:text-gray-900 tw:mb-1">Wages, Tax & Benefits</h3>
-        <p className="tw:text-sm tw:text-gray-500 tw:mb-4">Fill in the W-2 numbered boxes. All amounts in USD.</p>
+        <h3 className="tw:text-lg tw:font-semibold tw:text-gray-900 tw:mb-1">Tax Data — W-2 Boxes</h3>
+        <p className="tw:text-sm tw:text-gray-500 tw:mb-1">Enter the amounts reported by the employer&rsquo;s payroll system. All values in USD.</p>
+        <p className="tw:text-xs tw:text-amber-600">This tool does not compute withholding or tax amounts. Enter values exactly as provided by the payroll source.</p>
       </div>
 
-      {/* Boxes 1–6 (main wages) */}
+      {errors.box1_wagesTips && (
+        <p className="tw:text-sm tw:text-rose-600 tw:p-3 tw:bg-rose-50 tw:rounded-lg">{errors.box1_wagesTips}</p>
+      )}
+
+      {/* ─── Section A: Income ─── */}
       <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <div className="tw:flex tw:items-center tw:justify-between tw:mb-4">
-          <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800">Primary Wages & Withholding</h4>
-          <button
-            type="button"
-            onClick={autoFillFromBox1}
-            className="tw:text-xs tw:font-medium tw:text-indigo-600 hover:tw:text-indigo-700 tw:transition"
-          >
-            Auto-calculate SS/Medicare from Box 1
-          </button>
-        </div>
+        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Income</h4>
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Wages, tips, and other compensation reported by the employer.</p>
         <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 tw:gap-x-4">
-          {Object.entries(W2_BOX_LABELS).slice(0, 6).map(([key, label]) => (
-            <FormField key={key} label={label} name={key} type="number" value={form[key]} onChange={(_, v) => setNumField(key, v)} placeholder="0.00" />
-          ))}
+          <CurrencyField label="1 — Wages, tips, other compensation" name="box1_wagesTips" value={form.box1_wagesTips} onChange={setCurrencyField} error={errors.box1_wagesTips} />
+          <CurrencyField label="7 — Social security tips" name="box7_socialSecurityTips" value={form.box7_socialSecurityTips} onChange={setCurrencyField} />
+          <CurrencyField label="8 — Allocated tips" name="box8_allocatedTips" value={form.box8_allocatedTips} onChange={setCurrencyField} />
         </div>
       </section>
 
-      {/* Boxes 7–11 */}
+      {/* ─── Section B: Federal Withholding ─── */}
       <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-4">Additional Compensation</h4>
+        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Federal Withholding</h4>
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Federal income tax withheld during the tax year.</p>
         <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 tw:gap-x-4">
-          {Object.entries(W2_BOX_LABELS).slice(6).map(([key, label]) => (
-            <FormField key={key} label={label} name={key} type="number" value={form[key]} onChange={(_, v) => setNumField(key, v)} placeholder="0.00" />
-          ))}
+          <CurrencyField label="2 — Federal income tax withheld" name="box2_federalTaxWithheld" value={form.box2_federalTaxWithheld} onChange={setCurrencyField} />
         </div>
       </section>
 
-      {/* Box 12 */}
+      {/* ─── Section C: Social Security ─── */}
       <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <div className="tw:flex tw:items-center tw:justify-between tw:mb-4">
-          <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800">Box 12 — Coded Entries (up to 4)</h4>
+        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Social Security</h4>
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">
+          {form.taxYear} wage base limit: <strong>${ssWageBase.toLocaleString()}</strong>. Box 3 should not exceed this amount.
+        </p>
+        <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 tw:gap-x-4">
+          <CurrencyField label="3 — Social security wages" name="box3_socialSecurityWages" value={form.box3_socialSecurityWages} onChange={setCurrencyField} />
+          <CurrencyField label="4 — Social security tax withheld" name="box4_socialSecurityTax" value={form.box4_socialSecurityTax} onChange={setCurrencyField} />
+        </div>
+        {form.box3_socialSecurityWages > ssWageBase && (
+          <div className="tw:flex tw:items-center tw:gap-2 tw:mt-2 tw:p-2 tw:bg-amber-50 tw:border tw:border-amber-200 tw:rounded-lg">
+            <AlertTriangle className="tw:h-4 tw:w-4 tw:text-amber-500 tw:flex-shrink-0" />
+            <p className="tw:text-xs tw:text-amber-700">Box 3 exceeds the {form.taxYear} SS wage base of ${ssWageBase.toLocaleString()}. Verify with the payroll source.</p>
+          </div>
+        )}
+      </section>
+
+      {/* ─── Section D: Medicare ─── */}
+      <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
+        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Medicare</h4>
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Medicare wages, tips, and tax withheld. No wage base limit applies.</p>
+        <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 tw:gap-x-4">
+          <CurrencyField label="5 — Medicare wages and tips" name="box5_medicareWages" value={form.box5_medicareWages} onChange={setCurrencyField} />
+          <CurrencyField label="6 — Medicare tax withheld" name="box6_medicareTax" value={form.box6_medicareTax} onChange={setCurrencyField} />
+        </div>
+      </section>
+
+      {/* ─── Section E: Benefits ─── */}
+      <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
+        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Benefits & Other Compensation</h4>
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Dependent care benefits and nonqualified deferred compensation plans.</p>
+        <div className="tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 tw:gap-x-4">
+          <CurrencyField label="10 — Dependent care benefits" name="box10_dependentCareBenefits" value={form.box10_dependentCareBenefits} onChange={setCurrencyField} />
+          <CurrencyField label="11 — Nonqualified plans" name="box11_nonqualifiedPlans" value={form.box11_nonqualifiedPlans} onChange={setCurrencyField} />
+        </div>
+      </section>
+
+      {/* ─── Section F: Box 12 — Coded Entries ─── */}
+      <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
+        <div className="tw:flex tw:items-center tw:justify-between tw:mb-1">
+          <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800">Box 12 — Coded Entries</h4>
           {form.box12.length < 4 && (
             <button type="button" onClick={addBox12} className="tw:text-xs tw:font-medium tw:text-indigo-600 hover:tw:text-indigo-700">+ Add Entry</button>
           )}
         </div>
-        {form.box12.length === 0 && <p className="tw:text-sm tw:text-gray-400">No Box 12 entries. Click "Add Entry" to include one.</p>}
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Up to 4 coded entries (12a–12d). Each uses an IRS-defined letter code.</p>
+        {form.box12.length === 0 && <p className="tw:text-sm tw:text-gray-400">No Box 12 entries.</p>}
         {form.box12.map((entry, i) => (
           <div key={i} className="tw:flex tw:items-end tw:gap-3 tw:mb-3">
             <div className="tw:flex-1">
               <FormField
-                label={`12${String.fromCharCode(97 + i)} Code`}
+                label={`12${String.fromCharCode(97 + i)} — Code`}
                 name={`box12_code_${i}`}
                 type="select"
                 value={entry.code}
                 onChange={(_, v) => updateBox12(i, 'code', v)}
-                options={Object.entries(BOX_12_CODES).map(([code, desc]) => ({ value: code, label: `${code} — ${desc.substring(0, 50)}${desc.length > 50 ? '...' : ''}` }))}
+                options={Object.entries(BOX_12_CODES).map(([code, desc]) => ({ value: code, label: `${code} — ${desc.length > 55 ? desc.substring(0, 55) + '...' : desc}` }))}
                 placeholder="Select code"
               />
             </div>
-            <div className="tw:w-36">
-              <FormField label="Amount" name={`box12_amt_${i}`} type="number" value={entry.amount} onChange={(_, v) => updateBox12(i, 'amount', v)} placeholder="0.00" />
+            <div className="tw:w-40">
+              <CurrencyField label="Amount" name={`box12_amt_${i}`} value={entry.amount} onChange={(_, v) => updateBox12(i, 'amount', v)} />
             </div>
             <button type="button" onClick={() => removeBox12(i)} className="tw:mb-4 tw:px-2 tw:py-1 tw:text-xs tw:text-rose-500 hover:tw:text-rose-700 tw:transition">Remove</button>
           </div>
         ))}
       </section>
 
-      {/* Box 13 */}
+      {/* ─── Section G: Box 13 — Checkboxes ─── */}
       <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-4">Box 13 — Checkboxes</h4>
+        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Box 13 — Status Checkboxes</h4>
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Check the boxes that apply to this employee.</p>
         <div className="tw:space-y-3">
           {[
             { key: 'box13_statutoryEmployee', label: 'Statutory employee' },
@@ -516,46 +569,44 @@ export function W2EditorPage() {
             { key: 'box13_thirdPartySickPay', label: 'Third-party sick pay' },
           ].map(({ key, label }) => (
             <label key={key} className="tw:flex tw:items-center tw:gap-3 tw:cursor-pointer">
-              <input
-                type="checkbox"
-                checked={form[key]}
-                onChange={(e) => setField(key, e.target.checked)}
-                className="tw:h-4 tw:w-4 tw:rounded tw:border-gray-300 tw:text-indigo-600 focus:tw:ring-indigo-500"
-              />
+              <input type="checkbox" checked={form[key]} onChange={(e) => setField(key, e.target.checked)}
+                className="tw:h-4 tw:w-4 tw:rounded tw:border-gray-300 tw:text-indigo-600 focus:tw:ring-indigo-500" />
               <span className="tw:text-sm tw:text-gray-700">{label}</span>
             </label>
           ))}
         </div>
       </section>
 
-      {/* Box 14 */}
+      {/* ─── Section H: Box 14 — Other ─── */}
       <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <div className="tw:flex tw:items-center tw:justify-between tw:mb-4">
+        <div className="tw:flex tw:items-center tw:justify-between tw:mb-1">
           <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800">Box 14 — Other</h4>
           <button type="button" onClick={addBox14} className="tw:text-xs tw:font-medium tw:text-indigo-600 hover:tw:text-indigo-700">+ Add Entry</button>
         </div>
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Employer-defined items (union dues, health insurance, etc.).</p>
         {form.box14.length === 0 && <p className="tw:text-sm tw:text-gray-400">No Box 14 entries.</p>}
         {form.box14.map((entry, i) => (
           <div key={i} className="tw:flex tw:items-end tw:gap-3 tw:mb-3">
             <div className="tw:flex-1">
               <FormField label="Description" name={`box14_desc_${i}`} value={entry.description} onChange={(_, v) => updateBox14(i, 'description', v)} placeholder="e.g. Union dues" />
             </div>
-            <div className="tw:w-36">
-              <FormField label="Amount" name={`box14_amt_${i}`} type="number" value={entry.amount} onChange={(_, v) => updateBox14(i, 'amount', v)} placeholder="0.00" />
+            <div className="tw:w-40">
+              <CurrencyField label="Amount" name={`box14_amt_${i}`} value={entry.amount} onChange={(_, v) => updateBox14(i, 'amount', v)} />
             </div>
             <button type="button" onClick={() => removeBox14(i)} className="tw:mb-4 tw:px-2 tw:py-1 tw:text-xs tw:text-rose-500 hover:tw:text-rose-700 tw:transition">Remove</button>
           </div>
         ))}
       </section>
 
-      {/* Boxes 15–20: State & Local */}
+      {/* ─── Section I: Boxes 15–20 — State & Local ─── */}
       <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <div className="tw:flex tw:items-center tw:justify-between tw:mb-4">
+        <div className="tw:flex tw:items-center tw:justify-between tw:mb-1">
           <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800">Boxes 15–20 — State & Local Tax</h4>
           {form.stateLocal.length < 2 && (
             <button type="button" onClick={addStateLocal} className="tw:text-xs tw:font-medium tw:text-indigo-600 hover:tw:text-indigo-700">+ Add State</button>
           )}
         </div>
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">Up to 2 state/local tax entries. Leave blank if not applicable.</p>
         {form.stateLocal.map((sl, i) => (
           <div key={i} className="tw:mb-4 tw:p-4 tw:bg-gray-50 tw:rounded-lg">
             <div className="tw:flex tw:items-center tw:justify-between tw:mb-2">
@@ -567,62 +618,91 @@ export function W2EditorPage() {
             <div className="tw:grid tw:grid-cols-2 sm:tw:grid-cols-3 tw:gap-x-4">
               <FormField label="15 — State" name={`sl_state_${i}`} value={sl.state} onChange={(_, v) => updateStateLocal(i, 'state', v)} placeholder="NY" />
               <FormField label="15 — Employer State ID" name={`sl_esid_${i}`} value={sl.employerStateId} onChange={(_, v) => updateStateLocal(i, 'employerStateId', v)} placeholder="State ID number" />
-              <FormField label="16 — State Wages" name={`sl_sw_${i}`} type="number" value={sl.stateWages} onChange={(_, v) => updateStateLocal(i, 'stateWages', v)} placeholder="0.00" />
-              <FormField label="17 — State Tax" name={`sl_st_${i}`} type="number" value={sl.stateTax} onChange={(_, v) => updateStateLocal(i, 'stateTax', v)} placeholder="0.00" />
-              <FormField label="18 — Local Wages" name={`sl_lw_${i}`} type="number" value={sl.localWages} onChange={(_, v) => updateStateLocal(i, 'localWages', v)} placeholder="0.00" />
-              <FormField label="19 — Local Tax" name={`sl_lt_${i}`} type="number" value={sl.localTax} onChange={(_, v) => updateStateLocal(i, 'localTax', v)} placeholder="0.00" />
-              <FormField label="20 — Locality Name" name={`sl_loc_${i}`} value={sl.localityName} onChange={(_, v) => updateStateLocal(i, 'localityName', v)} placeholder="City / locality" />
+              <CurrencyField label="16 — State wages" name={`sl_sw_${i}`} value={sl.stateWages} onChange={(_, v) => updateStateLocal(i, 'stateWages', v)} />
+              <CurrencyField label="17 — State tax withheld" name={`sl_st_${i}`} value={sl.stateTax} onChange={(_, v) => updateStateLocal(i, 'stateTax', v)} />
+              <CurrencyField label="18 — Local wages" name={`sl_lw_${i}`} value={sl.localWages} onChange={(_, v) => updateStateLocal(i, 'localWages', v)} />
+              <CurrencyField label="19 — Local tax withheld" name={`sl_lt_${i}`} value={sl.localTax} onChange={(_, v) => updateStateLocal(i, 'localTax', v)} />
+              <FormField label="20 — Locality name" name={`sl_loc_${i}`} value={sl.localityName} onChange={(_, v) => updateStateLocal(i, 'localityName', v)} placeholder="City / locality" />
             </div>
           </div>
         ))}
       </section>
 
-      {/* Notes */}
+      {/* ─── Notes ─── */}
       <section className="tw:bg-white tw:rounded-xl tw:border tw:border-gray-200 tw:p-5">
-        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-4">Notes</h4>
-        <textarea
-          value={form.notes}
-          onChange={(e) => setField('notes', e.target.value)}
+        <h4 className="tw:text-sm tw:font-semibold tw:text-gray-800 tw:mb-1">Internal Notes</h4>
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-4">These notes are not printed on the W-2 form.</p>
+        <textarea value={form.notes} onChange={(e) => setField('notes', e.target.value)}
           className="tw:w-full tw:px-3 tw:py-2 tw:text-sm tw:border tw:border-gray-200 tw:rounded-lg focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-indigo-500 tw:bg-white tw:min-h-20"
-          placeholder="Internal notes about this document..."
-        />
+          placeholder="Internal notes about this document..." />
       </section>
     </div>
   )
 
-  // ── Step 6: Preview & Save ──
+  // ── Step 6: Review & Save ──
   const renderPreviewStep = () => (
     <div>
       <h3 className="tw:text-lg tw:font-semibold tw:text-gray-900 tw:mb-1">Review & Save</h3>
-      <p className="tw:text-sm tw:text-gray-500 tw:mb-5">Review the W-2 form before saving.</p>
+      <p className="tw:text-sm tw:text-gray-500 tw:mb-5">Review the W-2 form data before saving. The preview below is a reference layout — it is not an official IRS form.</p>
+
+      {/* Warnings */}
+      {formWarnings.length > 0 && (
+        <div className="tw:mb-5 tw:p-4 tw:bg-amber-50 tw:border tw:border-amber-200 tw:rounded-lg">
+          <div className="tw:flex tw:items-center tw:gap-2 tw:mb-2">
+            <AlertTriangle className="tw:h-4 tw:w-4 tw:text-amber-600" />
+            <h4 className="tw:text-sm tw:font-semibold tw:text-amber-800">Validation Warnings</h4>
+          </div>
+          <ul className="tw:list-disc tw:list-inside tw:space-y-1">
+            {formWarnings.map((w, i) => (
+              <li key={i} className="tw:text-xs tw:text-amber-700">{w}</li>
+            ))}
+          </ul>
+          <p className="tw:text-xs tw:text-amber-600 tw:mt-2">You may still save the document if these values are correct per your payroll records.</p>
+        </div>
+      )}
+
       <W2Preview doc={previewDoc} />
+
       <div className="tw:flex tw:flex-wrap tw:gap-3 tw:mt-6 tw:justify-end">
-        <button
-          onClick={() => handleSave('draft')}
-          className="tw:px-5 tw:py-2.5 tw:text-sm tw:font-medium tw:text-gray-700 tw:bg-white tw:border tw:border-gray-300 tw:rounded-lg hover:tw:bg-gray-50 tw:transition"
-        >
+        <button onClick={() => handleSave('draft')}
+          className="tw:px-5 tw:py-2.5 tw:text-sm tw:font-medium tw:text-gray-700 tw:bg-white tw:border tw:border-gray-300 tw:rounded-lg hover:tw:bg-gray-50 tw:transition">
           Save as Draft
         </button>
-        <button
-          onClick={() => handleSave('pending')}
-          className="tw:px-5 tw:py-2.5 tw:text-sm tw:font-medium tw:text-amber-700 tw:bg-amber-50 tw:border tw:border-amber-200 tw:rounded-lg hover:tw:bg-amber-100 tw:transition"
-        >
+        <button onClick={() => handleSave('pending')}
+          className="tw:px-5 tw:py-2.5 tw:text-sm tw:font-medium tw:text-amber-700 tw:bg-amber-50 tw:border tw:border-amber-200 tw:rounded-lg hover:tw:bg-amber-100 tw:transition">
           Save as Pending Review
         </button>
-        <button
-          onClick={() => handleSave('completed')}
-          className="tw:px-5 tw:py-2.5 tw:text-sm tw:font-medium tw:text-white tw:bg-indigo-600 tw:rounded-lg hover:tw:bg-indigo-700 tw:transition"
-        >
+        <button onClick={() => handleSave('completed')}
+          className="tw:px-5 tw:py-2.5 tw:text-sm tw:font-medium tw:text-white tw:bg-indigo-600 tw:rounded-lg hover:tw:bg-indigo-700 tw:transition">
           Mark as Completed
         </button>
       </div>
     </div>
   )
 
+  const renderStep = () => {
+    switch (step) {
+      case 0: return renderCompanyStep()
+      case 1: return renderEmployeeStep()
+      case 2: return renderYearStep()
+      case 3: return renderTemplateStep()
+      case 4: return renderTaxDataStep()
+      case 5: return renderPreviewStep()
+      default: return null
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  //  MAIN RENDER
+  // ═══════════════════════════════════════════════════════════════
+
+  const pageTitle = isEditing ? 'Edit W-2 Document' : isDuplicating ? 'Duplicate W-2 Document' : 'New W-2 Document'
+
   return (
     <div>
-      <PageHeader title={isEditing ? 'Edit W2 Document' : 'New W2 Document'} description="Complete each step to create a W-2 form">
-        <button onClick={() => navigate('/w2-documents')} className="tw:flex tw:items-center tw:gap-2 tw:px-4 tw:py-2 tw:text-sm tw:font-medium tw:text-gray-700 tw:bg-white tw:border tw:border-gray-300 tw:rounded-lg hover:tw:bg-gray-50 tw:transition">
+      <PageHeader title={pageTitle} description="Complete each step to build a W-2 form">
+        <button onClick={() => navigate('/w2-documents')}
+          className="tw:flex tw:items-center tw:gap-2 tw:px-4 tw:py-2 tw:text-sm tw:font-medium tw:text-gray-700 tw:bg-white tw:border tw:border-gray-300 tw:rounded-lg hover:tw:bg-gray-50 tw:transition">
           <ArrowLeft className="tw:h-4 tw:w-4" /> Back to Documents
         </button>
       </PageHeader>
@@ -634,16 +714,14 @@ export function W2EditorPage() {
           const isActive = i === step
           const isDone = i < step
           return (
-            <button
-              key={s.id}
+            <button key={s.id}
               onClick={() => { if (isDone || isActive) setStep(i) }}
               className={`tw:flex tw:items-center tw:gap-2 tw:px-3 tw:py-2 tw:rounded-lg tw:text-xs tw:font-medium tw:transition tw:whitespace-nowrap ${
                 isActive ? 'tw:bg-indigo-600 tw:text-white' :
                 isDone ? 'tw:bg-indigo-50 tw:text-indigo-700 hover:tw:bg-indigo-100 tw:cursor-pointer' :
                 'tw:bg-gray-100 tw:text-gray-400'
               }`}
-              disabled={!isDone && !isActive}
-            >
+              disabled={!isDone && !isActive}>
               <Icon className="tw:h-3.5 tw:w-3.5" />
               {s.label}
             </button>
@@ -659,25 +737,19 @@ export function W2EditorPage() {
         <div className="tw:flex tw:justify-between tw:pt-4 tw:border-t tw:border-gray-200">
           <button
             onClick={() => step > 0 ? setStep(step - 1) : navigate('/w2-documents')}
-            className="tw:flex tw:items-center tw:gap-2 tw:px-4 tw:py-2 tw:text-sm tw:font-medium tw:text-gray-700 tw:bg-white tw:border tw:border-gray-300 tw:rounded-lg hover:tw:bg-gray-50 tw:transition"
-          >
+            className="tw:flex tw:items-center tw:gap-2 tw:px-4 tw:py-2 tw:text-sm tw:font-medium tw:text-gray-700 tw:bg-white tw:border tw:border-gray-300 tw:rounded-lg hover:tw:bg-gray-50 tw:transition">
             <ArrowLeft className="tw:h-4 tw:w-4" />
             {step === 0 ? 'Cancel' : 'Previous'}
           </button>
           <div className="tw:flex tw:gap-3">
-            {step === 4 && (
-              <button
-                onClick={() => handleSave('draft')}
-                className="tw:flex tw:items-center tw:gap-2 tw:px-4 tw:py-2 tw:text-sm tw:font-medium tw:text-gray-700 tw:bg-white tw:border tw:border-gray-300 tw:rounded-lg hover:tw:bg-gray-50 tw:transition"
-              >
+            {step >= 4 && form.companyId && form.employeeId && (
+              <button onClick={() => handleSave('draft')}
+                className="tw:flex tw:items-center tw:gap-2 tw:px-4 tw:py-2 tw:text-sm tw:font-medium tw:text-gray-700 tw:bg-white tw:border tw:border-gray-300 tw:rounded-lg hover:tw:bg-gray-50 tw:transition">
                 <Save className="tw:h-4 tw:w-4" /> Save Draft
               </button>
             )}
-            <button
-              onClick={() => setStep(step + 1)}
-              disabled={!canProceed()}
-              className="tw:flex tw:items-center tw:gap-2 tw:px-4 tw:py-2 tw:text-sm tw:font-medium tw:text-white tw:bg-indigo-600 tw:rounded-lg hover:tw:bg-indigo-700 tw:transition disabled:tw:opacity-50 disabled:tw:cursor-not-allowed"
-            >
+            <button onClick={handleNext} disabled={!canProceed()}
+              className="tw:flex tw:items-center tw:gap-2 tw:px-4 tw:py-2 tw:text-sm tw:font-medium tw:text-white tw:bg-indigo-600 tw:rounded-lg hover:tw:bg-indigo-700 tw:transition disabled:tw:opacity-50 disabled:tw:cursor-not-allowed">
               {step === 4 ? 'Review' : 'Next'}
               {step === 4 ? <Eye className="tw:h-4 tw:w-4" /> : <ArrowRight className="tw:h-4 tw:w-4" />}
             </button>

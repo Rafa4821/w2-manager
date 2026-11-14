@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import { FileText, Eye, DollarSign, Plus, Edit2, Trash2 } from 'lucide-react'
+import { FileText, Eye, DollarSign, Plus, Edit2, Trash2, Copy } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { PageHeader, DataTable, Badge, FilterBar, StatCard, ConfirmDialog } from '../../../shared/components'
 import { useNotificationStore } from '../../../shared/store'
@@ -104,7 +104,7 @@ export function W2DocumentsPage() {
       accessor: 'actions',
       sortable: false,
       searchable: false,
-      className: 'tw:w-32 tw:text-right',
+      className: 'tw:w-40 tw:text-right',
       render: (row) => (
         <div className="tw:flex tw:items-center tw:justify-end tw:gap-1">
           <button
@@ -120,6 +120,13 @@ export function W2DocumentsPage() {
             title="Edit"
           >
             <Edit2 className="tw:h-4 tw:w-4" />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); navigate(`/w2-documents/new?duplicate=${row.id}`) }}
+            className="tw:p-1.5 tw:rounded-md tw:text-gray-400 hover:tw:text-emerald-600 hover:tw:bg-emerald-50 tw:transition"
+            title="Duplicate"
+          >
+            <Copy className="tw:h-4 tw:w-4" />
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); setDeleteTarget(row) }}
