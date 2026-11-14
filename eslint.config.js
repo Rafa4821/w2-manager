@@ -25,6 +25,7 @@ export default [
         Blob: 'readonly',
         URL: 'readonly',
         FileReader: 'readonly',
+        ResizeObserver: 'readonly',
       },
     },
     plugins: {

@@ -9,10 +9,10 @@ import { useW2DocumentsStore } from '../store/useW2DocumentsStore'
 import { companyRepository } from '../../../shared/repositories/companyRepository'
 import { employeeRepository } from '../../../shared/repositories/employeeRepository'
 import { w2DocumentRepository } from '../../../shared/repositories/w2DocumentRepository'
-import { mockTemplates } from '../../../shared/data'
 import { BOX_12_CODES } from '../../../shared/schemas/w2Document'
 import { getFormWarnings, getSSWageBase } from '../../../shared/schemas/taxYearRules'
 import { round2 } from '../../../shared/utils/currency'
+import { getTemplatesForYear, getTemplate, TemplateRenderer } from '../../../templates'
 import { W2Preview } from './W2Preview'
 
 const STEPS = [
@@ -427,34 +427,53 @@ export function W2EditorPage() {
   )
 
   // ── Step 4: Template (visual layout only, not tax data) ──
-  const renderTemplateStep = () => (
-    <div>
-      <h3 className="tw:text-lg tw:font-semibold tw:text-gray-900 tw:mb-1">Choose a Template</h3>
-      <p className="tw:text-sm tw:text-gray-500 tw:mb-2">
-        Templates define the <strong>visual layout</strong> for PDF generation.
-        Tax data is entered in the next step and is independent of the template chosen.
-      </p>
-      <p className="tw:text-xs tw:text-gray-400 tw:mb-5">This step is optional — you can skip it.</p>
-      <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-3">
-        <button onClick={() => setField('templateId', '')}
-          className={`tw:text-left tw:p-4 tw:rounded-xl tw:border-2 tw:transition ${
-            !form.templateId ? 'tw:border-indigo-500 tw:bg-indigo-50' : 'tw:border-gray-200 hover:tw:border-gray-300 tw:bg-white'
-          }`}>
-          <p className="tw:font-medium tw:text-gray-900">Default Layout</p>
-          <p className="tw:text-xs tw:text-gray-500">Standard W-2 form layout</p>
-        </button>
-        {mockTemplates.map((t) => (
-          <button key={t.id} onClick={() => setField('templateId', t.id)}
-            className={`tw:text-left tw:p-4 tw:rounded-xl tw:border-2 tw:transition ${
-              form.templateId === t.id ? 'tw:border-indigo-500 tw:bg-indigo-50' : 'tw:border-gray-200 hover:tw:border-gray-300 tw:bg-white'
-            }`}>
-            <p className="tw:font-medium tw:text-gray-900">{t.name}</p>
-            <p className="tw:text-xs tw:text-gray-500">{t.description}</p>
-          </button>
-        ))}
+  const renderTemplateStep = () => {
+    const registered = getTemplatesForYear(form.taxYear)
+    const defaultTpl = registered.find((t) => t.manifest.isDefault)
+    return (
+      <div>
+        <h3 className="tw:text-lg tw:font-semibold tw:text-gray-900 tw:mb-1">Choose a Template</h3>
+        <p className="tw:text-sm tw:text-gray-500 tw:mb-2">
+          Templates define the <strong>visual layout</strong> for PDF generation.
+          Tax data is entered in the next step and is independent of the template chosen.
+        </p>
+        <p className="tw:text-xs tw:text-gray-400 tw:mb-5">This step is optional — you can skip it.</p>
+        <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 tw:gap-3">
+          {registered.map((t) => {
+            const m = t.manifest
+            const isSelected = form.templateId === m.id || (!form.templateId && m.isDefault)
+            return (
+              <button key={m.id} onClick={() => setField('templateId', m.id)}
+                className={`tw:text-left tw:p-4 tw:rounded-xl tw:border-2 tw:transition ${
+                  isSelected ? 'tw:border-indigo-500 tw:bg-indigo-50' : 'tw:border-gray-200 hover:tw:border-gray-300 tw:bg-white'
+                }`}>
+                <div className="tw:flex tw:items-center tw:gap-2 tw:mb-1">
+                  <p className="tw:font-medium tw:text-gray-900">{m.name}</p>
+                  {m.isDefault && <span className="tw:text-[10px] tw:bg-amber-100 tw:text-amber-700 tw:px-1.5 tw:py-0.5 tw:rounded tw:font-medium">Default</span>}
+                  <span className="tw:text-[10px] tw:bg-gray-100 tw:text-gray-500 tw:px-1.5 tw:py-0.5 tw:rounded">v{m.version}</span>
+                </div>
+                <p className="tw:text-xs tw:text-gray-500">{m.description}</p>
+                {m.pages > 1 && <p className="tw:text-[10px] tw:text-indigo-500 tw:mt-1">{m.pages} pages</p>}
+              </button>
+            )
+          })}
+        </div>
+        {registered.length === 0 && (
+          <p className="tw:text-center tw:text-gray-500 tw:py-8">No templates registered for tax year {form.taxYear}.</p>
+        )}
+
+        {/* Live preview of selected template */}
+        {(form.templateId || defaultTpl) && (
+          <div className="tw:mt-6">
+            <h4 className="tw:text-sm tw:font-semibold tw:text-gray-700 tw:mb-2">Template Preview</h4>
+            <div className="tw:border tw:border-gray-200 tw:rounded-lg tw:overflow-hidden tw:bg-gray-50 tw:p-4">
+              <TemplateRenderer templateId={form.templateId || defaultTpl?.manifest.id} doc={previewDoc} />
+            </div>
+          </div>
+        )}
       </div>
-    </div>
-  )
+    )
+  }
 
   // ── Step 5: Tax Data (all W-2 boxes) ──
   const renderTaxDataStep = () => (
@@ -661,7 +680,14 @@ export function W2EditorPage() {
         </div>
       )}
 
-      <W2Preview doc={previewDoc} />
+      {/* Use template engine if a template is selected, otherwise fallback to built-in preview */}
+      {form.templateId && getTemplate(form.templateId) ? (
+        <div className="tw:border tw:border-gray-200 tw:rounded-lg tw:overflow-hidden tw:bg-gray-50 tw:p-4">
+          <TemplateRenderer templateId={form.templateId} doc={previewDoc} />
+        </div>
+      ) : (
+        <W2Preview doc={previewDoc} />
+      )}
 
       <div className="tw:flex tw:flex-wrap tw:gap-3 tw:mt-6 tw:justify-end">
         <button onClick={() => handleSave('draft')}
