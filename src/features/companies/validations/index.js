@@ -1,0 +1,1 @@
+export { companySchema } from './companySchema'

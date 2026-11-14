@@ -1,0 +1,1 @@
+export { PdfGeneratorPage } from './PdfGeneratorPage'

@@ -1,0 +1,1 @@
+export { useCompaniesStore } from './useCompaniesStore'
