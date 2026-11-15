@@ -256,19 +256,19 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   txt('12d', C3 + 2, ROW.r8Top + 2, 5, helveticaBold)
 
   // ── Right panel: Form W-2 / Year / Copy ──
-  // "Form" small
+  // "Form" small at top of right panel
   txtC('Form', C4, R, ROW.r2Top + 2, 7)
 
-  // "W-2" large bold
-  txtC('W-2', C4, R, ROW.r2Top + 10, 22, helveticaBold)
+  // "W-2" large bold — sized to not overlap with "Wage and"
+  txtC('W-2', C4, R, ROW.r2Top + 10, 18, helveticaBold)
 
-  // "Wage and Tax Statement"
-  txtC('Wage and', C4, R, ROW.r3Top + 2, 8)
-  txtC('Tax', C4, R, ROW.r3Top + 12, 8)
-  txtC('Statement', C4, R, ROW.r4Top + 2, 8)
+  // "Wage and Tax Statement" — starts after W-2 ends (10+18=28, so start at 30)
+  txtC('Wage and', C4, R, ROW.r2Top + 30, 8)
+  txtC('Tax', C4, R, ROW.r3Top + 18, 8)
+  txtC('Statement', C4, R, ROW.r4Top + 8, 8)
 
   // Year (large bold)
-  if (yr) txtC(yr, C4, R, ROW.r5Top + 2, 18, helveticaBold)
+  if (yr) txtC(yr, C4, R, ROW.r5Top + 2, 16, helveticaBold)
 
   // Copy label + description
   if (copyLabel) {
