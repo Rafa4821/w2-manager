@@ -40,6 +40,8 @@ export {
   getOriginalPdf,
   setPdfMapping,
   getPdfMapping,
+  setBackgroundImages,
+  getBackgroundImages,
   TemplateRenderer,
   TemplatePrintRoot,
   mapDocumentToTemplate,

@@ -1,11 +1,13 @@
 /**
- * PDF Generator — uses blank-base.pdf + text overlay for maximum fidelity.
+ * PDF Generator — renders SVG pages with background images for maximum fidelity.
  *
- * Strategy:
- * 1. base-overlay: Load blank-base.pdf, overlay fields via mapping coordinates
- * 2. scratch: Create blank PDF pages and place fields (lowest fidelity)
+ * Strategy priority:
+ * 1. svg: Build SVG with background PNG + text fields → Canvas → PDF (best quality)
+ * 2. base-overlay: Load blank-base.pdf, overlay fields via mapping coordinates
+ * 3. scratch: Create blank PDF pages and place fields (lowest fidelity)
  */
-import { getTemplate, getPdfBase, adaptDocumentForTemplate } from '../../../templates'
+import { getTemplate, getPdfBase, getBackgroundImages, adaptDocumentForTemplate } from '../../../templates'
+import { generateFromSvg } from './pdfSvgGenerator'
 import { generateFromBase } from './pdfOverlayGenerator'
 import { generateFromScratch } from './pdfScratchGenerator'
 
@@ -21,11 +23,17 @@ export async function generatePdf(doc, templateId) {
   const manifest = template.manifest
 
   let result
-  const pdfBaseUrl = getPdfBase(templateId)
-  if (pdfBaseUrl) {
-    result = await generateFromBase(pdfBaseUrl, mapping, adaptedData)
+  const bgImages = getBackgroundImages(templateId)
+  if (bgImages && bgImages.length > 0) {
+    // Best strategy: SVG rendering with background images
+    result = await generateFromSvg(bgImages, mapping, adaptedData, manifest)
   } else {
-    result = await generateFromScratch(mapping, adaptedData, manifest)
+    const pdfBaseUrl = getPdfBase(templateId)
+    if (pdfBaseUrl) {
+      result = await generateFromBase(pdfBaseUrl, mapping, adaptedData)
+    } else {
+      result = await generateFromScratch(mapping, adaptedData, manifest)
+    }
   }
 
   const empName = doc.employeeSnapshot

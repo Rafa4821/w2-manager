@@ -13,6 +13,8 @@ export {
   getOriginalPdf,
   setPdfMapping,
   getPdfMapping,
+  setBackgroundImages,
+  getBackgroundImages,
 } from './registry'
 
 export {

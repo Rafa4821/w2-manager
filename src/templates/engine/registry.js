@@ -113,6 +113,17 @@ export function getPdfBase(templateId) {
   return templates.get(templateId)?.pdfBaseUrl || null
 }
 
+/** Register background image URLs for SVG-based PDF generation. */
+export function setBackgroundImages(templateId, urls) {
+  const t = templates.get(templateId)
+  if (t) t.backgroundImages = urls
+}
+
+/** Get background image URLs for a template. */
+export function getBackgroundImages(templateId) {
+  return templates.get(templateId)?.backgroundImages || null
+}
+
 /** Register the original filled PDF URL for a template. */
 export function setOriginalPdf(templateId, url) {
   const t = templates.get(templateId)
