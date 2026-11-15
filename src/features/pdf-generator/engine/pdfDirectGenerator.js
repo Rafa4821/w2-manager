@@ -151,7 +151,7 @@ function drawCopy(page, layout, data, fonts, pageH) {
   // Horizontal lines between box rows
   hLine(C1, C4, ry.r2 + rowH.r2) // between row 2 and 3
   hLine(C1, C4, ry.r3 + rowH.r3) // between row 3 and 4
-  hLine(L, R, ry.r4 + rowH.r4)   // between row 4 and 5 (also bottom of employer)
+  hLine(L, C4, ry.r4 + rowH.r4)   // between row 4 and 5 (bottom of employer, stops at right panel)
 
   // Vertical lines for box columns
   vLine(C1, ry.r1 + rowH.r1, ry.r8 + rowH.r8) // left of boxes
@@ -160,8 +160,7 @@ function drawCopy(page, layout, data, fonts, pageH) {
   vLine(C4, ry.r1, ry.r8 + rowH.r8)           // right of boxes / left of right panel
 
   // Row 5: control | 10 | 11 | 12a
-  hLine(L, C1, ry.r5 + rowH.r5) // bottom of control
-  hLine(C1, C4, ry.r5 + rowH.r5)
+  hLine(L, C4, ry.r5 + rowH.r5) // bottom of control + boxes, stops at right panel
 
   // Rows 6-8: employee | 13+14 | 12b-d
   // Horizontal between 6 and 7 (for box 14/12b boundary)
@@ -169,8 +168,8 @@ function drawCopy(page, layout, data, fonts, pageH) {
   // Horizontal between 7 and 8 (for 12c/12d boundary)
   hLine(C3, C4, ry.r7 + rowH.r7)
 
-  // Bottom of employee section
-  hLine(L, R, ry.r8 + rowH.r8)
+  // Bottom of employee section (full width — state row below spans everything)
+  hLine(L, C4, ry.r8 + rowH.r8)
 
   // State row
   // State row bottom
@@ -202,8 +201,8 @@ function drawCopy(page, layout, data, fonts, pageH) {
   txt('2', C2 + 2, ry.r2 + 1, { size: 7, font: helveticaBold })
   txt('Federal income tax withheld', C2 + 10, ry.r2 + 1, { size: 4.5 })
   // Box 3
-  txt('3', C3 + 2, ry.r3 + 1, { size: 7, font: helveticaBold })
-  txt('Social security wages', C3 + 10, ry.r3 + 1, { size: 4.5 })
+  txt('3', C3 + 2, ry.r2 + 1, { size: 7, font: helveticaBold })
+  txt('Social security wages', C3 + 10, ry.r2 + 1, { size: 4.5 })
 
   // Box 4
   txt('4', C1 + 2, ry.r3 + 1, { size: 7, font: helveticaBold })
