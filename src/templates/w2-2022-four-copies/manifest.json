@@ -1,13 +1,22 @@
 {
   "id": "w2-2022-four-copies",
-  "name": "W-2 2022 — Four Copies on US Letter",
+  "name": "Plantilla 2 — Cuatro copias en carta",
   "description": "Four W-2 copies (B, 2-top, C, 2-bottom) on a single US Letter page.",
   "version": "1.0.0",
   "category": "standard",
   "taxYears": [],
   "pages": 1,
-  "pageSize": { "width": 8.5, "height": 11, "unit": "in" },
+  "pageSize": {
+    "width": 8.5,
+    "height": 11,
+    "unit": "in"
+  },
   "isDefault": false,
   "selfContained": true,
-  "copyIds": ["B", "2-top", "C", "2-bottom"]
+  "copyIds": [
+    "B",
+    "2-top",
+    "C",
+    "2-bottom"
+  ]
 }

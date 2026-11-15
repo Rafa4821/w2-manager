@@ -1,13 +1,21 @@
 {
   "id": "w2-2021-three-copies",
-  "name": "W-2 2021 — Three Copies on Letter",
+  "name": "Plantilla 1 — Tres copias (B, 2, C)",
   "description": "Three W-2 copies (B, 2, C) on a single US Letter page.",
   "version": "1.0.0",
   "category": "standard",
   "taxYears": [],
   "pages": 1,
-  "pageSize": { "width": 8.5, "height": 11, "unit": "in" },
+  "pageSize": {
+    "width": 8.5,
+    "height": 11,
+    "unit": "in"
+  },
   "isDefault": false,
   "selfContained": true,
-  "copyIds": ["B", "2", "C"]
+  "copyIds": [
+    "B",
+    "2",
+    "C"
+  ]
 }

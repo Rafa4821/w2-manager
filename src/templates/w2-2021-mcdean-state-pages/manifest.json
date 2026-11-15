@@ -1,14 +1,22 @@
 {
   "id": "w2-2021-mcdean-state-pages",
-  "name": "W-2 2021 — Three State Records",
+  "name": "Plantilla 9 — Tres paginas estatales",
   "description": "Three separate state W-2 records on individual landscape pages. Background pending clean replacement.",
   "version": "1.0.0",
   "category": "multi-state",
   "taxYears": [],
   "pages": 3,
-  "pageSize": { "width": 10.83, "height": 8, "unit": "in" },
+  "pageSize": {
+    "width": 10.83,
+    "height": 8,
+    "unit": "in"
+  },
   "isDefault": false,
   "selfContained": true,
-  "copyIds": ["state-page-1", "state-page-2", "state-page-3"],
+  "copyIds": [
+    "state-page-1",
+    "state-page-2",
+    "state-page-3"
+  ],
   "backgroundStatus": "watermarked-pending-clean-replacement"
 }
