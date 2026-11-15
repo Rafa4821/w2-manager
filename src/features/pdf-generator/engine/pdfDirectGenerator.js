@@ -325,8 +325,8 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   const einLabelW = helvetica.widthOfTextAtSize('Employer identification number (EIN)', 5)
   txt(co.ein, C1 + 10 + einLabelW + 6, ROW.r1Top + 2, 9, courier)
 
-  // Employer name and address (below "c" label) — bold name, regular address
-  txt(co.name, L + 6, ROW.r2Top + 12, 9, helveticaBold)
+  // Employer name and address (below "c" label) — regular weight like original
+  txt(co.name, L + 6, ROW.r2Top + 12, 9)
   txt(co.addressLine1, L + 6, ROW.r2Top + 24, 8)
   if (co.addressLine2) {
     txt(co.addressLine2, L + 6, ROW.r3Top + 12, 8)
@@ -353,8 +353,8 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   // Box 12a
   txt(fmt12(b['12a']), C3 + 16, ROW.r5Top + 12, 7)
 
-  // Employee name and address — bold name like original, indented
-  txt(em.name, L + 8, ROW.r6Top + 14, 9, helveticaBold)
+  // Employee name and address — regular weight like original, indented
+  txt(em.name, L + 8, ROW.r6Top + 14, 9)
   txt(em.addressLine1, L + 8, ROW.r6Top + 26, 8)
   txt(em.cityStateZip, L + 8, ROW.r7Top + 14, 8)
 
