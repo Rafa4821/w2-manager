@@ -172,8 +172,19 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   for (let i = 1; i < 7; i++) vLine(stCols[i], ROW.stTop, ROW.stBot)
 
   // ════════════════════════════════════════════════════════════════════════════
-  // LABELS (matching original abbreviations exactly)
+  // LABELS (matching original — box numbers have black filled backgrounds)
   // ════════════════════════════════════════════════════════════════════════════
+
+  // Helper: draw box number with black background (white text on black rect)
+  const boxNum = (num, x, fromTop) => {
+    const s = String(num)
+    const w = helveticaBold.widthOfTextAtSize(s, 5.5)
+    page.drawRectangle({
+      x: x, y: pY(fromTop) - 7, width: w + 3, height: 7,
+      color: black,
+    })
+    page.drawText(s, { x: x + 1.5, y: pY(fromTop) - 5.5, size: 5.5, font: helveticaBold, color: rgb(1, 1, 1) })
+  }
 
   // ── Row 1: SSN / EIN / OMB ──
   txt('a', L + 2, ROW.r1Top + 2, 5, helveticaBold)
@@ -186,35 +197,35 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   txt('c', L + 2, ROW.r2Top + 2, 5, helveticaBold)
   txt("Employer's name, address, and ZIP code", L + 8, ROW.r2Top + 2, 5)
 
-  txt('1', C1 + 2, ROW.r2Top + 2, 5, helveticaBold)
-  txt('Wgs, tips, other compn', C1 + 8, ROW.r2Top + 2, 4.5)
-  txt('2', C2 + 2, ROW.r2Top + 2, 5, helveticaBold)
-  txt('Fed inc tax withheld', C2 + 8, ROW.r2Top + 2, 4.5)
-  txt('3', C3 + 2, ROW.r2Top + 2, 5, helveticaBold)
-  txt('Social security wages', C3 + 8, ROW.r2Top + 2, 4.5)
+  boxNum('1', C1 + 2, ROW.r2Top + 2)
+  txt('Wgs, tips, other compn', C1 + 12, ROW.r2Top + 2, 4.5)
+  boxNum('2', C2 + 2, ROW.r2Top + 2)
+  txt('Fed inc tax withheld', C2 + 12, ROW.r2Top + 2, 4.5)
+  boxNum('3', C3 + 2, ROW.r2Top + 2)
+  txt('Social security wages', C3 + 12, ROW.r2Top + 2, 4.5)
 
   // ── Row 3: Box 4, 5, 6 ──
-  txt('4', C1 + 2, ROW.r3Top + 2, 5, helveticaBold)
-  txt('SS tax withheld', C1 + 8, ROW.r3Top + 2, 4.5)
-  txt('5', C2 + 2, ROW.r3Top + 2, 5, helveticaBold)
-  txt('Medicare wages & tips', C2 + 8, ROW.r3Top + 2, 4.5)
-  txt('6', C3 + 2, ROW.r3Top + 2, 5, helveticaBold)
-  txt('Medicare tax withheld', C3 + 8, ROW.r3Top + 2, 4.5)
+  boxNum('4', C1 + 2, ROW.r3Top + 2)
+  txt('SS tax withheld', C1 + 12, ROW.r3Top + 2, 4.5)
+  boxNum('5', C2 + 2, ROW.r3Top + 2)
+  txt('Medicare wages & tips', C2 + 12, ROW.r3Top + 2, 4.5)
+  boxNum('6', C3 + 2, ROW.r3Top + 2)
+  txt('Medicare tax withheld', C3 + 12, ROW.r3Top + 2, 4.5)
 
   // ── Row 4: Box 7, 8, 9 ──
-  txt('7', C1 + 2, ROW.r4Top + 2, 5, helveticaBold)
-  txt('Social security tips', C1 + 8, ROW.r4Top + 2, 4.5)
-  txt('8', C2 + 2, ROW.r4Top + 2, 5, helveticaBold)
-  txt('Allocated tips', C2 + 8, ROW.r4Top + 2, 4.5)
-  txt('9', C3 + 2, ROW.r4Top + 2, 5, helveticaBold)
+  boxNum('7', C1 + 2, ROW.r4Top + 2)
+  txt('Social security tips', C1 + 12, ROW.r4Top + 2, 4.5)
+  boxNum('8', C2 + 2, ROW.r4Top + 2)
+  txt('Allocated tips', C2 + 12, ROW.r4Top + 2, 4.5)
+  boxNum('9', C3 + 2, ROW.r4Top + 2)
 
   // ── Row 5: Control / Box 10, 11, 12a ──
   txt('d', L + 2, ROW.r5Top + 2, 5, helveticaBold)
   txt('Control number', L + 8, ROW.r5Top + 2, 5)
-  txt('10', C1 + 2, ROW.r5Top + 2, 5, helveticaBold)
-  txt('Depdnt care benefits', C1 + 12, ROW.r5Top + 2, 4.5)
-  txt('11', C2 + 2, ROW.r5Top + 2, 5, helveticaBold)
-  txt('Nonqualified plans', C2 + 12, ROW.r5Top + 2, 4.5)
+  boxNum('10', C1 + 2, ROW.r5Top + 2)
+  txt('Depdnt care benefits', C1 + 16, ROW.r5Top + 2, 4.5)
+  boxNum('11', C2 + 2, ROW.r5Top + 2)
+  txt('Nonqualified plans', C2 + 16, ROW.r5Top + 2, 4.5)
   txt('12a', C3 + 2, ROW.r5Top + 2, 5, helveticaBold)
 
   // ── Row 6: Employee label / Box 13, 14, 12b ──
@@ -222,9 +233,9 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   txt("Employee's name, address, and ZIP code", L + 8, ROW.r6Top + 2, 5)
   txt('Suff.', C1 - 20, ROW.r6Top + 2, 4.5)
 
-  txt('13', C1 + 2, ROW.r6Top + 2, 5, helveticaBold)
-  txt('14', C2 + 2, ROW.r6Top + 2, 5, helveticaBold)
-  txt('Other', C2 + 12, ROW.r6Top + 2, 4.5)
+  boxNum('13', C1 + 2, ROW.r6Top + 2)
+  boxNum('14', C2 + 2, ROW.r6Top + 2)
+  txt('Other', C2 + 16, ROW.r6Top + 2, 4.5)
   txt('12b', C3 + 2, ROW.r6Top + 2, 5, helveticaBold)
 
   // Box 13 checkboxes with labels
@@ -290,6 +301,7 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   }
 
   // ── Footer ──
+  txt('REV 01/14/21 QBDT', L + 2, ROW.ftTop + 2, 5)
   txtR('Department of the Treasury \u2014 IRS', R, ROW.ftTop + 2, 5, helvetica)
 
   // ════════════════════════════════════════════════════════════════════════════
@@ -304,8 +316,8 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   const einLabelW = helvetica.widthOfTextAtSize('Employer identification number (EIN)', 5)
   txt(co.ein, C1 + 10 + einLabelW + 6, ROW.r1Top + 2, 9, courier)
 
-  // Employer name and address (below "c" label)
-  txt(co.name, L + 6, ROW.r2Top + 12, 9, helveticaBold)
+  // Employer name and address (below "c" label) — regular weight like original
+  txt(co.name, L + 6, ROW.r2Top + 12, 9, helvetica)
   txt(co.addressLine1, L + 6, ROW.r2Top + 22, 8)
   if (co.addressLine2) {
     txt(co.addressLine2, L + 6, ROW.r3Top + 10, 8)
@@ -324,16 +336,16 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   txtR(fmt(b[7]), C2 - 2, ROW.r4Top + 12, 9, courier)
   txtR(fmt(b[8]), C3 - 2, ROW.r4Top + 12, 9, courier)
 
-  // Control number
-  txt(data.controlNumber, L + 6, ROW.r5Top + 12, 9, helveticaBold)
+  // Control number — regular weight like original
+  txt(data.controlNumber, L + 6, ROW.r5Top + 12, 9)
   // Box 10, 11
   txtR(fmt(b[10]), C2 - 2, ROW.r5Top + 12, 9, courier)
   txtR(fmt(b[11]), C3 - 2, ROW.r5Top + 12, 9, courier)
   // Box 12a
   txt(fmt12(b['12a']), C3 + 16, ROW.r5Top + 12, 7)
 
-  // Employee name and address
-  txt(em.name, L + 6, ROW.r6Top + 14, 9, helveticaBold)
+  // Employee name and address — regular weight like original
+  txt(em.name, L + 6, ROW.r6Top + 14, 9)
   txt(em.addressLine1, L + 6, ROW.r6Top + 24, 8)
   txt(em.cityStateZip, L + 6, ROW.r7Top + 10, 8)
 
@@ -345,7 +357,7 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   txt(fmt12(b['12d']), C3 + 16, ROW.r8Top + 12, 7)
 
   // State row values
-  txt(st.state, stCols[0] + 4, ROW.stTop + 10, 8, helveticaBold)
+  txt(st.state, stCols[0] + 4, ROW.stTop + 10, 8)
   txt(st.employerId, stCols[1] + 4, ROW.stTop + 10, 7, courier)
   txtR(fmt(b[16] || st.stateWages), stCols[3] - 2, ROW.stTop + 10, 8, courier)
   txtR(fmt(b[17] || st.stateTax), stCols[4] - 2, ROW.stTop + 10, 8, courier)
@@ -391,19 +403,19 @@ export async function generateDirectPdf(adaptedData, manifest) {
     const pageH = isLandscape ? 612 : 792
     const page = doc.addPage([pageW, pageH])
 
-    const topMargin = 18
+    const topMargin = 16
     const copyH = 215  // height of one copy including footer
-    const gap = 10     // gap between copies (includes dashed line)
+    const gap = 18     // gap between copies (more space around dashed line)
 
     for (let i = 0; i < pageCopies.length; i++) {
       const { label, desc } = pageCopies[i]
       const topY = topMargin + i * (copyH + gap)
       drawCopy(page, topY, label, desc, adaptedData, fonts, pageH)
 
-      // Draw dashed separator between copies (not after the last one)
+      // Draw dashed separator between copies (centered in the gap)
       if (i < pageCopies.length - 1) {
         const dashY = pageH - topY - copyH - gap / 2
-        drawDashedLine(page, 20, pageW - 20, dashY, pageH)
+        drawDashedLine(page, 28, pageW - 28, dashY, pageH)
       }
     }
   }
