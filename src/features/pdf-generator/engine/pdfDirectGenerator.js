@@ -175,17 +175,6 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   // LABELS (matching original — box numbers have black filled backgrounds)
   // ════════════════════════════════════════════════════════════════════════════
 
-  // Helper: draw box number with black background (white text on black rect)
-  const boxNum = (num, x, fromTop) => {
-    const s = String(num)
-    const w = helveticaBold.widthOfTextAtSize(s, 5.5)
-    page.drawRectangle({
-      x: x, y: pY(fromTop) - 7, width: w + 3, height: 7,
-      color: black,
-    })
-    page.drawText(s, { x: x + 1.5, y: pY(fromTop) - 5.5, size: 5.5, font: helveticaBold, color: rgb(1, 1, 1) })
-  }
-
   // ── Row 1: SSN / EIN / OMB ──
   txt('a', L + 2, ROW.r1Top + 2, 5, helveticaBold)
   txt("Employee's SSN", L + 8, ROW.r1Top + 2, 5)
@@ -197,35 +186,55 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   txt('c', L + 2, ROW.r2Top + 2, 5, helveticaBold)
   txt("Employer's name, address, and ZIP code", L + 8, ROW.r2Top + 2, 5)
 
-  boxNum('1', C1 + 2, ROW.r2Top + 2)
-  txt('Wgs, tips, other compn', C1 + 12, ROW.r2Top + 2, 4.5)
-  boxNum('2', C2 + 2, ROW.r2Top + 2)
-  txt('Fed inc tax withheld', C2 + 12, ROW.r2Top + 2, 4.5)
-  boxNum('3', C3 + 2, ROW.r2Top + 2)
-  txt('Social security wages', C3 + 12, ROW.r2Top + 2, 4.5)
+  txt('1', C1 + 2, ROW.r2Top + 2, 5, helveticaBold)
+  txt('Wgs, tips, other compn', C1 + 9, ROW.r2Top + 2, 4.5)
+  txt('2', C2 + 2, ROW.r2Top + 2, 5, helveticaBold)
+  txt('Fed inc tax withheld', C2 + 9, ROW.r2Top + 2, 4.5)
+  txt('3', C3 + 2, ROW.r2Top + 2, 5, helveticaBold)
+  txt('Social security wages', C3 + 9, ROW.r2Top + 2, 4.5)
 
   // ── Row 3: Box 4, 5, 6 ──
-  boxNum('4', C1 + 2, ROW.r3Top + 2)
-  txt('SS tax withheld', C1 + 12, ROW.r3Top + 2, 4.5)
-  boxNum('5', C2 + 2, ROW.r3Top + 2)
-  txt('Medicare wages & tips', C2 + 12, ROW.r3Top + 2, 4.5)
-  boxNum('6', C3 + 2, ROW.r3Top + 2)
-  txt('Medicare tax withheld', C3 + 12, ROW.r3Top + 2, 4.5)
+  txt('4', C1 + 2, ROW.r3Top + 2, 5, helveticaBold)
+  txt('SS tax withheld', C1 + 9, ROW.r3Top + 2, 4.5)
+  txt('5', C2 + 2, ROW.r3Top + 2, 5, helveticaBold)
+  txt('Medicare wages & tips', C2 + 9, ROW.r3Top + 2, 4.5)
+  txt('6', C3 + 2, ROW.r3Top + 2, 5, helveticaBold)
+  txt('Medicare tax withheld', C3 + 9, ROW.r3Top + 2, 4.5)
 
   // ── Row 4: Box 7, 8, 9 ──
-  boxNum('7', C1 + 2, ROW.r4Top + 2)
-  txt('Social security tips', C1 + 12, ROW.r4Top + 2, 4.5)
-  boxNum('8', C2 + 2, ROW.r4Top + 2)
-  txt('Allocated tips', C2 + 12, ROW.r4Top + 2, 4.5)
-  boxNum('9', C3 + 2, ROW.r4Top + 2)
+  txt('7', C1 + 2, ROW.r4Top + 2, 5, helveticaBold)
+  txt('Social security tips', C1 + 9, ROW.r4Top + 2, 4.5)
+  txt('8', C2 + 2, ROW.r4Top + 2, 5, helveticaBold)
+  txt('Allocated tips', C2 + 9, ROW.r4Top + 2, 4.5)
+  txt('9', C3 + 2, ROW.r4Top + 2, 5, helveticaBold)
+
+  // ── Copy B only: thick black borders on boxes 9, 12a, 12b ──
+  if (copyLabel === 'Copy B') {
+    const thk = 1.5
+    // Box 9 thick border
+    hLine(C3, C4, ROW.r4Top, thk)
+    hLine(C3, C4, ROW.r4Bot, thk)
+    vLine(C3, ROW.r4Top, ROW.r4Bot, thk)
+    vLine(C4, ROW.r4Top, ROW.r4Bot, thk)
+    // Box 12a thick border
+    hLine(C3, C4, ROW.r5Top, thk)
+    hLine(C3, C4, ROW.r5Bot, thk)
+    vLine(C3, ROW.r5Top, ROW.r5Bot, thk)
+    vLine(C4, ROW.r5Top, ROW.r5Bot, thk)
+    // Box 12b thick border (only on Copy B)
+    hLine(C3, C4, ROW.r6Top, thk)
+    hLine(C3, C4, ROW.r6Bot, thk)
+    vLine(C3, ROW.r6Top, ROW.r6Bot, thk)
+    vLine(C4, ROW.r6Top, ROW.r6Bot, thk)
+  }
 
   // ── Row 5: Control / Box 10, 11, 12a ──
   txt('d', L + 2, ROW.r5Top + 2, 5, helveticaBold)
   txt('Control number', L + 8, ROW.r5Top + 2, 5)
-  boxNum('10', C1 + 2, ROW.r5Top + 2)
-  txt('Depdnt care benefits', C1 + 16, ROW.r5Top + 2, 4.5)
-  boxNum('11', C2 + 2, ROW.r5Top + 2)
-  txt('Nonqualified plans', C2 + 16, ROW.r5Top + 2, 4.5)
+  txt('10', C1 + 2, ROW.r5Top + 2, 5, helveticaBold)
+  txt('Depdnt care benefits', C1 + 14, ROW.r5Top + 2, 4.5)
+  txt('11', C2 + 2, ROW.r5Top + 2, 5, helveticaBold)
+  txt('Nonqualified plans', C2 + 14, ROW.r5Top + 2, 4.5)
   txt('12a', C3 + 2, ROW.r5Top + 2, 5, helveticaBold)
 
   // ── Row 6: Employee label / Box 13, 14, 12b ──
@@ -233,9 +242,9 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   txt("Employee's name, address, and ZIP code", L + 8, ROW.r6Top + 2, 5)
   txt('Suff.', C1 - 20, ROW.r6Top + 2, 4.5)
 
-  boxNum('13', C1 + 2, ROW.r6Top + 2)
-  boxNum('14', C2 + 2, ROW.r6Top + 2)
-  txt('Other', C2 + 16, ROW.r6Top + 2, 4.5)
+  txt('13', C1 + 2, ROW.r6Top + 2, 5, helveticaBold)
+  txt('14', C2 + 2, ROW.r6Top + 2, 5, helveticaBold)
+  txt('Other', C2 + 14, ROW.r6Top + 2, 4.5)
   txt('12b', C3 + 2, ROW.r6Top + 2, 5, helveticaBold)
 
   // Box 13 checkboxes with labels
