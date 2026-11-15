@@ -1,322 +1,306 @@
 /* ═══════════════════════════════════════════════════
-   W2CopyHtml — Pure CSS W-2 form layout
-   No background images. Every line and box is CSS.
+   W2 Form — Faithful CSS replica of IRS W-2
+   Proportions measured from original PDF (612×792pt)
    ═══════════════════════════════════════════════════ */
 
-.w2copy {
-  width: 544px; /* ~7.5 inches at 72dpi, fits in letter with margins */
+/* ── Table base ─────────────────────────────────── */
+.w2f {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1.5px solid #000;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 7px;
-  line-height: 1.2;
+  font-size: 6.5px;
+  line-height: 1.25;
   color: #000;
-  border: 1px solid #000;
-  box-sizing: border-box;
   background: #fff;
-  page-break-inside: avoid;
+  table-layout: fixed;
 }
 
-/* ── Row 1: SSN + EIN + OMB ─────────────────────── */
-.w2copy-row1 {
-  display: flex;
-  border-bottom: 1px solid #000;
-}
-.w2copy-ssn {
-  flex: 0 0 40%;
-  border-right: 1px solid #000;
-}
-.w2copy-ein {
-  flex: 1;
-  border-right: 1px solid #000;
-}
-.w2copy-omb {
-  flex: 0 0 14%;
-  text-align: center;
-  padding: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Column widths — measured from original PDF coordinates
+   Left (employer/employee): x15–x230 = 215pt
+   Box col 1: x230–x313 = 83pt
+   Box col 2: x313–x392 = 79pt
+   Box col 3: x392–x465 = 73pt
+   Right panel: x465–x545 = 80pt
+   Total usable: 530pt */
+.w2f-col-left  { width: 40.5%; }
+.w2f-col-b1    { width: 15.7%; }
+.w2f-col-b2    { width: 14.9%; }
+.w2f-col-b3    { width: 13.8%; }
+.w2f-col-right { width: 15.1%; }
+
+/* ── Generic cell ───────────────────────────────── */
+.w2f-cell {
+  border: 0.5px solid #000;
+  padding: 1px 3px;
+  vertical-align: top;
 }
 
-/* ── Main area: left + boxes + right ────────────── */
-.w2copy-main {
-  display: flex;
-  border-bottom: 1px solid #000;
-}
-.w2copy-left {
-  flex: 0 0 38%;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #000;
-}
-.w2copy-employer {
-  flex: 1;
-  min-height: 52px;
-  border-bottom: 1px solid #000;
-}
-.w2copy-control {
-  min-height: 18px;
-  border-bottom: 1px solid #000;
-}
-.w2copy-employee {
-  flex: 1;
-  min-height: 48px;
-}
-
-/* ── Boxes grid ─────────────────────────────────── */
-.w2copy-boxes {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #000;
-}
-.w2copy-boxrow {
-  display: flex;
-  flex: 1;
-  border-bottom: 1px solid #000;
-}
-.w2copy-boxrow:last-child {
-  border-bottom: none;
-}
-.w2copy-box {
-  flex: 1;
-  border-right: 1px solid #000;
-  padding: 1px 2px;
-  display: flex;
-  flex-direction: column;
-  min-height: 16px;
-  position: relative;
-}
-.w2copy-box:last-child {
-  border-right: none;
-}
-
-/* ── Box labels and values ──────────────────────── */
-.w2copy-cell {
-  padding: 2px 3px;
-  position: relative;
-}
-.w2copy-lbl {
-  display: block;
+/* ── Labels ─────────────────────────────────────── */
+.w2f-lbl {
   font-size: 5.5px;
-  color: #000;
   line-height: 1.1;
-}
-.w2copy-lbl b {
-  font-size: 7px;
-}
-.w2copy-lbl-sm {
-  font-size: 5.5px;
   color: #000;
 }
-.w2copy-val {
-  display: block;
-  font-size: 8px;
+.w2f-lbl b { font-size: 7px; font-weight: 700; }
+.w2f-suff { font-size: 5px; margin-left: 4px; }
+
+.w2f-boxlbl {
+  font-size: 5px;
+  line-height: 1;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.w2f-boxlbl b { font-size: 6.5px; font-weight: 700; }
+
+/* ── Values ─────────────────────────────────────── */
+.w2f-val {
+  font-size: 8.5px;
   font-weight: 600;
-  margin-top: 1px;
+  line-height: 1.3;
   word-break: break-word;
   overflow: hidden;
 }
-.w2copy-mono {
-  font-family: 'Courier New', Courier, monospace;
-}
+.w2f-mono { font-family: 'Courier New', Courier, monospace; }
+.w2f-company-name { font-size: 8.5px; font-weight: 700; margin-top: 1px; }
+.w2f-emp-name { font-size: 8.5px; font-weight: 700; margin-top: 2px; }
 
-.w2copy-boxlbl {
-  display: block;
-  font-size: 5px;
-  color: #000;
-  line-height: 1;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.w2copy-boxlbl b {
-  font-size: 6.5px;
-  font-weight: 700;
-}
-.w2copy-boxval {
-  display: block;
-  font-size: 8px;
+.w2f-boxval {
+  font-size: 8.5px;
   font-weight: 600;
   text-align: right;
-  margin-top: auto;
   padding-right: 2px;
-}
-
-/* ── Box 12 stack ───────────────────────────────── */
-.w2copy-box12-stack {
-  display: flex;
-  flex-direction: column;
-  flex: 0 0 30%;
-  border-left: 1px solid #000;
-}
-.w2copy-box12-stack .w2copy-box {
-  border-right: none;
-  border-bottom: 1px solid #000;
-  flex: 1;
-}
-.w2copy-box12-stack .w2copy-box:last-child {
-  border-bottom: none;
-}
-.w2copy-box12 .w2copy-boxval {
-  font-size: 7px;
-  text-align: left;
-}
-
-/* ── Box 13 checkboxes ──────────────────────────── */
-.w2copy-box13 {
-  flex: 0 0 35%;
-}
-.w2copy-chk-row {
-  font-size: 5.5px;
-  display: flex;
-  align-items: center;
-  gap: 2px;
   margin-top: 1px;
 }
-.w2copy-chk {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border: 1px solid #000;
+
+/* ── Specific sections ──────────────────────────── */
+
+/* Row 1: SSN + EIN */
+.w2f-cell:first-child { /* SSN cell inherits */ }
+
+/* OMB + Right panel */
+.w2f-omb {
+  border: 0.5px solid #000;
+  padding: 2px 3px;
+  vertical-align: top;
   text-align: center;
+}
+.w2f-omb-text {
+  font-size: 5.5px;
+  margin-bottom: 4px;
+}
+.w2f-title-block {
+  text-align: center;
+  margin-bottom: 2px;
+}
+.w2f-form-label { font-size: 6.5px; }
+.w2f-form-w2 { font-size: 20px; font-weight: 700; line-height: 1; }
+.w2f-form-sub { font-size: 9px; line-height: 1.2; }
+.w2f-year {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1;
+  margin: 4px 0;
+}
+.w2f-copy-block {
+  margin-top: auto;
+  text-align: center;
+  padding-top: 4px;
+}
+.w2f-copy-label {
   font-size: 7px;
   font-weight: 700;
-  line-height: 8px;
+}
+.w2f-copy-desc {
+  font-size: 5px;
+  line-height: 1.3;
+}
+
+/* Employer section — original: y78 to y143 = 65pt */
+.w2f-employer {
+  height: 62px;
+}
+
+/* Control section — original: y143 to y164 = 21pt */
+.w2f-control {
+  height: 20px;
+}
+
+/* Employee section — original: y164 to y229 = 65pt */
+.w2f-employee {
+  height: 62px;
+}
+
+/* ── Box cells ──────────────────────────────────── */
+/* Box cells — original box rows are ~22pt each */
+.w2f-box {
+  border: 0.5px solid #000;
+  padding: 1px 2px;
+  vertical-align: top;
+  height: 21px;
+}
+
+/* Box 12 special */
+.w2f-box12 { }
+.w2f-box12val { font-size: 7px; text-align: left; }
+.w2f-box14val { font-size: 6.5px; text-align: left; }
+
+/* Box 13 with checkboxes */
+.w2f-box13top {
+  vertical-align: top;
+  padding: 1px 2px;
+}
+.w2f-chk-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 5.5px;
+  margin-top: 2px;
+  line-height: 1;
+}
+.w2f-chk {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 8px;
+  height: 8px;
+  border: 0.5px solid #000;
+  font-size: 7px;
+  font-weight: 700;
   flex-shrink: 0;
 }
 
-/* ── Right panel: Form title + copy info ────────── */
-.w2copy-right {
-  flex: 0 0 14%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 4px 2px;
+/* Box 12c+12d combined cell */
+.w2f-box12-cd {
+  border: 0.5px solid #000;
+  padding: 0;
+  vertical-align: top;
 }
-.w2copy-title {
-  text-align: center;
-  margin-bottom: 6px;
+.w2f-box12-c, .w2f-box12-d {
+  padding: 1px 2px;
+  min-height: 16px;
 }
-.w2copy-form-label {
-  display: block;
-  font-size: 6px;
+.w2f-box12-c {
+  border-bottom: 0.5px solid #000;
 }
-.w2copy-form-w2 {
-  display: block;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1;
-}
-.w2copy-form-sub {
-  display: block;
-  font-size: 8px;
-  line-height: 1.2;
-  margin-top: 2px;
-}
-.w2copy-form-year {
-  display: block;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1;
-  margin-top: 4px;
-}
-.w2copy-copy-info {
-  font-size: 5.5px;
-  text-align: center;
-  line-height: 1.3;
-  margin-top: auto;
-}
-.w2copy-copy-desc {
-  font-size: 5px;
+.w2f-box-empty {
+  border: 0.5px solid #000;
 }
 
-/* ── State/Local bottom row ─────────────────────── */
-.w2copy-state-row {
-  display: flex;
-  border-bottom: 1px solid #000;
+/* ── State/Local row ────────────────────────────── */
+.w2f-state-row {
+  border: 0;
+  padding: 0;
 }
-.w2copy-state-cell {
-  flex: 1;
-  border-right: 1px solid #000;
+.w2f-state-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.w2f-st-cell {
+  border: 0.5px solid #000;
   padding: 1px 2px;
-  min-height: 18px;
+  vertical-align: top;
+  height: 20px;
 }
-.w2copy-state-cell:last-child {
-  border-right: none;
+.w2f-st-cell .w2f-boxval {
+  font-size: 7.5px;
 }
-.w2copy-state-st {
-  flex: 0 0 6%;
-}
-.w2copy-state-id {
-  flex: 0 0 16%;
-}
-.w2copy-state-cell .w2copy-boxval {
-  font-size: 7px;
-}
+.w2f-st-15 { width: 6%; }
+.w2f-st-id { width: 17%; }
+.w2f-st-last { border-right: none; }
 
 /* ── Footer ─────────────────────────────────────── */
-.w2copy-footer {
-  font-size: 5px;
-  text-align: right;
+.w2f-footer {
+  border: 0;
   padding: 1px 4px;
+  font-size: 5px;
+  height: 10px;
 }
+.w2f-footer-right { float: right; }
 
-/* ── Page containers for templates ──────────────── */
+/* ═══════════════════════════════════════════════════
+   Page layout containers
+   ═══════════════════════════════════════════════════ */
+
 .w2page {
   width: 612px;
   height: 792px;
   background: #fff;
   position: relative;
   overflow: hidden;
-  padding: 20px 34px;
+  padding: 18px 30px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
+
 .w2page-landscape {
   width: 792px;
   height: 612px;
+  padding: 40px 80px;
+  justify-content: center;
 }
+
+/* ── 2-column layout (4 copies in 2×2 grid) ────── */
 .w2page-2col {
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 16px 20px;
+  gap: 4px;
+  padding: 12px 16px;
+  align-content: flex-start;
 }
-.w2page-2col .w2copy {
-  width: 268px;
-  font-size: 5.5px;
+.w2page-2col .w2f {
+  width: calc(50% - 3px);
+  font-size: 5px;
 }
-.w2page-2col .w2copy .w2copy-val { font-size: 6.5px; }
-.w2page-2col .w2copy .w2copy-boxval { font-size: 6.5px; }
-.w2page-2col .w2copy .w2copy-form-w2 { font-size: 14px; }
-.w2page-2col .w2copy .w2copy-form-year { font-size: 14px; }
-.w2page-2col .w2copy .w2copy-form-sub { font-size: 6px; }
-.w2page-2col .w2copy .w2copy-employer { min-height: 40px; }
-.w2page-2col .w2copy .w2copy-employee { min-height: 36px; }
-.w2page-2col .w2copy .w2copy-control { min-height: 14px; }
+.w2page-2col .w2f .w2f-val { font-size: 6.5px; }
+.w2page-2col .w2f .w2f-boxval { font-size: 6.5px; }
+.w2page-2col .w2f .w2f-company-name { font-size: 6.5px; }
+.w2page-2col .w2f .w2f-emp-name { font-size: 6.5px; }
+.w2page-2col .w2f .w2f-form-w2 { font-size: 14px; }
+.w2page-2col .w2f .w2f-year { font-size: 14px; }
+.w2page-2col .w2f .w2f-form-sub { font-size: 6.5px; }
+.w2page-2col .w2f .w2f-employer { height: 44px; }
+.w2page-2col .w2f .w2f-employee { height: 42px; }
+.w2page-2col .w2f .w2f-control { height: 14px; }
+.w2page-2col .w2f .w2f-box { height: 14px; }
+.w2page-2col .w2f .w2f-st-cell { height: 16px; }
 
-/* 4 stacked copies */
+/* ── 4-stacked layout ───────────────────────────── */
 .w2page-4stack {
-  gap: 3px;
-  padding: 10px 34px;
+  gap: 2px;
+  padding: 8px 30px;
 }
-.w2page-4stack .w2copy {
-  font-size: 5.5px;
+.w2page-4stack .w2f {
+  font-size: 5px;
 }
-.w2page-4stack .w2copy .w2copy-val { font-size: 6px; }
-.w2page-4stack .w2copy .w2copy-boxval { font-size: 6px; }
-.w2page-4stack .w2copy .w2copy-form-w2 { font-size: 12px; }
-.w2page-4stack .w2copy .w2copy-form-year { font-size: 12px; }
-.w2page-4stack .w2copy .w2copy-form-sub { font-size: 5.5px; }
-.w2page-4stack .w2copy .w2copy-employer { min-height: 34px; }
-.w2page-4stack .w2copy .w2copy-employee { min-height: 30px; }
-.w2page-4stack .w2copy .w2copy-control { min-height: 12px; }
+.w2page-4stack .w2f .w2f-val { font-size: 6px; }
+.w2page-4stack .w2f .w2f-boxval { font-size: 6px; }
+.w2page-4stack .w2f .w2f-company-name { font-size: 6px; }
+.w2page-4stack .w2f .w2f-emp-name { font-size: 6px; }
+.w2page-4stack .w2f .w2f-form-w2 { font-size: 12px; }
+.w2page-4stack .w2f .w2f-year { font-size: 12px; }
+.w2page-4stack .w2f .w2f-form-sub { font-size: 6px; }
+.w2page-4stack .w2f .w2f-employer { height: 34px; }
+.w2page-4stack .w2f .w2f-employee { height: 32px; }
+.w2page-4stack .w2f .w2f-control { height: 12px; }
+.w2page-4stack .w2f .w2f-box { height: 12px; }
+.w2page-4stack .w2f .w2f-st-cell { height: 14px; }
+.w2page-4stack .w2f .w2f-lbl { font-size: 4.5px; }
+.w2page-4stack .w2f .w2f-boxlbl { font-size: 4px; }
+.w2page-4stack .w2f .w2f-boxlbl b { font-size: 5.5px; }
+.w2page-4stack .w2f .w2f-chk-row { font-size: 4.5px; }
+.w2page-4stack .w2f .w2f-chk { width: 6px; height: 6px; font-size: 5.5px; }
 
 /* ── ADP Earnings pages ─────────────────────────── */
 .w2page-adp {
   gap: 4px;
-  padding: 14px 34px;
+  padding: 14px 30px;
 }
 .w2page-adp-copies {
   width: 612px;
@@ -324,7 +308,7 @@
   background: #fff;
   position: relative;
   overflow: hidden;
-  padding: 14px 34px;
+  padding: 14px 30px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -333,27 +317,27 @@
 
 /* Earnings summary block */
 .w2adp-earnings {
-  width: 544px;
-  border: 1px solid #000;
+  width: 100%;
+  border: 1.5px solid #000;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 7px;
   background: #fff;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .w2adp-earnings-header {
   display: flex;
   border-bottom: 1px solid #000;
 }
 .w2adp-earnings-title {
-  flex: 0 0 20%;
+  flex: 0 0 22%;
   text-align: center;
   padding: 6px 4px;
   border-right: 1px solid #000;
 }
 .w2adp-form-label { display: block; font-size: 6px; }
-.w2adp-form-w2 { display: block; font-size: 18px; font-weight: 700; line-height: 1; }
-.w2adp-form-sub { display: block; font-size: 7px; margin-top: 2px; }
-.w2adp-form-year { display: block; font-size: 16px; font-weight: 700; margin-top: 4px; }
+.w2adp-form-w2 { display: block; font-size: 20px; font-weight: 700; line-height: 1; }
+.w2adp-form-sub { display: block; font-size: 7.5px; margin-top: 2px; }
+.w2adp-form-year { display: block; font-size: 18px; font-weight: 700; margin-top: 4px; }
 .w2adp-earnings-company {
   flex: 1;
   padding: 4px 6px;
@@ -364,10 +348,8 @@
   padding: 4px 6px;
 }
 .w2adp-lbl { font-size: 5.5px; color: #333; margin-bottom: 2px; }
-.w2adp-val { font-size: 7px; font-weight: 600; }
-.w2adp-earnings-table {
-  width: 100%;
-}
+.w2adp-val { font-size: 7.5px; font-weight: 600; }
+.w2adp-earnings-table { width: 100%; }
 .w2adp-earnings-row {
   display: flex;
   border-bottom: 1px solid #ccc;
@@ -385,8 +367,5 @@
   border-right: 1px solid #ccc;
   font-size: 7px;
 }
-.w2adp-earnings-cell:first-child {
-  text-align: left;
-  flex: 0 0 25%;
-}
+.w2adp-earnings-cell:first-child { text-align: left; flex: 0 0 25%; }
 .w2adp-earnings-cell:last-child { border-right: none; }

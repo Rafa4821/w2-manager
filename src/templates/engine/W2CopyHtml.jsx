@@ -1,20 +1,17 @@
 /**
- * W2CopyHtml — Pure HTML/CSS W-2 form copy component.
- * Renders one complete W-2 copy with all standard fields.
- * No background images — every line, box, and label is CSS.
+ * W2CopyHtml — Faithful HTML/CSS replica of the IRS W-2 form.
+ * Matches the exact layout of the original PDF forms.
  *
  * Props:
- *   data     — adapted document data (from documentAdapter)
- *   copyLabel — e.g. "Copy B", "Copy C", "Copy 2"
- *   copyDesc  — description text (e.g. "To Be Filed with Employee's FEDERAL Tax Return")
- *   scale     — optional scale factor (default 1)
+ *   data      — adapted document data (from documentAdapter)
+ *   copyLabel — e.g. "Copy B", "Copy 2"
+ *   copyDesc  — description lines (array of strings or single string)
  */
 
 function fmt(val) {
   if (val == null || val === '' || val === 0) return ''
-  if (typeof val === 'number') {
+  if (typeof val === 'number')
     return val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-  }
   if (typeof val === 'boolean') return val ? 'X' : ''
   return String(val)
 }
@@ -24,7 +21,14 @@ function fmtYear(val) {
   return String(Math.round(Number(val)))
 }
 
-export default function W2CopyHtml({ data = {}, copyLabel = '', copyDesc = '', scale = 1 }) {
+function fmt12(entry) {
+  if (!entry) return ''
+  if (typeof entry === 'object' && entry.code)
+    return `${entry.code}    ${fmt(entry.amount)}`
+  return String(entry || '')
+}
+
+export default function W2CopyHtml({ data = {}, copyLabel = '', copyDesc = '' }) {
   const d = data
   const co = d.company || {}
   const em = d.employee || {}
@@ -32,169 +36,221 @@ export default function W2CopyHtml({ data = {}, copyLabel = '', copyDesc = '', s
   const st = d.stateTax || {}
   const yr = fmtYear(d.year)
 
-  // Box 12 entries
-  const b12a = b['12a'] || ''
-  const b12b = b['12b'] || ''
-  const b12c = b['12c'] || ''
-  const b12d = b['12d'] || ''
-
-  // Box 12 split (code + amount)
-  const b12aObj = typeof b12a === 'object' ? b12a : null
-  const b12bObj = typeof b12b === 'object' ? b12b : null
-  const b12cObj = typeof b12c === 'object' ? b12c : null
-  const b12dObj = typeof b12d === 'object' ? b12d : null
-
-  const fmt12 = (obj, str) => {
-    if (obj) return obj.code ? `${obj.code}    ${fmt(obj.amount)}` : ''
-    return str || ''
-  }
+  const descLines = typeof copyDesc === 'string'
+    ? copyDesc.split('. ').filter(Boolean).map((s, i, a) => i < a.length - 1 ? s + '.' : s)
+    : (copyDesc || [])
 
   return (
-    <div className="w2copy" style={{ transform: `scale(${scale})`, transformOrigin: 'top left' }}>
-      {/* Row 1: SSN + EIN + OMB */}
-      <div className="w2copy-row1">
-        <div className="w2copy-cell w2copy-ssn">
-          <span className="w2copy-lbl"><b>a</b> Employee&apos;s SSN</span>
-          <span className="w2copy-val w2copy-mono">{em.ssn}</span>
-        </div>
-        <div className="w2copy-cell w2copy-ein">
-          <span className="w2copy-lbl"><b>b</b> Employer identification number (EIN)</span>
-          <span className="w2copy-val w2copy-mono">{co.ein}</span>
-        </div>
-        <div className="w2copy-cell w2copy-omb">
-          <span className="w2copy-lbl-sm">OMB No. 1545-0008</span>
-        </div>
-      </div>
-
-      {/* Row 2-5: Employer/Employee info + Boxes 1-14 + Form title */}
-      <div className="w2copy-main">
-        {/* LEFT: employer + employee info */}
-        <div className="w2copy-left">
-          <div className="w2copy-cell w2copy-employer">
-            <span className="w2copy-lbl"><b>c</b> Employer&apos;s name, address, and ZIP code</span>
-            <div className="w2copy-val">
-              {co.name}<br />
-              {co.addressLine1}{co.addressLine2 ? <><br />{co.addressLine2}</> : null}<br />
-              {co.cityStateZip}
+    <table className="w2f" cellSpacing="0" cellPadding="0">
+      <colgroup>
+        <col className="w2f-col-left" />
+        <col className="w2f-col-b1" />
+        <col className="w2f-col-b2" />
+        <col className="w2f-col-b3" />
+        <col className="w2f-col-right" />
+      </colgroup>
+      <tbody>
+        {/* ── Row 1: SSN | EIN | OMB ── */}
+        <tr>
+          <td className="w2f-cell">
+            <div className="w2f-lbl"><b>a</b> Employee&apos;s SSN</div>
+            <div className="w2f-val w2f-mono">{em.ssn}</div>
+          </td>
+          <td className="w2f-cell" colSpan="3">
+            <div className="w2f-lbl"><b>b</b> Employer identification number (EIN)</div>
+            <div className="w2f-val w2f-mono">{co.ein}</div>
+          </td>
+          <td className="w2f-cell w2f-omb" rowSpan="7">
+            <div className="w2f-omb-text">OMB No. 1545-0008</div>
+            <div className="w2f-title-block">
+              <div className="w2f-form-label">Form</div>
+              <div className="w2f-form-w2">W-2</div>
+              <div className="w2f-form-sub">Wage and</div>
+              <div className="w2f-form-sub">Tax</div>
+              <div className="w2f-form-sub">Statement</div>
             </div>
-          </div>
-          <div className="w2copy-cell w2copy-control">
-            <span className="w2copy-lbl"><b>d</b> Control number</span>
-            <span className="w2copy-val">{d.controlNumber}</span>
-          </div>
-          <div className="w2copy-cell w2copy-employee">
-            <span className="w2copy-lbl"><b>e</b> Employee&apos;s name, address, and ZIP code</span>
-            <div className="w2copy-val">
-              {em.name}<br />
-              {em.addressLine1}<br />
-              {em.cityStateZip}
-            </div>
-          </div>
-        </div>
-
-        {/* MIDDLE: Boxes grid */}
-        <div className="w2copy-boxes">
-          {/* Boxes 1-6 */}
-          <div className="w2copy-boxrow">
-            <div className="w2copy-box"><span className="w2copy-boxlbl"><b>1</b> Wages, tips, other comp.</span><span className="w2copy-boxval">{fmt(b[1])}</span></div>
-            <div className="w2copy-box"><span className="w2copy-boxlbl"><b>2</b> Federal income tax withheld</span><span className="w2copy-boxval">{fmt(b[2])}</span></div>
-          </div>
-          <div className="w2copy-boxrow">
-            <div className="w2copy-box"><span className="w2copy-boxlbl"><b>3</b> Social security wages</span><span className="w2copy-boxval">{fmt(b[3])}</span></div>
-            <div className="w2copy-box"><span className="w2copy-boxlbl"><b>4</b> Social security tax withheld</span><span className="w2copy-boxval">{fmt(b[4])}</span></div>
-          </div>
-          <div className="w2copy-boxrow">
-            <div className="w2copy-box"><span className="w2copy-boxlbl"><b>5</b> Medicare wages and tips</span><span className="w2copy-boxval">{fmt(b[5])}</span></div>
-            <div className="w2copy-box"><span className="w2copy-boxlbl"><b>6</b> Medicare tax withheld</span><span className="w2copy-boxval">{fmt(b[6])}</span></div>
-          </div>
-          {/* Boxes 7-9 */}
-          <div className="w2copy-boxrow">
-            <div className="w2copy-box"><span className="w2copy-boxlbl"><b>7</b> Social Security Tips</span><span className="w2copy-boxval">{fmt(b[7])}</span></div>
-            <div className="w2copy-box"><span className="w2copy-boxlbl"><b>8</b> Allocated Tips</span><span className="w2copy-boxval">{fmt(b[8])}</span></div>
-          </div>
-          {/* Box 9 + 10-11 */}
-          <div className="w2copy-boxrow">
-            <div className="w2copy-box"><span className="w2copy-boxlbl"><b>9</b></span><span className="w2copy-boxval"></span></div>
-            <div className="w2copy-box"><span className="w2copy-boxlbl"><b>10</b> Dependent care benefits</span><span className="w2copy-boxval">{fmt(b[10])}</span></div>
-          </div>
-          <div className="w2copy-boxrow">
-            <div className="w2copy-box"><span className="w2copy-boxlbl"><b>11</b> Nonqualified plans</span><span className="w2copy-boxval">{fmt(b[11])}</span></div>
-            <div className="w2copy-box w2copy-box12"><span className="w2copy-boxlbl"><b>12a</b> See instructions for box 12</span><span className="w2copy-boxval">{fmt12(b12aObj, b12a)}</span></div>
-          </div>
-          {/* Box 13-14 + 12b-d */}
-          <div className="w2copy-boxrow">
-            <div className="w2copy-box w2copy-box13">
-              <span className="w2copy-boxlbl"><b>13</b></span>
-              <div className="w2copy-chk-row">
-                <span className="w2copy-chk">{b[13]?.statutoryEmployee ? 'X' : ''}</span> Statutory employee
+            <div className="w2f-year">{yr}</div>
+            {copyLabel && (
+              <div className="w2f-copy-block">
+                <div className="w2f-copy-label">{copyLabel}</div>
+                {descLines.map((line, i) => (
+                  <div key={i} className="w2f-copy-desc">{line}</div>
+                ))}
               </div>
-              <div className="w2copy-chk-row">
-                <span className="w2copy-chk">{b[13]?.retirementPlan ? 'X' : ''}</span> Retirement plan
-              </div>
-              <div className="w2copy-chk-row">
-                <span className="w2copy-chk">{b[13]?.thirdPartySickPay ? 'X' : ''}</span> Third-party sick pay
-              </div>
-            </div>
-            <div className="w2copy-box"><span className="w2copy-boxlbl"><b>14</b> Other</span><span className="w2copy-boxval">{b[14]}</span></div>
-            <div className="w2copy-box12-stack">
-              <div className="w2copy-box w2copy-box12"><span className="w2copy-boxlbl"><b>12b</b></span><span className="w2copy-boxval">{fmt12(b12bObj, b12b)}</span></div>
-              <div className="w2copy-box w2copy-box12"><span className="w2copy-boxlbl"><b>12c</b></span><span className="w2copy-boxval">{fmt12(b12cObj, b12c)}</span></div>
-              <div className="w2copy-box w2copy-box12"><span className="w2copy-boxlbl"><b>12d</b></span><span className="w2copy-boxval">{fmt12(b12dObj, b12d)}</span></div>
-            </div>
-          </div>
-        </div>
+            )}
+          </td>
+        </tr>
 
-        {/* RIGHT: Form title + copy info */}
-        <div className="w2copy-right">
-          <div className="w2copy-title">
-            <span className="w2copy-form-label">Form</span>
-            <span className="w2copy-form-w2">W-2</span>
-            <span className="w2copy-form-sub">Wage and<br />Tax<br />Statement</span>
-            <span className="w2copy-form-year">{yr}</span>
-          </div>
-          {copyLabel && (
-            <div className="w2copy-copy-info">
-              <b>{copyLabel}</b>
-              {copyDesc && <><br /><span className="w2copy-copy-desc">{copyDesc}</span></>}
-            </div>
-          )}
-        </div>
-      </div>
+        {/* ── Row 2: Employer (c) | Box 1 | Box 2 | Box 3 ── */}
+        <tr>
+          <td className="w2f-cell w2f-employer" rowSpan="3">
+            <div className="w2f-lbl"><b>c</b> Employer&apos;s name, address, and ZIP code</div>
+            <div className="w2f-val w2f-company-name">{co.name}</div>
+            <div className="w2f-val">{co.addressLine1}</div>
+            {co.addressLine2 && <div className="w2f-val">{co.addressLine2}</div>}
+            <div className="w2f-val">{co.cityStateZip}</div>
+          </td>
+          <td className="w2f-cell w2f-box">
+            <div className="w2f-boxlbl"><b>1</b> Wages, tips, other comp.</div>
+            <div className="w2f-boxval">{fmt(b[1])}</div>
+          </td>
+          <td className="w2f-cell w2f-box">
+            <div className="w2f-boxlbl"><b>2</b> Federal income tax withheld</div>
+            <div className="w2f-boxval">{fmt(b[2])}</div>
+          </td>
+          <td className="w2f-cell w2f-box">
+            <div className="w2f-boxlbl"><b>3</b> Social security wages</div>
+            <div className="w2f-boxval">{fmt(b[3])}</div>
+          </td>
+        </tr>
 
-      {/* Bottom: State/Local row */}
-      <div className="w2copy-state-row">
-        <div className="w2copy-state-cell w2copy-state-st">
-          <span className="w2copy-boxlbl"><b>15</b> State</span>
-          <span className="w2copy-boxval">{st.state}</span>
-        </div>
-        <div className="w2copy-state-cell w2copy-state-id">
-          <span className="w2copy-boxlbl">Employer&apos;s state ID number</span>
-          <span className="w2copy-boxval w2copy-mono">{st.employerId}</span>
-        </div>
-        <div className="w2copy-state-cell">
-          <span className="w2copy-boxlbl"><b>16</b> State wages, tips, etc.</span>
-          <span className="w2copy-boxval">{fmt(b[16])}</span>
-        </div>
-        <div className="w2copy-state-cell">
-          <span className="w2copy-boxlbl"><b>17</b> State income tax</span>
-          <span className="w2copy-boxval">{fmt(b[17])}</span>
-        </div>
-        <div className="w2copy-state-cell">
-          <span className="w2copy-boxlbl"><b>18</b> Local wages, tips, etc.</span>
-          <span className="w2copy-boxval">{fmt(b[18])}</span>
-        </div>
-        <div className="w2copy-state-cell">
-          <span className="w2copy-boxlbl"><b>19</b> Local income tax</span>
-          <span className="w2copy-boxval">{fmt(b[19])}</span>
-        </div>
-        <div className="w2copy-state-cell">
-          <span className="w2copy-boxlbl"><b>20</b> Locality name</span>
-          <span className="w2copy-boxval">{b[20]}</span>
-        </div>
-      </div>
-      <div className="w2copy-footer">
-        <span>Dept. of the Treasury &mdash; IRS</span>
-      </div>
-    </div>
+        {/* ── Row 3: | Box 4 | Box 5 | Box 6 ── */}
+        <tr>
+          <td className="w2f-cell w2f-box">
+            <div className="w2f-boxlbl"><b>4</b> Social security tax withheld</div>
+            <div className="w2f-boxval">{fmt(b[4])}</div>
+          </td>
+          <td className="w2f-cell w2f-box">
+            <div className="w2f-boxlbl"><b>5</b> Medicare wages &amp; tips</div>
+            <div className="w2f-boxval">{fmt(b[5])}</div>
+          </td>
+          <td className="w2f-cell w2f-box">
+            <div className="w2f-boxlbl"><b>6</b> Medicare tax withheld</div>
+            <div className="w2f-boxval">{fmt(b[6])}</div>
+          </td>
+        </tr>
+
+        {/* ── Row 4: | Box 7 | Box 8 | Box 9 ── */}
+        <tr>
+          <td className="w2f-cell w2f-box">
+            <div className="w2f-boxlbl"><b>7</b> Social security tips</div>
+            <div className="w2f-boxval">{fmt(b[7])}</div>
+          </td>
+          <td className="w2f-cell w2f-box">
+            <div className="w2f-boxlbl"><b>8</b> Allocated tips</div>
+            <div className="w2f-boxval">{fmt(b[8])}</div>
+          </td>
+          <td className="w2f-cell w2f-box">
+            <div className="w2f-boxlbl"><b>9</b></div>
+            <div className="w2f-boxval"></div>
+          </td>
+        </tr>
+
+        {/* ── Row 5: Control (d) | Box 10 | Box 11 | 12a ── */}
+        <tr>
+          <td className="w2f-cell w2f-control">
+            <div className="w2f-lbl"><b>d</b> Control number</div>
+            <div className="w2f-val">{d.controlNumber}</div>
+          </td>
+          <td className="w2f-cell w2f-box">
+            <div className="w2f-boxlbl"><b>10</b> Dependent care benefits</div>
+            <div className="w2f-boxval">{fmt(b[10])}</div>
+          </td>
+          <td className="w2f-cell w2f-box">
+            <div className="w2f-boxlbl"><b>11</b> Nonqualified plans</div>
+            <div className="w2f-boxval">{fmt(b[11])}</div>
+          </td>
+          <td className="w2f-cell w2f-box w2f-box12">
+            <div className="w2f-boxlbl"><b>12a</b> See inst. for box 12</div>
+            <div className="w2f-boxval w2f-box12val">{fmt12(b['12a'])}</div>
+          </td>
+        </tr>
+
+        {/* ── Row 6: Employee (e) | Box 13 | Box 14 | 12b ── */}
+        <tr>
+          <td className="w2f-cell w2f-employee" rowSpan="2">
+            <div className="w2f-lbl"><b>e</b> Employee&apos;s name, address, and ZIP code <span className="w2f-suff">Suff.</span></div>
+            <div className="w2f-val w2f-emp-name">{em.name}</div>
+            <div className="w2f-val">{em.addressLine1}</div>
+            <div className="w2f-val">{em.cityStateZip}</div>
+          </td>
+          <td className="w2f-cell w2f-box w2f-box13top" rowSpan="2">
+            <div className="w2f-boxlbl"><b>13</b></div>
+            <div className="w2f-chk-row">
+              <span className="w2f-chk">{b[13]?.statutoryEmployee ? 'X' : ''}</span>
+              <span>Statutory employee</span>
+            </div>
+            <div className="w2f-chk-row">
+              <span className="w2f-chk">{b[13]?.retirementPlan ? 'X' : ''}</span>
+              <span>Retirement plan</span>
+            </div>
+            <div className="w2f-chk-row">
+              <span className="w2f-chk">{b[13]?.thirdPartySickPay ? 'X' : ''}</span>
+              <span>Third-party sick pay</span>
+            </div>
+          </td>
+          <td className="w2f-cell w2f-box">
+            <div className="w2f-boxlbl"><b>14</b> Other</div>
+            <div className="w2f-boxval w2f-box14val">{b[14]}</div>
+          </td>
+          <td className="w2f-cell w2f-box w2f-box12">
+            <div className="w2f-boxlbl"><b>12b</b></div>
+            <div className="w2f-boxval w2f-box12val">{fmt12(b['12b'])}</div>
+          </td>
+        </tr>
+
+        {/* ── Row 7: | (13 cont) | (14 cont/blank) | 12c+12d ── */}
+        <tr>
+          <td className="w2f-cell w2f-box w2f-box-empty"></td>
+          <td className="w2f-cell w2f-box12-cd">
+            <div className="w2f-box12-c">
+              <div className="w2f-boxlbl"><b>12c</b></div>
+              <div className="w2f-boxval w2f-box12val">{fmt12(b['12c'])}</div>
+            </div>
+            <div className="w2f-box12-d">
+              <div className="w2f-boxlbl"><b>12d</b></div>
+              <div className="w2f-boxval w2f-box12val">{fmt12(b['12d'])}</div>
+            </div>
+          </td>
+        </tr>
+
+        {/* ── Row 8: State/Local ── */}
+        <tr>
+          <td className="w2f-state-row" colSpan="5">
+            <table className="w2f-state-table" cellSpacing="0" cellPadding="0">
+              <tbody>
+                <tr>
+                  <td className="w2f-st-cell w2f-st-15">
+                    <div className="w2f-boxlbl"><b>15</b> State</div>
+                    <div className="w2f-boxval">{st.state}</div>
+                  </td>
+                  <td className="w2f-st-cell w2f-st-id">
+                    <div className="w2f-boxlbl">Employer&apos;s state ID number</div>
+                    <div className="w2f-boxval w2f-mono">{st.employerId}</div>
+                  </td>
+                  <td className="w2f-st-cell">
+                    <div className="w2f-boxlbl"><b>16</b> State wages, tips, etc.</div>
+                    <div className="w2f-boxval">{fmt(b[16])}</div>
+                  </td>
+                  <td className="w2f-st-cell">
+                    <div className="w2f-boxlbl"><b>17</b> State income tax</div>
+                    <div className="w2f-boxval">{fmt(b[17])}</div>
+                  </td>
+                  <td className="w2f-st-cell">
+                    <div className="w2f-boxlbl"><b>18</b> Local wages, tips, etc.</div>
+                    <div className="w2f-boxval">{fmt(b[18])}</div>
+                  </td>
+                  <td className="w2f-st-cell">
+                    <div className="w2f-boxlbl"><b>19</b> Local income tax</div>
+                    <div className="w2f-boxval">{fmt(b[19])}</div>
+                  </td>
+                  <td className="w2f-st-cell w2f-st-last">
+                    <div className="w2f-boxlbl"><b>20</b> Locality name</div>
+                    <div className="w2f-boxval">{b[20]}</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+
+        {/* ── Footer ── */}
+        <tr>
+          <td className="w2f-footer" colSpan="5">
+            <span className="w2f-footer-right">Dept. of the Treasury &mdash; IRS</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   )
 }
