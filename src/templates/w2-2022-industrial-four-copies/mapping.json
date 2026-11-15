@@ -1,1379 +1,590 @@
 {
-  "coordinateSystem": "PDF points, top-left origin; baselineY is SVG baseline in same units",
-  "pageSizePt": [
-    612.0,
-    792.0
-  ],
+  "coordinateSystem": "PDF points, top-left origin (baselineY), measured from original PDF",
   "pages": 1,
   "fields": [
     {
       "page": 0,
-      "copy": "B",
+      "copy": "A",
       "path": "employee.ssn",
-      "x": 23.4,
-      "baselineY": 55.45,
+      "x": 23.2,
+      "baselineY": 434.6,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        23.4,
-        47.65,
-        65.93,
-        57.89
-      ]
+      "maxWidth": 80,
+      "fontFamily": "Courier"
     },
     {
       "page": 0,
-      "copy": "B",
-      "path": "box5",
-      "x": 146.99,
-      "baselineY": 85.5,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        146.99,
-        77.7,
-        180.35,
-        87.94
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "employee.ssn",
-      "x": 316.6,
-      "baselineY": 55.75,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        316.6,
-        47.95,
-        359.13,
-        58.19
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "C",
-      "path": "employee.ssn",
-      "x": 23.25,
-      "baselineY": 434.75,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        23.25,
-        426.95,
-        65.78,
-        437.19
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "C",
-      "path": "box6",
-      "x": 261.52,
-      "baselineY": 464.7,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        261.52,
-        456.9,
-        286.54,
-        467.14
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "C",
-      "path": "employee.name",
-      "x": 20.9,
-      "baselineY": 552.864,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        20.9,
-        545.06,
-        113.84,
-        555.3
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "C",
-      "path": "employee.addressLine1",
-      "x": 21.8,
-      "baselineY": 566.593,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        21.8,
-        558.79,
-        80.17,
-        569.03
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "employee.ssn",
-      "x": 318.85,
-      "baselineY": 435.3,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        318.85,
-        427.5,
-        361.38,
-        437.74
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "box5",
-      "x": 442.74,
-      "baselineY": 465.05,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        442.74,
-        457.25,
-        476.1,
-        467.49
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "B",
-      "path": "employee.name",
-      "x": 20.9,
-      "baselineY": 180.56,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        20.9,
-        172.76,
-        113.84,
-        183.0
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "B",
-      "path": "employee.addressLine1",
-      "x": 20.9,
-      "baselineY": 196.085,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        20.9,
-        188.29,
-        79.27,
-        198.52
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "B",
-      "path": "employee.cityStateZip",
-      "x": 20.9,
-      "baselineY": 211.61,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        20.9,
-        203.81,
-        75.93,
-        214.05
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "employee.name",
-      "x": 316.445,
-      "baselineY": 181.513,
-      "fontSize": 8.0,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        316.44,
-        173.19,
-        417.8,
-        184.11
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "employee.addressLine1",
-      "x": 316.445,
-      "baselineY": 197.328,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        316.44,
-        189.53,
-        374.81,
-        199.77
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "employee.cityStateZip",
-      "x": 316.445,
-      "baselineY": 212.937,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        316.44,
-        205.14,
-        371.47,
-        215.37
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "employee.name",
-      "x": 316.5,
-      "baselineY": 560.494,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        316.5,
-        552.69,
-        409.44,
-        562.93
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "employee.addressLine1",
-      "x": 316.5,
-      "baselineY": 576.053,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        316.5,
-        568.25,
-        374.87,
-        578.49
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "employee.cityStateZip",
-      "x": 316.5,
-      "baselineY": 591.612,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        316.5,
-        583.81,
-        371.53,
-        594.05
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "B",
-      "path": "control.number",
-      "x": 93.95,
-      "baselineY": 150.0,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        93.95,
-        143.09,
-        114.8,
-        151.47
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "B",
-      "path": "employer.ein",
-      "x": 24.75,
-      "baselineY": 84.95,
-      "fontSize": 8.0,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        24.75,
-        76.63,
-        67.45,
-        87.55
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "control.number",
-      "x": 401.1,
-      "baselineY": 149.25,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        401.1,
-        142.34,
-        421.95,
-        150.72
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "employer.ein",
-      "x": 318.25,
-      "baselineY": 83.85,
-      "fontSize": 8.0,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        318.25,
-        75.53,
-        360.95,
-        86.45
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "C",
-      "path": "employer.ein",
-      "x": 24.75,
-      "baselineY": 463.1,
-      "fontSize": 8.0,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        24.75,
-        454.78,
-        67.45,
-        465.7
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "control.number",
-      "x": 388.25,
-      "baselineY": 529.9,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        388.25,
-        522.99,
-        409.1,
-        531.37
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "employer.ein",
-      "x": 320.2,
-      "baselineY": 462.7,
-      "fontSize": 8.0,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        320.2,
-        454.38,
-        362.9,
-        465.3
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "B",
-      "path": "control.formIdentifier",
-      "x": 231.66,
+      "copy": "A",
+      "path": "company.ein",
+      "x": 232.2,
       "baselineY": 24.6,
-      "fontSize": 5.0,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        231.66,
-        19.99,
-        258.35,
-        25.58
-      ]
+      "fontSize": 7.5,
+      "maxWidth": 80,
+      "fontFamily": "Courier"
     },
     {
       "page": 0,
-      "copy": "2-top",
-      "path": "control.formIdentifier",
-      "x": 519.66,
-      "baselineY": 24.85,
-      "fontSize": 5.0,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        519.66,
-        20.24,
-        546.35,
-        25.83
-      ]
+      "copy": "A",
+      "path": "company.name",
+      "x": 24.2,
+      "baselineY": 108.6,
+      "fontSize": 7.5,
+      "maxWidth": 170
     },
     {
       "page": 0,
-      "copy": "C",
-      "path": "control.formIdentifier",
-      "x": 232.81,
-      "baselineY": 403.95,
-      "fontSize": 5.0,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        232.81,
-        399.34,
-        259.49,
-        404.93
-      ]
+      "copy": "A",
+      "path": "company.addressLine1",
+      "x": 24.2,
+      "baselineY": 117.6,
+      "fontSize": 7.5,
+      "maxWidth": 170
     },
     {
       "page": 0,
-      "copy": "2-right",
-      "path": "control.formIdentifier",
-      "x": 523.06,
-      "baselineY": 404.0,
-      "fontSize": 5.0,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        523.06,
-        399.39,
-        549.75,
-        404.98
-      ]
+      "copy": "A",
+      "path": "company.cityStateZip",
+      "x": 24.2,
+      "baselineY": 126.6,
+      "fontSize": 7.5,
+      "maxWidth": 170
     },
     {
       "page": 0,
-      "copy": "B",
-      "path": "box1",
-      "x": 146.99,
+      "copy": "A",
+      "path": "employee.name",
+      "x": 21.599999999999998,
+      "baselineY": 180.6,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "A",
+      "path": "employee.addressLine1",
+      "x": 22.8,
+      "baselineY": 196.6,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "A",
+      "path": "employee.cityStateZip",
+      "x": 22.8,
+      "baselineY": 211.6,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "A",
+      "path": "boxes.1",
+      "x": 147.2,
       "baselineY": 51.1,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        146.99,
-        43.3,
-        180.35,
-        53.54
-      ]
+      "maxWidth": 55
     },
     {
       "page": 0,
-      "copy": "B",
-      "path": "box2",
-      "x": 254.26,
+      "copy": "A",
+      "path": "boxes.2",
+      "x": 256.2,
       "baselineY": 51.1,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        254.26,
-        43.3,
-        283.45,
-        53.54
-      ]
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "A",
+      "path": "boxes.3",
+      "x": 147.2,
+      "baselineY": 67.6,
+      "fontSize": 7.5,
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "A",
+      "path": "boxes.4",
+      "x": 256.2,
+      "baselineY": 67.6,
+      "fontSize": 7.5,
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "A",
+      "path": "boxes.5",
+      "x": 147.2,
+      "baselineY": 85.6,
+      "fontSize": 7.5,
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "A",
+      "path": "boxes.6",
+      "x": 256.2,
+      "baselineY": 85.6,
+      "fontSize": 7.5,
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "A",
+      "path": "boxes.16",
+      "x": 159.2,
+      "baselineY": 317.6,
+      "fontSize": 6.5,
+      "maxWidth": 45
+    },
+    {
+      "page": 0,
+      "copy": "A",
+      "path": "boxes.17",
+      "x": 238.2,
+      "baselineY": 317.6,
+      "fontSize": 6.5,
+      "maxWidth": 40
     },
     {
       "page": 0,
       "copy": "B",
-      "path": "box6",
-      "x": 255.425,
-      "baselineY": 85.9,
+      "path": "employee.ssn",
+      "x": 316.4,
+      "baselineY": 434.6,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        255.43,
-        78.1,
-        280.45,
-        88.34
-      ]
+      "maxWidth": 80,
+      "fontFamily": "Courier"
     },
     {
       "page": 0,
-      "copy": "2-top",
-      "path": "box1",
-      "x": 443.03,
+      "copy": "B",
+      "path": "company.ein",
+      "x": 525.4,
+      "baselineY": 24.6,
+      "fontSize": 7.5,
+      "maxWidth": 80,
+      "fontFamily": "Courier"
+    },
+    {
+      "page": 0,
+      "copy": "B",
+      "path": "company.name",
+      "x": 317.4,
+      "baselineY": 108.6,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "B",
+      "path": "company.addressLine1",
+      "x": 317.4,
+      "baselineY": 117.6,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "B",
+      "path": "company.cityStateZip",
+      "x": 317.4,
+      "baselineY": 126.6,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "B",
+      "path": "employee.name",
+      "x": 314.79999999999995,
+      "baselineY": 180.6,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "B",
+      "path": "employee.addressLine1",
+      "x": 316,
+      "baselineY": 196.6,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "B",
+      "path": "employee.cityStateZip",
+      "x": 316,
+      "baselineY": 211.6,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "B",
+      "path": "boxes.1",
+      "x": 440.4,
       "baselineY": 51.1,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        443.03,
-        43.3,
-        476.39,
-        53.54
-      ]
+      "maxWidth": 55
     },
     {
       "page": 0,
-      "copy": "2-top",
-      "path": "box2",
-      "x": 542.8,
+      "copy": "B",
+      "path": "boxes.2",
+      "x": 549.4,
       "baselineY": 51.1,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        542.8,
-        43.3,
-        571.99,
-        53.54
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "box5",
-      "x": 443.03,
-      "baselineY": 85.9,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        443.03,
-        78.1,
-        476.39,
-        88.34
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "box6",
-      "x": 542.975,
-      "baselineY": 85.5,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        542.97,
-        77.7,
-        570.08,
-        87.94
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "C",
-      "path": "box1",
-      "x": 146.58,
-      "baselineY": 431.35,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        146.58,
-        423.55,
-        179.94,
-        433.79
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "C",
-      "path": "box2",
-      "x": 255.25,
-      "baselineY": 431.0,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        255.25,
-        423.2,
-        284.44,
-        433.44
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "C",
-      "path": "box5",
-      "x": 146.58,
-      "baselineY": 465.8,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        146.58,
-        458.0,
-        179.94,
-        468.24
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "box1",
-      "x": 442.73,
-      "baselineY": 431.0,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        442.73,
-        423.2,
-        476.09,
-        433.44
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "box6",
-      "x": 548.65,
-      "baselineY": 465.8,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        548.65,
-        458.0,
-        573.67,
-        468.24
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "C",
-      "path": "control.number",
-      "x": 99.88,
-      "baselineY": 528.4,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        99.88,
-        521.49,
-        120.73,
-        529.87
-      ]
+      "maxWidth": 55
     },
     {
       "page": 0,
       "copy": "B",
-      "path": "employer.name",
-      "x": 23.564,
-      "baselineY": 108.861,
+      "path": "boxes.3",
+      "x": 440.4,
+      "baselineY": 67.6,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        23.56,
-        101.06,
-        125.24,
-        111.3
-      ]
+      "maxWidth": 55
     },
     {
       "page": 0,
       "copy": "B",
-      "path": "employer.addressLine1",
-      "x": 23.564,
-      "baselineY": 117.561,
+      "path": "boxes.4",
+      "x": 549.4,
+      "baselineY": 67.6,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        23.56,
-        109.76,
-        99.43,
-        120.0
-      ]
+      "maxWidth": 55
     },
     {
       "page": 0,
       "copy": "B",
-      "path": "employer.cityStateZip",
-      "x": 23.564,
-      "baselineY": 126.261,
+      "path": "boxes.5",
+      "x": 440.4,
+      "baselineY": 85.6,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        23.56,
-        118.46,
-        86.5,
-        128.7
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "employer.name",
-      "x": 316.799,
-      "baselineY": 108.861,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        316.8,
-        101.06,
-        418.48,
-        111.3
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "employer.addressLine1",
-      "x": 316.799,
-      "baselineY": 117.561,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        316.8,
-        109.76,
-        392.66,
-        120.0
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "employer.cityStateZip",
-      "x": 316.799,
-      "baselineY": 126.261,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        316.8,
-        118.46,
-        379.74,
-        128.7
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "C",
-      "path": "employer.name",
-      "x": 23.564,
-      "baselineY": 489.02,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        23.56,
-        481.22,
-        125.24,
-        491.46
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "C",
-      "path": "employer.addressLine1",
-      "x": 23.564,
-      "baselineY": 497.72,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        23.56,
-        489.92,
-        99.43,
-        500.16
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "C",
-      "path": "employer.cityStateZip",
-      "x": 23.564,
-      "baselineY": 506.42,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        23.56,
-        498.62,
-        86.5,
-        508.86
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "employer.name",
-      "x": 319.417,
-      "baselineY": 489.02,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        319.42,
-        481.22,
-        421.09,
-        491.46
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "employer.addressLine1",
-      "x": 319.417,
-      "baselineY": 497.72,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        319.42,
-        489.92,
-        395.28,
-        500.16
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "employer.cityStateZip",
-      "x": 319.417,
-      "baselineY": 506.42,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        319.42,
-        498.62,
-        382.36,
-        508.86
-      ]
+      "maxWidth": 55
     },
     {
       "page": 0,
       "copy": "B",
-      "path": "state.code",
-      "x": 20.9,
-      "baselineY": 317.2,
+      "path": "boxes.6",
+      "x": 549.4,
+      "baselineY": 85.6,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        20.9,
-        309.4,
-        32.57,
-        319.64
-      ]
+      "maxWidth": 55
     },
     {
       "page": 0,
       "copy": "B",
-      "path": "state.employerId",
-      "x": 44.283,
-      "baselineY": 317.55,
-      "fontSize": 8.0,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        44.28,
-        309.23,
-        82.54,
-        320.15
-      ]
+      "path": "boxes.16",
+      "x": 452.4,
+      "baselineY": 317.6,
+      "fontSize": 6.5,
+      "maxWidth": 45
     },
     {
       "page": 0,
       "copy": "B",
-      "path": "state.wages",
-      "x": 159.09,
-      "baselineY": 318.9,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        159.09,
-        311.1,
-        194.54,
-        321.34
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "state.wages",
-      "x": 454.788,
-      "baselineY": 319.021,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        454.79,
-        311.22,
-        496.49,
-        321.46
-      ]
+      "path": "boxes.17",
+      "x": 531.4,
+      "baselineY": 317.6,
+      "fontSize": 6.5,
+      "maxWidth": 40
     },
     {
       "page": 0,
       "copy": "C",
-      "path": "state.code",
-      "x": 20.9,
-      "baselineY": 688.4,
+      "path": "employee.ssn",
+      "x": 23.2,
+      "baselineY": 814,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        20.9,
-        680.6,
-        32.57,
-        690.84
-      ]
+      "maxWidth": 80,
+      "fontFamily": "Courier"
     },
     {
       "page": 0,
       "copy": "C",
-      "path": "state.employerId",
-      "x": 43.683,
-      "baselineY": 688.75,
-      "fontSize": 8.0,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        43.68,
-        680.43,
-        81.93,
-        691.35
-      ]
+      "path": "company.ein",
+      "x": 232.2,
+      "baselineY": 404,
+      "fontSize": 7.5,
+      "maxWidth": 80,
+      "fontFamily": "Courier"
     },
     {
       "page": 0,
       "copy": "C",
-      "path": "state.wages",
-      "x": 158.54,
-      "baselineY": 690.1,
+      "path": "company.name",
+      "x": 24.2,
+      "baselineY": 488,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        158.54,
-        682.3,
-        193.99,
-        692.54
-      ]
+      "maxWidth": 170
     },
     {
       "page": 0,
-      "copy": "2-right",
-      "path": "state.wages",
-      "x": 454.04,
-      "baselineY": 697.8,
+      "copy": "C",
+      "path": "company.addressLine1",
+      "x": 24.2,
+      "baselineY": 497,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        454.04,
-        690.0,
-        491.57,
-        700.24
-      ]
+      "maxWidth": 170
     },
     {
       "page": 0,
-      "copy": "2-right",
-      "path": "box3",
-      "x": 442.74,
-      "baselineY": 447.4,
+      "copy": "C",
+      "path": "company.cityStateZip",
+      "x": 24.2,
+      "baselineY": 506,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        442.74,
-        439.6,
-        476.1,
-        449.84
-      ]
+      "maxWidth": 170
     },
     {
       "page": 0,
-      "copy": "2-right",
-      "path": "box4",
-      "x": 542.41,
-      "baselineY": 447.4,
+      "copy": "C",
+      "path": "employee.name",
+      "x": 21.599999999999998,
+      "baselineY": 560,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        542.41,
-        439.6,
-        571.6,
-        449.84
-      ]
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "C",
+      "path": "employee.addressLine1",
+      "x": 22.8,
+      "baselineY": 576,
+      "fontSize": 7.5,
+      "maxWidth": 170
     },
     {
       "page": 0,
       "copy": "C",
       "path": "employee.cityStateZip",
-      "x": 20.5,
-      "baselineY": 584.0,
+      "x": 22.8,
+      "baselineY": 591,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        20.5,
-        576.2,
-        75.53,
-        586.44
-      ]
+      "maxWidth": 170
     },
     {
       "page": 0,
       "copy": "C",
-      "path": "box3",
-      "x": 146.59,
-      "baselineY": 447.55,
+      "path": "boxes.1",
+      "x": 147.2,
+      "baselineY": 430.5,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        146.59,
-        439.75,
-        179.95,
-        449.99
-      ]
+      "maxWidth": 55
     },
     {
       "page": 0,
       "copy": "C",
-      "path": "box4",
-      "x": 255.26,
-      "baselineY": 447.55,
+      "path": "boxes.2",
+      "x": 256.2,
+      "baselineY": 430.5,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        255.26,
-        439.75,
-        284.45,
-        449.99
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "box2",
-      "x": 542.23,
-      "baselineY": 431.0,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        542.23,
-        423.2,
-        571.42,
-        433.44
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "B",
-      "path": "box3",
-      "x": 146.99,
-      "baselineY": 67.45,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        146.99,
-        59.65,
-        180.35,
-        69.89
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "B",
-      "path": "box4",
-      "x": 255.26,
-      "baselineY": 67.45,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        255.26,
-        59.65,
-        284.45,
-        69.89
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "box3",
-      "x": 443.04,
-      "baselineY": 67.75,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        443.04,
-        59.95,
-        476.4,
-        70.19
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "box4",
-      "x": 542.81,
-      "baselineY": 67.75,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        542.81,
-        59.95,
-        572.0,
-        70.19
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "state.code",
-      "x": 316.7,
-      "baselineY": 317.2,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        316.7,
-        309.4,
-        328.37,
-        319.64
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "state.employerId",
-      "x": 345.183,
-      "baselineY": 317.55,
-      "fontSize": 8.0,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        345.18,
-        309.23,
-        383.43,
-        320.15
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "state.code",
-      "x": 316.7,
-      "baselineY": 697.1,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        316.7,
-        689.3,
-        328.37,
-        699.54
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-right",
-      "path": "state.employerId",
-      "x": 339.483,
-      "baselineY": 697.45,
-      "fontSize": 8.0,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        339.48,
-        689.13,
-        377.73,
-        700.05
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "B",
-      "path": "state.incomeTax",
-      "x": 239.837,
-      "baselineY": 318.086,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        239.84,
-        310.29,
-        262.77,
-        320.52
-      ]
-    },
-    {
-      "page": 0,
-      "copy": "2-top",
-      "path": "state.incomeTax",
-      "x": 537.628,
-      "baselineY": 317.766,
-      "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        537.63,
-        309.97,
-        560.56,
-        320.2
-      ]
+      "maxWidth": 55
     },
     {
       "page": 0,
       "copy": "C",
-      "path": "state.incomeTax",
-      "x": 238.206,
-      "baselineY": 690.348,
+      "path": "boxes.3",
+      "x": 147.2,
+      "baselineY": 447,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        238.21,
-        682.55,
-        261.14,
-        692.79
-      ]
+      "maxWidth": 55
     },
     {
       "page": 0,
-      "copy": "2-right",
-      "path": "state.incomeTax",
-      "x": 532.189,
-      "baselineY": 698.623,
+      "copy": "C",
+      "path": "boxes.4",
+      "x": 256.2,
+      "baselineY": 447,
       "fontSize": 7.5,
-      "fontFamily": "Arial, Helvetica, sans-serif",
-      "fontWeight": "normal",
-      "positionStatus": "measured",
-      "sourceBBox": [
-        532.19,
-        690.82,
-        555.12,
-        701.06
-      ]
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "C",
+      "path": "boxes.5",
+      "x": 147.2,
+      "baselineY": 465,
+      "fontSize": 7.5,
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "C",
+      "path": "boxes.6",
+      "x": 256.2,
+      "baselineY": 465,
+      "fontSize": 7.5,
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "C",
+      "path": "boxes.16",
+      "x": 159.2,
+      "baselineY": 697,
+      "fontSize": 6.5,
+      "maxWidth": 45
+    },
+    {
+      "page": 0,
+      "copy": "C",
+      "path": "boxes.17",
+      "x": 238.2,
+      "baselineY": 697,
+      "fontSize": 6.5,
+      "maxWidth": 40
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "employee.ssn",
+      "x": 316.4,
+      "baselineY": 814,
+      "fontSize": 7.5,
+      "maxWidth": 80,
+      "fontFamily": "Courier"
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "company.ein",
+      "x": 525.4,
+      "baselineY": 404,
+      "fontSize": 7.5,
+      "maxWidth": 80,
+      "fontFamily": "Courier"
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "company.name",
+      "x": 317.4,
+      "baselineY": 488,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "company.addressLine1",
+      "x": 317.4,
+      "baselineY": 497,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "company.cityStateZip",
+      "x": 317.4,
+      "baselineY": 506,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "employee.name",
+      "x": 314.79999999999995,
+      "baselineY": 560,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "employee.addressLine1",
+      "x": 316,
+      "baselineY": 576,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "employee.cityStateZip",
+      "x": 316,
+      "baselineY": 591,
+      "fontSize": 7.5,
+      "maxWidth": 170
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "boxes.1",
+      "x": 440.4,
+      "baselineY": 430.5,
+      "fontSize": 7.5,
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "boxes.2",
+      "x": 549.4,
+      "baselineY": 430.5,
+      "fontSize": 7.5,
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "boxes.3",
+      "x": 440.4,
+      "baselineY": 447,
+      "fontSize": 7.5,
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "boxes.4",
+      "x": 549.4,
+      "baselineY": 447,
+      "fontSize": 7.5,
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "boxes.5",
+      "x": 440.4,
+      "baselineY": 465,
+      "fontSize": 7.5,
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "boxes.6",
+      "x": 549.4,
+      "baselineY": 465,
+      "fontSize": 7.5,
+      "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "boxes.16",
+      "x": 452.4,
+      "baselineY": 697,
+      "fontSize": 6.5,
+      "maxWidth": 45
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "boxes.17",
+      "x": 531.4,
+      "baselineY": 697,
+      "fontSize": 6.5,
+      "maxWidth": 40
     }
-  ],
-  "unmappedEmptyFields": [
-    "Boxes 7–11",
-    "Boxes 12a–12d",
-    "Boxes 13 checkboxes",
-    "Box 14",
-    "Boxes 18–20",
-    "Suff."
-  ],
-  "notes": "Positions are measured from source text. Blank positions are NOT calibrated; extend mapping after visual QA."
+  ]
 }
