@@ -49,9 +49,6 @@
   font-size: 5px;
   line-height: 1;
   color: #000;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .w2f-boxlbl b { font-size: 6.5px; font-weight: 700; }
 

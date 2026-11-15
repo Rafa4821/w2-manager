@@ -21,29 +21,14 @@ import { generateFromScratch } from './pdfScratchGenerator'
 async function generateFromHtml(template, adaptedData, doc) {
   const Component = template.component
 
-  // Create hidden container
+  // Create hidden container — positioned off-screen but visible
+  // (html2canvas needs elements to be in the DOM and not display:none)
   const container = document.createElement('div')
-  container.style.cssText = 'position:fixed;left:-9999px;top:0;z-index:-1;'
+  container.style.cssText = 'position:fixed;left:-9999px;top:0;z-index:-1;visibility:visible;'
   document.body.appendChild(container)
 
-  // Inject template CSS
-  let styleEl = null
-  if (template.css) {
-    styleEl = document.createElement('style')
-    styleEl.textContent = template.css
-    document.head.appendChild(styleEl)
-  }
-
-  // Also inject the w2copy.css
-  let w2copyStyle = null
-  try {
-    const cssModule = await import('../../../templates/engine/w2copy.css?inline')
-    w2copyStyle = document.createElement('style')
-    w2copyStyle.textContent = cssModule.default
-    document.head.appendChild(w2copyStyle)
-  } catch {
-    // CSS may already be loaded via import
-  }
+  // CSS is already loaded in the document via regular imports in Template.jsx
+  // No need for manual injection
 
   try {
     // Render the template component
@@ -68,7 +53,7 @@ async function generateFromHtml(template, adaptedData, doc) {
       const pageH = isLandscape ? 612 : 792
 
       const canvas = await html2canvas(pageEl, {
-        scale: 2,
+        scale: 3,
         backgroundColor: '#ffffff',
         logging: false,
         useCORS: true,
@@ -96,8 +81,6 @@ async function generateFromHtml(template, adaptedData, doc) {
     }
   } finally {
     document.body.removeChild(container)
-    if (styleEl) document.head.removeChild(styleEl)
-    if (w2copyStyle) document.head.removeChild(w2copyStyle)
   }
 }
 
