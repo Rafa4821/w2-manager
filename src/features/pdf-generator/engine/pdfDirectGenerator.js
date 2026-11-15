@@ -478,78 +478,52 @@ function drawCopy2x2(page, ox, oy, copyTitle, copyFooterNote, isRedCopy, data, f
   hLine(ox, RC, R.r7); hLine(ox, RC, R.r8) // redraw lines over gray
   vLine(MC, R.r7, R.r8)
 
-  // ── LABELS ──
-  txt('a', ox + 2, R.r1 + 2, 6.5, helveticaBold)
-  txt("Employee's soc. sec. no.", ox + 8, R.r1 + 2, 6.5)
-  txt('1', LC + 2, R.r1 + 2, 6.5, helveticaBold)
-  txt('Wages, tips, other comp.', LC + 8, R.r1 + 2, 6.5)
-  txt('2', MC + 2, R.r1 + 2, 6.5, helveticaBold)
-  txt('Federal income tax withheld', MC + 8, R.r1 + 2, 6.5)
+  // ── LABELS (red for Copy B, black for others) ──
+  const lc = titleColor  // label color
+  const lb = (str, x, y) => txt(str, x, y, 6.5, helveticaBold, lc)
+  const ll = (str, x, y) => txt(str, x, y, 6.5, helvetica, lc)
 
-  txt('3', LC + 2, R.r2 + 2, 6.5, helveticaBold)
-  txt('Social security wages', LC + 8, R.r2 + 2, 6.5)
-  txt('4', MC + 2, R.r2 + 2, 6.5, helveticaBold)
-  txt('Social security tax withheld', MC + 8, R.r2 + 2, 6.5)
+  lb('a', ox + 2, R.r1 + 2); ll("Employee's soc. sec. no.", ox + 8, R.r1 + 2)
+  lb('1', LC + 2, R.r1 + 2); ll('Wages, tips, other comp.', LC + 8, R.r1 + 2)
+  lb('2', MC + 2, R.r1 + 2); ll('Federal income tax withheld', MC + 8, R.r1 + 2)
 
-  txt('b', ox + 2, R.r3 + 2, 6.5, helveticaBold)
-  txt('Employer ID number (EIN)', ox + 8, R.r3 + 2, 6.5)
-  txt('5', LC + 2, R.r3 + 2, 6.5, helveticaBold)
-  txt('Medicare wages and tips', LC + 8, R.r3 + 2, 6.5)
-  txt('6', MC + 2, R.r3 + 2, 6.5, helveticaBold)
-  txt('Medicare tax withheld', MC + 8, R.r3 + 2, 6.5)
+  lb('3', LC + 2, R.r2 + 2); ll('Social security wages', LC + 8, R.r2 + 2)
+  lb('4', MC + 2, R.r2 + 2); ll('Social security tax withheld', MC + 8, R.r2 + 2)
 
-  txt('c', ox + 2, R.r4 + 2, 6.5, helveticaBold)
-  txt("Employer's name, address, and ZIP code", ox + 8, R.r4 + 2, 6.5)
+  lb('b', ox + 2, R.r3 + 2); ll('Employer ID number (EIN)', ox + 8, R.r3 + 2)
+  lb('5', LC + 2, R.r3 + 2); ll('Medicare wages and tips', LC + 8, R.r3 + 2)
+  lb('6', MC + 2, R.r3 + 2); ll('Medicare tax withheld', MC + 8, R.r3 + 2)
 
-  txt('d', ox + 2, R.r5 + 2, 6.5, helveticaBold)
-  txt('Control number', ox + 8, R.r5 + 2, 6.5)
+  lb('c', ox + 2, R.r4 + 2); ll("Employer's name, address, and ZIP code", ox + 8, R.r4 + 2)
+  lb('d', ox + 2, R.r5 + 2); ll('Control number', ox + 8, R.r5 + 2)
+  lb('e', ox + 2, R.r6 + 2); ll("Employee's name, address, and ZIP code", ox + 8, R.r6 + 2)
 
-  txt('e', ox + 2, R.r6 + 2, 6.5, helveticaBold)
-  txt("Employee's name, address, and ZIP code", ox + 8, R.r6 + 2, 6.5)
+  lb('7', ox + 2, R.r7 + 2); ll('Social security tips', ox + 8, R.r7 + 2)
+  lb('8', ox + 90 + 2, R.r7 + 2); ll('Allocated tips', ox + 90 + 8, R.r7 + 2)
+  lb('9', MC + 2, R.r7 + 2)
 
-  txt('7', ox + 2, R.r7 + 2, 6.5, helveticaBold)
-  txt('Social security tips', ox + 8, R.r7 + 2, 6.5)
-  txt('8', ox + 90 + 2, R.r7 + 2, 6.5, helveticaBold)
-  txt('Allocated tips', ox + 90 + 8, R.r7 + 2, 6.5)
-  txt('9', MC + 2, R.r7 + 2, 6.5, helveticaBold)
+  lb('10', ox + 2, R.r8 + 2); ll('Dependent care benefits', ox + 12, R.r8 + 2)
+  lb('11', ox + 90 + 2, R.r8 + 2); ll('Nonqualified plans', ox + 90 + 12, R.r8 + 2)
+  lb('12a', MC + 2, R.r8 + 2); ll('Code', MC + 16, R.r8 + 2)
+  ll('See inst. for box 12', MC + 30, R.r8 + 2)
 
-  txt('10', ox + 2, R.r8 + 2, 6.5, helveticaBold)
-  txt('Dependent care benefits', ox + 12, R.r8 + 2, 6.5)
-  txt('11', ox + 90 + 2, R.r8 + 2, 6.5, helveticaBold)
-  txt('Nonqualified plans', ox + 90 + 12, R.r8 + 2, 6.5)
-  txt('12a', MC + 2, R.r8 + 2, 6.5, helveticaBold)
-  txt('Code', MC + 16, R.r8 + 2, 6.5)
-  txt('See inst. for box 12', MC + 32, R.r8 + 2, 6.5)
+  lb('13', ox + 2, R.r9 + 2); ll('Statutory employee', ox + 12, R.r9 + 2)
+  lb('14', ox + 72, R.r9 + 2); ll('Other', ox + 82, R.r9 + 2)
+  lb('12b', MC + 2, R.r9 + 2); ll('Code', MC + 16, R.r9 + 2)
 
-  txt('13', ox + 2, R.r9 + 2, 6.5, helveticaBold)
-  txt('Statutory employee', ox + 12, R.r9 + 2, 6.5)
-  txt('14', ox + 72, R.r9 + 2, 6.5, helveticaBold)
-  txt('Other', ox + 82, R.r9 + 2, 6.5)
-  txt('12b', MC + 2, R.r9 + 2, 6.5, helveticaBold)
-  txt('Code', MC + 16, R.r9 + 2, 6.5)
+  ll('Retirement plan', ox + 8, R.r10 + 2)
+  lb('12c', MC + 2, R.r10 + 2); ll('Code', MC + 16, R.r10 + 2)
 
-  txt('Retirement plan', ox + 8, R.r10 + 2, 6.5)
-  txt('12c', MC + 2, R.r10 + 2, 6.5, helveticaBold)
-  txt('Code', MC + 16, R.r10 + 2, 6.5)
+  ll('Third-party sick pay', ox + 4, R.r11 + 2)
+  lb('12d', MC + 2, R.r11 + 2); ll('Code', MC + 16, R.r11 + 2)
 
-  txt('Third-party sick pay', ox + 4, R.r11 + 2, 6.5)
-  txt('12d', MC + 2, R.r11 + 2, 6.5, helveticaBold)
-  txt('Code', MC + 16, R.r11 + 2, 6.5)
-
-  // State labels
-  txt('15', ox + 2, R.r13 + 2, 6.5, helveticaBold)
-  txt('State', ox + 12, R.r13 + 2, 5)
-  txt("Employer's state ID number", ox + 26, R.r13 + 2, 6.5)
-  txt('16', ox + stW + 2, R.r13 + 2, 6.5, helveticaBold)
-  txt('State wages, tips, etc.', ox + stW + 12, R.r13 + 2, 6.5)
-  txt('17', ox + stW * 2 + 2, R.r13 + 2, 6.5, helveticaBold)
-  txt('State income tax', ox + stW * 2 + 12, R.r13 + 2, 6.5)
-  txt('18', ox + 2, R.r13 + 11, 6.5, helveticaBold)
-  txt('Local wages, tips, etc.', ox + 12, R.r13 + 11, 6.5)
-  txt('19', ox + stW + 2, R.r13 + 11, 6.5, helveticaBold)
-  txt('Local income tax', ox + stW + 12, R.r13 + 11, 6.5)
-  txt('20', ox + stW * 2 + 2, R.r13 + 11, 6.5, helveticaBold)
-  txt('Locality name', ox + stW * 2 + 12, R.r13 + 11, 6.5)
+  lb('15', ox + 2, R.r13 + 2); txt('State', ox + 12, R.r13 + 2, 5, helvetica, lc)
+  ll("Employer's state ID number", ox + 26, R.r13 + 2)
+  lb('16', ox + stW + 2, R.r13 + 2); ll('State wages, tips, etc.', ox + stW + 12, R.r13 + 2)
+  lb('17', ox + stW * 2 + 2, R.r13 + 2); ll('State income tax', ox + stW * 2 + 12, R.r13 + 2)
+  lb('18', ox + 2, R.r13 + 11); ll('Local wages, tips, etc.', ox + 12, R.r13 + 11)
+  lb('19', ox + stW + 2, R.r13 + 11); ll('Local income tax', ox + stW + 12, R.r13 + 11)
+  lb('20', ox + stW * 2 + 2, R.r13 + 11); ll('Locality name', ox + stW * 2 + 12, R.r13 + 11)
 
   // ── Footer ──
   const ftY = R.bot + 4
@@ -562,33 +536,35 @@ function drawCopy2x2(page, ox, oy, copyTitle, copyFooterNote, isRedCopy, data, f
   }
   if (copyFooterNote) txt(copyFooterNote, ox + 2, ftY + 16, 6)
 
-  // ── DATA VALUES (all in Courier to match original) ──
-  txt(em.ssn, ox + 6, R.r1 + 10, 10, courier)
-  txt(co.ein, ox + 6, R.r3 + 10, 10, courier)
+  // ── DATA VALUES (all Courier, sized to fit cells) ──
+  const DS = 8  // data font size (smaller to fit in narrow cells)
 
-  txtR(fmt(b[1]), MC - 2, R.r1 + 8, 10, courier)
-  txtR(fmt(b[2]), RC - 2, R.r1 + 8, 10, courier)
-  txtR(fmt(b[3]), MC - 2, R.r2 + 8, 10, courier)
-  txtR(fmt(b[4]), RC - 2, R.r2 + 8, 10, courier)
-  txtR(fmt(b[5]), MC - 2, R.r3 + 8, 10, courier)
-  txtR(fmt(b[6]), RC - 2, R.r3 + 8, 10, courier)
+  txt(em.ssn, ox + 6, R.r1 + 10, DS, courier)
+  txt(co.ein, ox + 6, R.r3 + 10, DS, courier)
 
-  // Employer (Courier like original)
-  txt(co.name, ox + 6, R.r4 + 12, 10, courier)
-  txt(co.addressLine1, ox + 6, R.r4 + 24, 10, courier)
+  txtR(fmt(b[1]), MC - 2, R.r1 + 10, DS, courier)
+  txtR(fmt(b[2]), RC - 2, R.r1 + 10, DS, courier)
+  txtR(fmt(b[3]), MC - 2, R.r2 + 10, DS, courier)
+  txtR(fmt(b[4]), RC - 2, R.r2 + 10, DS, courier)
+  txtR(fmt(b[5]), MC - 2, R.r3 + 10, DS, courier)
+  txtR(fmt(b[6]), RC - 2, R.r3 + 10, DS, courier)
+
+  // Employer (Courier, 8pt to fit in ~97pt wide left section)
+  txt(co.name, ox + 4, R.r4 + 11, DS, courier)
+  txt(co.addressLine1, ox + 4, R.r4 + 22, DS, courier)
   if (co.addressLine2) {
-    txt(co.addressLine2, ox + 6, R.r4 + 36, 10, courier)
-    txt(co.cityStateZip, ox + 6, R.r4 + 48, 10, courier)
+    txt(co.addressLine2, ox + 4, R.r4 + 33, DS, courier)
+    txt(co.cityStateZip, ox + 4, R.r4 + 44, DS, courier)
   } else {
-    txt(co.cityStateZip, ox + 6, R.r4 + 36, 10, courier)
+    txt(co.cityStateZip, ox + 4, R.r4 + 33, DS, courier)
   }
 
-  txt(data.controlNumber, ox + 8, R.r5 + 12, 10, courier)
+  txt(data.controlNumber, ox + 6, R.r5 + 11, DS, courier)
 
-  // Employee (Courier)
-  txt(em.name, ox + 6, R.r6 + 14, 10, courier)
-  txt(em.addressLine1, ox + 6, R.r6 + 30, 10, courier)
-  txt(em.cityStateZip, ox + 6, R.r6 + 46, 10, courier)
+  // Employee (Courier, 8pt)
+  txt(em.name, ox + 4, R.r6 + 12, DS, courier)
+  txt(em.addressLine1, ox + 4, R.r6 + 24, DS, courier)
+  txt(em.cityStateZip, ox + 4, R.r6 + 36, DS, courier)
 
   // Checkboxes
   const drawChk = (x, y, checked) => {
@@ -605,11 +581,11 @@ function drawCopy2x2(page, ox, oy, copyTitle, copyFooterNote, isRedCopy, data, f
   txt(fmt12(b['12d']), MC + 16, R.r11 + 10, 7, courier)
   txt(b[14], ox + 82, R.r9 + 12, 7, courier)
 
-  // State values (Courier)
-  txt(st.state, ox + 4, R.r12 + 10, 10, courier)
-  txt(st.employerId, ox + 26, R.r12 + 10, 10, courier)
-  txtR(fmt(b[16] || st.stateWages), ox + stW * 2 - 2, R.r12 + 10, 10, courier)
-  txtR(fmt(b[17] || st.stateTax), RC - 2, R.r12 + 10, 10, courier)
+  // State values (Courier, 8pt)
+  txt(st.state, ox + 4, R.r12 + 10, DS, courier)
+  txt(st.employerId, ox + 26, R.r12 + 10, 7, courier)
+  txtR(fmt(b[16] || st.stateWages), ox + stW * 2 - 2, R.r12 + 10, DS, courier)
+  txtR(fmt(b[17] || st.stateTax), RC - 2, R.r12 + 10, DS, courier)
 }
 
 // ─── Draw dashed separator line between copies ───────────────────────────────
