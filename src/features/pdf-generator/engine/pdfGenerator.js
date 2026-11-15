@@ -1,88 +1,15 @@
 /**
- * PDF Generator — renders HTML/CSS templates via html2canvas → pdf-lib.
+ * PDF Generator — uses direct vector rendering with pdf-lib for crisp output.
  *
- * Strategy:
- * 1. html: Render React template component to hidden DOM → capture with html2canvas → embed in PDF
- * 2. base-overlay: (fallback) Load blank-base.pdf + vector text overlay
- * 3. scratch: (fallback) Create blank PDF pages and place fields
+ * Strategy priority:
+ * 1. direct-vector: Draw complete W-2 form with pdf-lib (best quality, vector text)
+ * 2. base-overlay: Load blank-base.pdf + vector text overlay (fallback)
+ * 3. scratch: Create blank PDF pages and place fields (lowest fidelity)
  */
-import { createElement } from 'react'
-import { createRoot } from 'react-dom/client'
-import html2canvas from 'html2canvas'
-import { PDFDocument } from 'pdf-lib'
 import { getTemplate, getPdfBase, adaptDocumentForTemplate } from '../../../templates'
+import { generateDirectPdf } from './pdfDirectGenerator'
 import { generateFromBase } from './pdfOverlayGenerator'
 import { generateFromScratch } from './pdfScratchGenerator'
-
-/**
- * Render a React template component to a hidden container,
- * capture each .w2page with html2canvas, and create a PDF.
- */
-async function generateFromHtml(template, adaptedData, doc) {
-  const Component = template.component
-
-  // Create hidden container — positioned off-screen but visible
-  // (html2canvas needs elements to be in the DOM and not display:none)
-  const container = document.createElement('div')
-  container.style.cssText = 'position:fixed;left:-9999px;top:0;z-index:-1;visibility:visible;'
-  document.body.appendChild(container)
-
-  // CSS is already loaded in the document via regular imports in Template.jsx
-  // No need for manual injection
-
-  try {
-    // Render the template component
-    const root = createRoot(container)
-    await new Promise((resolve) => {
-      root.render(createElement(Component, { data: adaptedData, doc }))
-      // Wait for React to flush
-      setTimeout(resolve, 100)
-    })
-
-    // Find all page elements
-    const pages = container.querySelectorAll('.w2page')
-    if (!pages.length) {
-      throw new Error('Template did not render any .w2page elements')
-    }
-
-    const pdfDoc = await PDFDocument.create()
-
-    for (const pageEl of pages) {
-      const isLandscape = pageEl.classList.contains('w2page-landscape')
-      const pageW = isLandscape ? 792 : 612
-      const pageH = isLandscape ? 612 : 792
-
-      const canvas = await html2canvas(pageEl, {
-        scale: 3,
-        backgroundColor: '#ffffff',
-        logging: false,
-        useCORS: true,
-        width: pageW,
-        height: pageH,
-      })
-
-      const dataUrl = canvas.toDataURL('image/png')
-      const base64 = dataUrl.split(',')[1]
-      const pngBytes = Uint8Array.from(window.atob(base64), (c) => c.charCodeAt(0))
-      const pngImage = await pdfDoc.embedPng(pngBytes)
-      const pdfPage = pdfDoc.addPage([pageW, pageH])
-      pdfPage.drawImage(pngImage, { x: 0, y: 0, width: pageW, height: pageH })
-    }
-
-    const pdfBytes = await pdfDoc.save()
-
-    // Cleanup
-    root.unmount()
-
-    return {
-      pdfBytes,
-      stats: { strategy: 'html', pages: pages.length },
-      warnings: [],
-    }
-  } finally {
-    document.body.removeChild(container)
-  }
-}
 
 /**
  * Generate a PDF for a W-2 document using the specified template.
@@ -97,9 +24,9 @@ export async function generatePdf(doc, templateId) {
 
   let result
 
-  // Use HTML rendering if the template is self-contained (HTML/CSS based)
+  // Use direct vector rendering for self-contained templates (best quality)
   if (manifest?.selfContained) {
-    result = await generateFromHtml(template, adaptedData, doc)
+    result = await generateDirectPdf(adaptedData, manifest)
   } else {
     const pdfBaseUrl = getPdfBase(templateId)
     if (pdfBaseUrl) {
