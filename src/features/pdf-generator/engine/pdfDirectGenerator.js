@@ -208,24 +208,24 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   txt('Allocated tips', C2 + 9, ROW.r4Top + 2, 4.5)
   txt('9', C3 + 2, ROW.r4Top + 2, 5, helveticaBold)
 
-  // ── Copy B only: thick black borders on boxes 9, 12a, 12b ──
+  // ── Copy B only: thick black borders on boxes 1, 2, 9 ──
   if (copyLabel === 'Copy B') {
     const thk = 1.5
+    // Box 1 thick border
+    hLine(C1, C2, ROW.r2Top, thk)
+    hLine(C1, C2, ROW.r2Bot, thk)
+    vLine(C1, ROW.r2Top, ROW.r2Bot, thk)
+    vLine(C2, ROW.r2Top, ROW.r2Bot, thk)
+    // Box 2 thick border
+    hLine(C2, C3, ROW.r2Top, thk)
+    hLine(C2, C3, ROW.r2Bot, thk)
+    vLine(C2, ROW.r2Top, ROW.r2Bot, thk)
+    vLine(C3, ROW.r2Top, ROW.r2Bot, thk)
     // Box 9 thick border
     hLine(C3, C4, ROW.r4Top, thk)
     hLine(C3, C4, ROW.r4Bot, thk)
     vLine(C3, ROW.r4Top, ROW.r4Bot, thk)
     vLine(C4, ROW.r4Top, ROW.r4Bot, thk)
-    // Box 12a thick border
-    hLine(C3, C4, ROW.r5Top, thk)
-    hLine(C3, C4, ROW.r5Bot, thk)
-    vLine(C3, ROW.r5Top, ROW.r5Bot, thk)
-    vLine(C4, ROW.r5Top, ROW.r5Bot, thk)
-    // Box 12b thick border (only on Copy B)
-    hLine(C3, C4, ROW.r6Top, thk)
-    hLine(C3, C4, ROW.r6Bot, thk)
-    vLine(C3, ROW.r6Top, ROW.r6Bot, thk)
-    vLine(C4, ROW.r6Top, ROW.r6Bot, thk)
   }
 
   // ── Row 5: Control / Box 10, 11, 12a ──
@@ -325,14 +325,14 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   const einLabelW = helvetica.widthOfTextAtSize('Employer identification number (EIN)', 5)
   txt(co.ein, C1 + 10 + einLabelW + 6, ROW.r1Top + 2, 9, courier)
 
-  // Employer name and address (below "c" label) — regular weight like original
-  txt(co.name, L + 6, ROW.r2Top + 12, 9, helvetica)
-  txt(co.addressLine1, L + 6, ROW.r2Top + 22, 8)
+  // Employer name and address (below "c" label) — bold name, regular address
+  txt(co.name, L + 6, ROW.r2Top + 12, 9, helveticaBold)
+  txt(co.addressLine1, L + 6, ROW.r2Top + 24, 8)
   if (co.addressLine2) {
-    txt(co.addressLine2, L + 6, ROW.r3Top + 10, 8)
-    txt(co.cityStateZip, L + 6, ROW.r3Top + 20, 8)
+    txt(co.addressLine2, L + 6, ROW.r3Top + 12, 8)
+    txt(co.cityStateZip, L + 6, ROW.r4Top + 2, 8)
   } else {
-    txt(co.cityStateZip, L + 6, ROW.r3Top + 10, 8)
+    txt(co.cityStateZip, L + 6, ROW.r3Top + 12, 8)
   }
 
   // Box values (right-aligned within each box, positioned below label)
@@ -353,10 +353,10 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   // Box 12a
   txt(fmt12(b['12a']), C3 + 16, ROW.r5Top + 12, 7)
 
-  // Employee name and address — regular weight like original
-  txt(em.name, L + 6, ROW.r6Top + 14, 9)
-  txt(em.addressLine1, L + 6, ROW.r6Top + 24, 8)
-  txt(em.cityStateZip, L + 6, ROW.r7Top + 10, 8)
+  // Employee name and address — bold name like original, indented
+  txt(em.name, L + 8, ROW.r6Top + 14, 9, helveticaBold)
+  txt(em.addressLine1, L + 8, ROW.r6Top + 26, 8)
+  txt(em.cityStateZip, L + 8, ROW.r7Top + 14, 8)
 
   // Box 14 value
   txt(b[14], C2 + 6, ROW.r6Top + 14, 7)
