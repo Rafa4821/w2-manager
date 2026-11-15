@@ -1,0 +1,392 @@
+/* ═══════════════════════════════════════════════════
+   W2CopyHtml — Pure CSS W-2 form layout
+   No background images. Every line and box is CSS.
+   ═══════════════════════════════════════════════════ */
+
+.w2copy {
+  width: 544px; /* ~7.5 inches at 72dpi, fits in letter with margins */
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 7px;
+  line-height: 1.2;
+  color: #000;
+  border: 1px solid #000;
+  box-sizing: border-box;
+  background: #fff;
+  page-break-inside: avoid;
+}
+
+/* ── Row 1: SSN + EIN + OMB ─────────────────────── */
+.w2copy-row1 {
+  display: flex;
+  border-bottom: 1px solid #000;
+}
+.w2copy-ssn {
+  flex: 0 0 40%;
+  border-right: 1px solid #000;
+}
+.w2copy-ein {
+  flex: 1;
+  border-right: 1px solid #000;
+}
+.w2copy-omb {
+  flex: 0 0 14%;
+  text-align: center;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Main area: left + boxes + right ────────────── */
+.w2copy-main {
+  display: flex;
+  border-bottom: 1px solid #000;
+}
+.w2copy-left {
+  flex: 0 0 38%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #000;
+}
+.w2copy-employer {
+  flex: 1;
+  min-height: 52px;
+  border-bottom: 1px solid #000;
+}
+.w2copy-control {
+  min-height: 18px;
+  border-bottom: 1px solid #000;
+}
+.w2copy-employee {
+  flex: 1;
+  min-height: 48px;
+}
+
+/* ── Boxes grid ─────────────────────────────────── */
+.w2copy-boxes {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #000;
+}
+.w2copy-boxrow {
+  display: flex;
+  flex: 1;
+  border-bottom: 1px solid #000;
+}
+.w2copy-boxrow:last-child {
+  border-bottom: none;
+}
+.w2copy-box {
+  flex: 1;
+  border-right: 1px solid #000;
+  padding: 1px 2px;
+  display: flex;
+  flex-direction: column;
+  min-height: 16px;
+  position: relative;
+}
+.w2copy-box:last-child {
+  border-right: none;
+}
+
+/* ── Box labels and values ──────────────────────── */
+.w2copy-cell {
+  padding: 2px 3px;
+  position: relative;
+}
+.w2copy-lbl {
+  display: block;
+  font-size: 5.5px;
+  color: #000;
+  line-height: 1.1;
+}
+.w2copy-lbl b {
+  font-size: 7px;
+}
+.w2copy-lbl-sm {
+  font-size: 5.5px;
+  color: #000;
+}
+.w2copy-val {
+  display: block;
+  font-size: 8px;
+  font-weight: 600;
+  margin-top: 1px;
+  word-break: break-word;
+  overflow: hidden;
+}
+.w2copy-mono {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.w2copy-boxlbl {
+  display: block;
+  font-size: 5px;
+  color: #000;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.w2copy-boxlbl b {
+  font-size: 6.5px;
+  font-weight: 700;
+}
+.w2copy-boxval {
+  display: block;
+  font-size: 8px;
+  font-weight: 600;
+  text-align: right;
+  margin-top: auto;
+  padding-right: 2px;
+}
+
+/* ── Box 12 stack ───────────────────────────────── */
+.w2copy-box12-stack {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 30%;
+  border-left: 1px solid #000;
+}
+.w2copy-box12-stack .w2copy-box {
+  border-right: none;
+  border-bottom: 1px solid #000;
+  flex: 1;
+}
+.w2copy-box12-stack .w2copy-box:last-child {
+  border-bottom: none;
+}
+.w2copy-box12 .w2copy-boxval {
+  font-size: 7px;
+  text-align: left;
+}
+
+/* ── Box 13 checkboxes ──────────────────────────── */
+.w2copy-box13 {
+  flex: 0 0 35%;
+}
+.w2copy-chk-row {
+  font-size: 5.5px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 1px;
+}
+.w2copy-chk {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border: 1px solid #000;
+  text-align: center;
+  font-size: 7px;
+  font-weight: 700;
+  line-height: 8px;
+  flex-shrink: 0;
+}
+
+/* ── Right panel: Form title + copy info ────────── */
+.w2copy-right {
+  flex: 0 0 14%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 2px;
+}
+.w2copy-title {
+  text-align: center;
+  margin-bottom: 6px;
+}
+.w2copy-form-label {
+  display: block;
+  font-size: 6px;
+}
+.w2copy-form-w2 {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+.w2copy-form-sub {
+  display: block;
+  font-size: 8px;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+.w2copy-form-year {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  margin-top: 4px;
+}
+.w2copy-copy-info {
+  font-size: 5.5px;
+  text-align: center;
+  line-height: 1.3;
+  margin-top: auto;
+}
+.w2copy-copy-desc {
+  font-size: 5px;
+}
+
+/* ── State/Local bottom row ─────────────────────── */
+.w2copy-state-row {
+  display: flex;
+  border-bottom: 1px solid #000;
+}
+.w2copy-state-cell {
+  flex: 1;
+  border-right: 1px solid #000;
+  padding: 1px 2px;
+  min-height: 18px;
+}
+.w2copy-state-cell:last-child {
+  border-right: none;
+}
+.w2copy-state-st {
+  flex: 0 0 6%;
+}
+.w2copy-state-id {
+  flex: 0 0 16%;
+}
+.w2copy-state-cell .w2copy-boxval {
+  font-size: 7px;
+}
+
+/* ── Footer ─────────────────────────────────────── */
+.w2copy-footer {
+  font-size: 5px;
+  text-align: right;
+  padding: 1px 4px;
+}
+
+/* ── Page containers for templates ──────────────── */
+.w2page {
+  width: 612px;
+  height: 792px;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+  padding: 20px 34px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.w2page-landscape {
+  width: 792px;
+  height: 612px;
+}
+.w2page-2col {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 16px 20px;
+}
+.w2page-2col .w2copy {
+  width: 268px;
+  font-size: 5.5px;
+}
+.w2page-2col .w2copy .w2copy-val { font-size: 6.5px; }
+.w2page-2col .w2copy .w2copy-boxval { font-size: 6.5px; }
+.w2page-2col .w2copy .w2copy-form-w2 { font-size: 14px; }
+.w2page-2col .w2copy .w2copy-form-year { font-size: 14px; }
+.w2page-2col .w2copy .w2copy-form-sub { font-size: 6px; }
+.w2page-2col .w2copy .w2copy-employer { min-height: 40px; }
+.w2page-2col .w2copy .w2copy-employee { min-height: 36px; }
+.w2page-2col .w2copy .w2copy-control { min-height: 14px; }
+
+/* 4 stacked copies */
+.w2page-4stack {
+  gap: 3px;
+  padding: 10px 34px;
+}
+.w2page-4stack .w2copy {
+  font-size: 5.5px;
+}
+.w2page-4stack .w2copy .w2copy-val { font-size: 6px; }
+.w2page-4stack .w2copy .w2copy-boxval { font-size: 6px; }
+.w2page-4stack .w2copy .w2copy-form-w2 { font-size: 12px; }
+.w2page-4stack .w2copy .w2copy-form-year { font-size: 12px; }
+.w2page-4stack .w2copy .w2copy-form-sub { font-size: 5.5px; }
+.w2page-4stack .w2copy .w2copy-employer { min-height: 34px; }
+.w2page-4stack .w2copy .w2copy-employee { min-height: 30px; }
+.w2page-4stack .w2copy .w2copy-control { min-height: 12px; }
+
+/* ── ADP Earnings pages ─────────────────────────── */
+.w2page-adp {
+  gap: 4px;
+  padding: 14px 34px;
+}
+.w2page-adp-copies {
+  width: 612px;
+  height: 792px;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+  padding: 14px 34px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Earnings summary block */
+.w2adp-earnings {
+  width: 544px;
+  border: 1px solid #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 7px;
+  background: #fff;
+  margin-bottom: 4px;
+}
+.w2adp-earnings-header {
+  display: flex;
+  border-bottom: 1px solid #000;
+}
+.w2adp-earnings-title {
+  flex: 0 0 20%;
+  text-align: center;
+  padding: 6px 4px;
+  border-right: 1px solid #000;
+}
+.w2adp-form-label { display: block; font-size: 6px; }
+.w2adp-form-w2 { display: block; font-size: 18px; font-weight: 700; line-height: 1; }
+.w2adp-form-sub { display: block; font-size: 7px; margin-top: 2px; }
+.w2adp-form-year { display: block; font-size: 16px; font-weight: 700; margin-top: 4px; }
+.w2adp-earnings-company {
+  flex: 1;
+  padding: 4px 6px;
+  border-right: 1px solid #000;
+}
+.w2adp-earnings-employee {
+  flex: 1;
+  padding: 4px 6px;
+}
+.w2adp-lbl { font-size: 5.5px; color: #333; margin-bottom: 2px; }
+.w2adp-val { font-size: 7px; font-weight: 600; }
+.w2adp-earnings-table {
+  width: 100%;
+}
+.w2adp-earnings-row {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+}
+.w2adp-earnings-row:last-child { border-bottom: none; }
+.w2adp-earnings-hdr {
+  background: #f0f0f0;
+  font-weight: 700;
+  font-size: 5.5px;
+}
+.w2adp-earnings-cell {
+  flex: 1;
+  padding: 3px 4px;
+  text-align: right;
+  border-right: 1px solid #ccc;
+  font-size: 7px;
+}
+.w2adp-earnings-cell:first-child {
+  text-align: left;
+  flex: 0 0 25%;
+}
+.w2adp-earnings-cell:last-child { border-right: none; }

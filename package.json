@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.9",
+    "html2canvas": "^1.4.1",
     "jszip": "^3.10.2",
     "lucide-react": "^1.72.0",
     "pdf-lib": "^1.17.1",

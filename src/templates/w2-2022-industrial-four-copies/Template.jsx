@@ -1,38 +1,13 @@
-import { useMemo } from 'react'
-import mapping from './mapping.json'
-import page1 from './background-page-1.png'
+import W2CopyHtml from '../engine/W2CopyHtml'
+import '../engine/w2copy.css'
 
-const backgrounds = [page1]
-const getPath = (root, path) => path.split('.').reduce((object, part) => object?.[part], root)
-
-function resolveFieldValue(field, data) {
-  const raw = field.path.startsWith('state.') && Array.isArray(data.stateRecords)
-    ? getPath(data.stateRecords[field.page] || {}, field.path.slice(6))
-    : getPath(data, field.path)
-  return raw == null ? '' : String(raw)
-}
-
-export default function W22022IndustrialTemplate({ data = {} }) {
-  const fields = useMemo(() => mapping.fields.map((field, i) => ({
-    ...field, key: `field-${i}`, text: resolveFieldValue(field, data)
-  })), [data])
+export default function Template({ data = {} }) {
   return (
-    <div className="w2industrial22-doc">
-      {backgrounds.map((background, pageIndex) => (
-        <div key={pageIndex} className="w2industrial22-viewport">
-          <div className="w2industrial22-page" aria-label="W-2 2022 Industrial, four copies">
-            <img className="w2industrial22-background" alt="" src={background} draggable={false} />
-            <svg className="w2industrial22-values" viewBox={`0 0 ${(mapping.pageSizePt || [612, 792])[0]} ${(mapping.pageSizePt || [612, 792])[1]}`} aria-hidden="true">
-              {fields.filter((f) => f.page === pageIndex && f.text).map((f) => (
-                <text key={f.key} className="w2industrial22-text"
-                  x={f.x} y={f.baselineY} fontSize={f.fontSize} fontFamily={f.fontFamily} fontWeight={f.fontWeight || 'normal'}>
-                  {f.text}
-                </text>
-              ))}
-            </svg>
-          </div>
-        </div>
-      ))}
+    <div className="w2page w2page-2col">
+      <W2CopyHtml data={data} copyLabel="Copy B" copyDesc="To Be Filed with Employee's FEDERAL Tax Return." />
+      <W2CopyHtml data={data} copyLabel="Copy 2" copyDesc="To Be Filed with Employee's State, City, or Local Income Tax Return." />
+      <W2CopyHtml data={data} copyLabel="Copy C" copyDesc="For Employee's Records." />
+      <W2CopyHtml data={data} copyLabel="Copy D" copyDesc="For Employer." />
     </div>
   )
 }
