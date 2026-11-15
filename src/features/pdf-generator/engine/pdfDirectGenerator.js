@@ -325,14 +325,15 @@ function drawCopy(page, layout, data, fonts, pageH) {
   txt('Dept. of the Treasury \u2014 IRS', R - 80, ry.r9 + rowH.r9 + 1, { size: 5 })
 
   // ═══ DRAW DATA VALUES ═══
+  // Values are positioned BELOW their labels (label ~5pt + gap)
 
-  // SSN
-  txt(em.ssn, L + 4, ry.r1 + 2, { size: 9, font: courier })
-  // EIN
-  txt(co.ein, C1 + 4, ry.r1 + 2, { size: 9, font: courier })
+  // SSN (below "a Employee's SSN" label)
+  txt(em.ssn, L + 4, ry.r1 + 5, { size: 8, font: courier })
+  // EIN (below "b Employer identification number" label)
+  txt(co.ein, C1 + 4, ry.r1 + 5, { size: 8, font: courier })
 
-  // Employer info
-  const empYStart = ry.r2 + 2
+  // Employer info (below "c Employer's name..." label)
+  const empYStart = ry.r2 + 8
   txt(co.name, L + 4, empYStart, { size: 8, font: helveticaBold })
   txt(co.addressLine1, L + 4, empYStart + 10, { size: 8 })
   if (co.addressLine2) {
@@ -342,34 +343,34 @@ function drawCopy(page, layout, data, fonts, pageH) {
     txt(co.cityStateZip, L + 4, empYStart + 20, { size: 8 })
   }
 
-  // Box values (right-aligned)
-  txtR(fmt(b[1]), C2, ry.r2 + 8)
-  txtR(fmt(b[2]), C3, ry.r2 + 8)
-  txtR(fmt(b[3]), C4, ry.r2 + 8)
-  txtR(fmt(b[4]), C2, ry.r3 + 8)
-  txtR(fmt(b[5]), C3, ry.r3 + 8)
-  txtR(fmt(b[6]), C4, ry.r3 + 8)
-  txtR(fmt(b[7]), C2, ry.r4 + 8)
-  txtR(fmt(b[8]), C3, ry.r4 + 8)
+  // Box values (right-aligned, positioned at bottom of each box)
+  txtR(fmt(b[1]), C2, ry.r2 + 12)
+  txtR(fmt(b[2]), C3, ry.r2 + 12)
+  txtR(fmt(b[3]), C4, ry.r2 + 12)
+  txtR(fmt(b[4]), C2, ry.r3 + 12)
+  txtR(fmt(b[5]), C3, ry.r3 + 12)
+  txtR(fmt(b[6]), C4, ry.r3 + 12)
+  txtR(fmt(b[7]), C2, ry.r4 + 12)
+  txtR(fmt(b[8]), C3, ry.r4 + 12)
 
-  // Control number
-  txt(data.controlNumber, L + 4, ry.r5 + 8, { size: 8, font: helveticaBold })
-  // Box 10, 11
-  txtR(fmt(b[10]), C2, ry.r5 + 8)
-  txtR(fmt(b[11]), C3, ry.r5 + 8)
+  // Control number (below "d Control number" label)
+  txt(data.controlNumber, L + 4, ry.r5 + 9, { size: 8, font: helveticaBold })
+  // Box 10, 11 (bottom of box)
+  txtR(fmt(b[10]), C2, ry.r5 + 11)
+  txtR(fmt(b[11]), C3, ry.r5 + 11)
   // Box 12a
-  txt(fmt12(b['12a']), C3 + 4, ry.r5 + 10, { size: 6.5 })
+  txt(fmt12(b['12a']), C3 + 4, ry.r5 + 11, { size: 6.5 })
 
-  // Employee info
-  const eeYStart = ry.r6 + 8
+  // Employee info (below "e Employee's name..." label)
+  const eeYStart = ry.r6 + 12
   txt(em.name, L + 4, eeYStart, { size: 8, font: helveticaBold })
   txt(em.addressLine1, L + 4, eeYStart + 10, { size: 8 })
   txt(em.cityStateZip, L + 4, eeYStart + 20, { size: 8 })
 
   // Box 14
-  txt(b[14], C2 + 4, ry.r6 + 10, { size: 6.5 })
+  txt(b[14], C2 + 4, ry.r6 + 12, { size: 6.5 })
   // Box 12b, 12c, 12d
-  txt(fmt12(b['12b']), C3 + 4, ry.r6 + 10, { size: 6.5 })
+  txt(fmt12(b['12b']), C3 + 4, ry.r6 + 12, { size: 6.5 })
   txt(fmt12(b['12c']), C3 + 4, ry.r7 + 10, { size: 6.5 })
   txt(fmt12(b['12d']), C3 + 4, ry.r8 + 10, { size: 6.5 })
 
