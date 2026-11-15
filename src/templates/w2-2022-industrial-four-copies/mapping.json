@@ -133,6 +133,15 @@
     {
       "page": 0,
       "copy": "A",
+      "path": "year",
+      "x": 183.2,
+      "baselineY": 377.4,
+      "fontSize": 6,
+      "maxWidth": 35
+    },
+    {
+      "page": 0,
+      "copy": "A",
       "path": "boxes.16",
       "x": 159.2,
       "baselineY": 317.6,
@@ -275,6 +284,15 @@
       "baselineY": 85.6,
       "fontSize": 7.5,
       "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "B",
+      "path": "year",
+      "x": 476.4,
+      "baselineY": 377.4,
+      "fontSize": 6,
+      "maxWidth": 35
     },
     {
       "page": 0,
@@ -425,6 +443,15 @@
     {
       "page": 0,
       "copy": "C",
+      "path": "year",
+      "x": 183.2,
+      "baselineY": 739.9,
+      "fontSize": 6,
+      "maxWidth": 35
+    },
+    {
+      "page": 0,
+      "copy": "C",
       "path": "boxes.16",
       "x": 159.2,
       "baselineY": 697,
@@ -567,6 +594,15 @@
       "baselineY": 465,
       "fontSize": 7.5,
       "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "year",
+      "x": 476.4,
+      "baselineY": 757.3,
+      "fontSize": 6,
+      "maxWidth": 35
     },
     {
       "page": 0,

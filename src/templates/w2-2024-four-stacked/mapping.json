@@ -5,6 +5,26 @@
     {
       "page": 0,
       "copy": "A",
+      "path": "employee.ssn",
+      "x": 370.6,
+      "baselineY": 76.2,
+      "fontSize": 8,
+      "maxWidth": 80,
+      "fontFamily": "Courier"
+    },
+    {
+      "page": 0,
+      "copy": "A",
+      "path": "company.ein",
+      "x": 277,
+      "baselineY": 76.2,
+      "fontSize": 8,
+      "maxWidth": 80,
+      "fontFamily": "Courier"
+    },
+    {
+      "page": 0,
+      "copy": "A",
       "path": "company.name",
       "x": 51.6,
       "baselineY": 61.9,
@@ -113,11 +133,40 @@
     {
       "page": 0,
       "copy": "A",
+      "path": "year",
+      "x": 245,
+      "baselineY": 21.6,
+      "fontSize": 10,
+      "maxWidth": 35
+    },
+    {
+      "page": 0,
+      "copy": "A",
       "path": "boxes.16",
       "x": 215.3,
       "baselineY": 184.3,
       "fontSize": 5,
       "maxWidth": 45
+    },
+    {
+      "page": 0,
+      "copy": "B",
+      "path": "employee.ssn",
+      "x": 370.6,
+      "baselineY": 264.9,
+      "fontSize": 8,
+      "maxWidth": 80,
+      "fontFamily": "Courier"
+    },
+    {
+      "page": 0,
+      "copy": "B",
+      "path": "company.ein",
+      "x": 277,
+      "baselineY": 264.9,
+      "fontSize": 8,
+      "maxWidth": 80,
+      "fontFamily": "Courier"
     },
     {
       "page": 0,
@@ -230,11 +279,40 @@
     {
       "page": 0,
       "copy": "B",
+      "path": "year",
+      "x": 245,
+      "baselineY": 215.8,
+      "fontSize": 10,
+      "maxWidth": 35
+    },
+    {
+      "page": 0,
+      "copy": "B",
       "path": "boxes.16",
       "x": 215.3,
       "baselineY": 373,
       "fontSize": 5,
       "maxWidth": 45
+    },
+    {
+      "page": 0,
+      "copy": "C",
+      "path": "employee.ssn",
+      "x": 370.6,
+      "baselineY": 462.90000000000003,
+      "fontSize": 8,
+      "maxWidth": 80,
+      "fontFamily": "Courier"
+    },
+    {
+      "page": 0,
+      "copy": "C",
+      "path": "company.ein",
+      "x": 277,
+      "baselineY": 462.90000000000003,
+      "fontSize": 8,
+      "maxWidth": 80,
+      "fontFamily": "Courier"
     },
     {
       "page": 0,
@@ -347,11 +425,40 @@
     {
       "page": 0,
       "copy": "C",
+      "path": "year",
+      "x": 245,
+      "baselineY": 414,
+      "fontSize": 10,
+      "maxWidth": 35
+    },
+    {
+      "page": 0,
+      "copy": "C",
       "path": "boxes.16",
       "x": 215.3,
       "baselineY": 571,
       "fontSize": 5,
       "maxWidth": 45
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "employee.ssn",
+      "x": 370.6,
+      "baselineY": 659.5999999999999,
+      "fontSize": 8,
+      "maxWidth": 80,
+      "fontFamily": "Courier"
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "company.ein",
+      "x": 277,
+      "baselineY": 659.5999999999999,
+      "fontSize": 8,
+      "maxWidth": 80,
+      "fontFamily": "Courier"
     },
     {
       "page": 0,
@@ -460,6 +567,15 @@
       "baselineY": 697.3,
       "fontSize": 6,
       "maxWidth": 55
+    },
+    {
+      "page": 0,
+      "copy": "D",
+      "path": "year",
+      "x": 245,
+      "baselineY": 611.3,
+      "fontSize": 10,
+      "maxWidth": 35
     },
     {
       "page": 0,

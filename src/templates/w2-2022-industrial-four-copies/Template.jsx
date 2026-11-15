@@ -22,7 +22,7 @@ export default function W22022IndustrialTemplate({ data = {} }) {
         <div key={pageIndex} className="w2industrial22-viewport">
           <div className="w2industrial22-page" aria-label="W-2 2022 Industrial, four copies">
             <img className="w2industrial22-background" alt="" src={background} draggable={false} />
-            <svg className="w2industrial22-values" viewBox={`0 0 ${mapping.pageSizePt[0]} ${mapping.pageSizePt[1]}`} aria-hidden="true">
+            <svg className="w2industrial22-values" viewBox={`0 0 ${(mapping.pageSizePt || [612, 792])[0]} ${(mapping.pageSizePt || [612, 792])[1]}`} aria-hidden="true">
               {fields.filter((f) => f.page === pageIndex && f.text).map((f) => (
                 <text key={f.key} className="w2industrial22-text"
                   x={f.x} y={f.baselineY} fontSize={f.fontSize} fontFamily={f.fontFamily} fontWeight={f.fontWeight || 'normal'}>

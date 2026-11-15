@@ -24,7 +24,7 @@ export default function W22021MCDeanTemplate({ data = {} }) {
         <div key={pageIndex} className="w2mcdean21-viewport">
           <div className="w2mcdean21-page" aria-label={`W-2 2021 state record, page ${pageIndex + 1} of 3`}>
             <img className="w2mcdean21-background" alt="" src={background} draggable={false} />
-            <svg className="w2mcdean21-values" viewBox={`0 0 ${mapping.pageSizePt[0]} ${mapping.pageSizePt[1]}`} aria-hidden="true">
+            <svg className="w2mcdean21-values" viewBox={`0 0 ${(mapping.pageSizePt || [612, 792])[0]} ${(mapping.pageSizePt || [612, 792])[1]}`} aria-hidden="true">
               {fields.filter((f) => f.page === pageIndex && f.text).map((f) => (
                 <text key={f.key} className="w2mcdean21-text"
                   x={f.x} y={f.baselineY} fontSize={f.fontSize} fontFamily={f.fontFamily} fontWeight={f.fontWeight || 'normal'}>
