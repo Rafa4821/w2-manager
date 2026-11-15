@@ -12,19 +12,9 @@
  *   4. Import that index.js here
  */
 
-// Built-in demo template
-import './demo-w2'
-
-// Production templates — organized by tax year
-import './w2-2021-three-copies'
-import './w2-2021-earnings-four-copies'
-import './w2-2021-mcdean-state-pages'
-import './w2-2022-four-copies'
-import './w2-2022-industrial-four-copies'
-import './w2-2023-adp-earnings'
-import './w2-2023-mmr-reissued'
-import './w2-2024-four-stacked'
-import './w2-2025-three-stacked'
+// Production templates — rebuilt from originals as pure HTML/CSS + vector PDF
+import './w2-2021-three-copies'      // Plantilla 1
+import './w2-2021-four-copies-2x2'   // Plantilla 2
 
 // Re-export the engine for convenience
 export {

@@ -1,0 +1,17 @@
+{
+  "id": "w2-2021-four-copies-2x2",
+  "name": "Plantilla 2 — Cuatro copias 2x2",
+  "description": "Four W-2 copies (B, 2, C, 2) in a 2x2 grid on a single US Letter page.",
+  "version": "1.0.0",
+  "category": "standard",
+  "taxYears": [],
+  "pages": 1,
+  "pageSize": {
+    "width": 8.5,
+    "height": 11,
+    "unit": "in"
+  },
+  "isDefault": false,
+  "selfContained": true,
+  "copyIds": ["B", "2", "C", "2"]
+}
