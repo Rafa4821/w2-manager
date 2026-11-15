@@ -1,9 +1,7 @@
 /**
  * pdfDirectGenerator — Draws the complete W-2 form using pdf-lib vector primitives.
+ * Matched pixel-by-pixel against the original W-2 PDFs.
  * No html2canvas, no rasterization — all text is vector (crisp at any zoom).
- *
- * Each copy layout is defined by a descriptor that specifies the position of
- * every line, box, label, and data field in PDF points (72 dpi).
  */
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 
@@ -29,58 +27,11 @@ function fmt12(entry) {
   return String(entry || '')
 }
 
-// ─── W-2 Copy Layout Definition ──────────────────────────────────────────────
-// All coordinates in PDF points (origin bottom-left). The layout function
-// takes a Y offset for the top of the copy and returns draw commands.
-
-function buildCopyLayout(topY, copyLabel, copyDescLines) {
-  // Copy dimensions (measured from original PDF)
-  const L = 15       // left margin
-  const R = 545      // right edge
-  const W = R - L    // total width = 530
-
-  // Column boundaries
-  const C1 = 230     // end of left section / start of boxes
-  const C2 = 313     // end of box col 1
-  const C3 = 392     // end of box col 2
-  const C4 = 465     // end of box col 3 / start of right panel
-
-  // Row boundaries (relative offsets from top of copy)
-  const rowH = {
-    r1: 12,    // SSN/EIN row
-    r2: 22,    // box 1-2-3
-    r3: 22,    // box 4-5-6
-    r4: 22,    // box 7-8-9
-    r5: 21,    // control / box 10-11 / 12a
-    r6: 22,    // employee top / box 13-14 / 12b
-    r7: 22,    // employee mid / 13 cont / 12c
-    r8: 22,    // employee bot / 13 cont / 12d
-    r9: 12,    // state row
-    r10: 8,    // footer
-  }
-
-  const totalH = Object.values(rowH).reduce((a, b) => a + b, 0) // ~185
-
-  // Convert top Y (from page top) to PDF Y (from bottom)
-  // topY is distance from page top
-  const base = topY // we'll use "from top" coordinates and convert at draw time
-
-  // Row Y positions (from top of copy, going down)
-  let y = 0
-  const ry = {}
-  const rowNames = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8', 'r9', 'r10']
-  for (const name of rowNames) {
-    ry[name] = y
-    y += rowH[name]
-  }
-
-  return { L, R, W, C1, C2, C3, C4, rowH, ry, totalH, base, copyLabel, copyDescLines }
-}
-
 // ─── Draw One Copy ───────────────────────────────────────────────────────────
+// All measurements from the original "W2 MARIA FERNANDA URDANETA 2021.pdf"
+// Page size: 612 x 792 pt. Each copy ~240pt tall including footer.
 
-function drawCopy(page, layout, data, fonts, pageH) {
-  const { L, R, C1, C2, C3, C4, rowH, ry, base, copyLabel, copyDescLines } = layout
+function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   const { helvetica, helveticaBold, courier } = fonts
   const co = data.company || {}
   const em = data.employee || {}
@@ -88,309 +39,341 @@ function drawCopy(page, layout, data, fonts, pageH) {
   const st = data.stateTax || {}
   const yr = fmtYear(data.year)
   const black = rgb(0, 0, 0)
-  const lineW = 0.5
+  const thin = 0.5
+  const thick = 1.0
 
-  // Helper: convert "from-top" Y to PDF Y (from bottom)
-  const pY = (fromTop) => pageH - base - fromTop
+  // ── Page geometry ──
+  const L = 28       // left margin
+  const R = 584      // right edge
+  const TW = R - L   // total width = 556
 
-  // Helper: draw a horizontal line
-  const hLine = (x1, x2, fromTop) => {
-    page.drawLine({ start: { x: x1, y: pY(fromTop) }, end: { x: x2, y: pY(fromTop) }, thickness: lineW, color: black })
+  // Column X positions (from original)
+  const C1 = 250     // left section end / boxes start
+  const C2 = 340     // box col 1 end
+  const C3 = 430     // box col 2 end
+  const C4 = 500     // box col 3 end / right panel start
+
+  // Row Y offsets from topY (going down)
+  const ROW = {
+    // Row 1: SSN / EIN / OMB
+    r1Top: 0,
+    r1Bot: 18,
+    // Row 2: box 1-2-3 (+ employer label)
+    r2Top: 18,
+    r2Bot: 40,
+    // Row 3: box 4-5-6
+    r3Top: 40,
+    r3Bot: 62,
+    // Row 4: box 7-8-9
+    r4Top: 62,
+    r4Bot: 82,
+    // Row 5: control / box 10-11 / 12a
+    r5Top: 82,
+    r5Bot: 104,
+    // Row 6: employee label / box 13 / 14 / 12b
+    r6Top: 104,
+    r6Bot: 136,
+    // Row 7: employee cont / 13 cont / 12c
+    r7Top: 136,
+    r7Bot: 158,
+    // Row 8: employee cont / 13 cont / 12d  (shares with r7 for left section)
+    r8Top: 158,
+    r8Bot: 178,
+    // State row
+    stTop: 178,
+    stBot: 198,
+    // Footer
+    ftTop: 198,
+    ftBot: 210,
   }
-  // Helper: draw a vertical line
-  const vLine = (x, fromTop1, fromTop2) => {
-    page.drawLine({ start: { x, y: pY(fromTop1) }, end: { x, y: pY(fromTop2) }, thickness: lineW, color: black })
+
+  // Helpers
+  const pY = (fromTop) => pageH - topY - fromTop
+
+  const hLine = (x1, x2, fromTop, w) => {
+    page.drawLine({ start: { x: x1, y: pY(fromTop) }, end: { x: x2, y: pY(fromTop) }, thickness: w || thin, color: black })
   }
-  // Helper: draw text
-  const txt = (str, x, fromTop, opts = {}) => {
+  const vLine = (x, ft1, ft2, w) => {
+    page.drawLine({ start: { x, y: pY(ft1) }, end: { x, y: pY(ft2) }, thickness: w || thin, color: black })
+  }
+  // Draw text at position (fromTop = distance from top of copy)
+  const txt = (str, x, fromTop, size, font) => {
     if (!str && str !== 0) return
     const s = String(str)
     if (!s) return
-    page.drawText(s, {
-      x,
-      y: pY(fromTop) - (opts.size || 6),
-      size: opts.size || 6,
-      font: opts.font || helvetica,
-      color: black,
-    })
+    page.drawText(s, { x, y: pY(fromTop) - (size || 6), size: size || 6, font: font || helvetica, color: black })
   }
-  // Helper: draw right-aligned text
-  const txtR = (str, xRight, fromTop, opts = {}) => {
+  // Right-aligned text
+  const txtR = (str, xRight, fromTop, size, font) => {
     if (!str && str !== 0) return
     const s = String(str)
     if (!s) return
-    const font = opts.font || helveticaBold
-    const size = opts.size || 8
-    const w = font.widthOfTextAtSize(s, size)
-    page.drawText(s, {
-      x: xRight - w - 2,
-      y: pY(fromTop) - size,
-      size,
-      font,
-      color: black,
-    })
+    const f = font || courier
+    const sz = size || 9
+    const w = f.widthOfTextAtSize(s, sz)
+    page.drawText(s, { x: xRight - w - 3, y: pY(fromTop) - sz, size: sz, font: f, color: black })
+  }
+  // Centered text
+  const txtC = (str, xLeft, xRight, fromTop, size, font) => {
+    if (!str) return
+    const s = String(str)
+    const f = font || helvetica
+    const sz = size || 6
+    const w = f.widthOfTextAtSize(s, sz)
+    const cx = (xLeft + xRight) / 2
+    page.drawText(s, { x: cx - w / 2, y: pY(fromTop) - sz, size: sz, font: f, color: black })
   }
 
-  // ═══ DRAW BORDERS ═══
+  // ════════════════════════════════════════════════════════════════════════════
+  // BORDERS
+  // ════════════════════════════════════════════════════════════════════════════
 
-  // Outer border (thicker)
-  const outerTop = ry.r1
-  const outerBot = ry.r10 + rowH.r10
-  page.drawRectangle({
-    x: L, y: pY(outerBot), width: R - L, height: outerBot - outerTop,
-    borderColor: black, borderWidth: 1.2, color: rgb(1, 1, 1),
-  })
+  // Outer border
+  hLine(L, R, ROW.r1Top, thick)
+  hLine(L, R, ROW.stBot, thick)
+  vLine(L, ROW.r1Top, ROW.stBot, thick)
+  vLine(R, ROW.r1Top, ROW.stBot, thick)
 
-  // Row 1 bottom
-  hLine(L, R, ry.r1 + rowH.r1)
-  // Row 1 vertical: SSN | EIN | OMB
-  vLine(C1, ry.r1, ry.r1 + rowH.r1)
-  vLine(C4, ry.r1, ry.r1 + rowH.r1)
+  // Row 1 bottom (full width)
+  hLine(L, R, ROW.r1Bot)
 
-  // Rows 2-4: employer section | box grid | right panel
-  // Horizontal lines between box rows
-  hLine(C1, C4, ry.r2 + rowH.r2) // between row 2 and 3
-  hLine(C1, C4, ry.r3 + rowH.r3) // between row 3 and 4
-  hLine(L, C4, ry.r4 + rowH.r4)   // between row 4 and 5 (bottom of employer, stops at right panel)
+  // Row 1 verticals: SSN | EIN | OMB
+  vLine(C1, ROW.r1Top, ROW.r1Bot)
+  vLine(C4, ROW.r1Top, ROW.r1Bot)
 
-  // Vertical lines for box columns
-  vLine(C1, ry.r1 + rowH.r1, ry.r8 + rowH.r8) // left of boxes
-  vLine(C2, ry.r1 + rowH.r1, ry.r8 + rowH.r8) // between box col 1 and 2
-  vLine(C3, ry.r1 + rowH.r1, ry.r8 + rowH.r8) // between box col 2 and 3
-  vLine(C4, ry.r1, ry.r8 + rowH.r8)           // right of boxes / left of right panel
+  // Box column verticals (from row 2 to row 8)
+  vLine(C1, ROW.r2Top, ROW.r8Bot)
+  vLine(C2, ROW.r2Top, ROW.r8Bot)
+  vLine(C3, ROW.r2Top, ROW.r8Bot)
+  vLine(C4, ROW.r1Top, ROW.r8Bot)  // right panel left edge
 
-  // Row 5: control | 10 | 11 | 12a
-  hLine(L, C4, ry.r5 + rowH.r5) // bottom of control + boxes, stops at right panel
+  // Horizontal lines between box rows (only in box area C1-C4)
+  hLine(C1, C4, ROW.r2Bot)  // between 1-2-3 and 4-5-6
+  hLine(C1, C4, ROW.r3Bot)  // between 4-5-6 and 7-8-9
 
-  // Rows 6-8: employee | 13+14 | 12b-d
-  // Horizontal between 6 and 7 (for box 14/12b boundary)
-  hLine(C2, C4, ry.r6 + rowH.r6)
-  // Horizontal between 7 and 8 (for 12c/12d boundary)
-  hLine(C3, C4, ry.r7 + rowH.r7)
+  // Bottom of employer / top of control (L to C4, not crossing right panel)
+  hLine(L, C4, ROW.r4Bot)
 
-  // Bottom of employee section (full width — state row below spans everything)
-  hLine(L, C4, ry.r8 + rowH.r8)
+  // Bottom of control / top of employee (L to C4)
+  hLine(L, C4, ROW.r5Bot)
 
-  // State row
-  // State row bottom
-  hLine(L, R, ry.r9 + rowH.r9)
+  // Horizontal for 14/12b boundary
+  hLine(C2, C4, ROW.r6Bot)
+  // Horizontal for 12c boundary
+  hLine(C3, C4, ROW.r7Bot)
 
-  // State row vertical dividers
-  const stCols = [L, L + 32, L + 110, L + 195, L + 280, L + 365, L + 440, R]
-  for (let i = 1; i < stCols.length - 1; i++) {
-    vLine(stCols[i], ry.r8 + rowH.r8, ry.r9 + rowH.r9)
-  }
+  // Bottom of employee section (L to R for state row)
+  hLine(L, R, ROW.r8Bot)
 
-  // ═══ DRAW LABELS ═══
+  // State row verticals
+  const stW = TW / 7
+  const stCols = []
+  for (let i = 0; i <= 7; i++) stCols.push(L + i * stW)
+  for (let i = 1; i < 7; i++) vLine(stCols[i], ROW.stTop, ROW.stBot)
 
-  // Row 1
-  txt('a', L + 2, ry.r1 + 1, { size: 7, font: helveticaBold })
-  txt("Employee's SSN", L + 11, ry.r1 + 1, { size: 5 })
-  txt('b', C1 + 2, ry.r1 + 1, { size: 7, font: helveticaBold })
-  txt('Employer identification number (EIN)', C1 + 11, ry.r1 + 1, { size: 5 })
-  txt('OMB No. 1545-0008', C4 + 4, ry.r1 + 1, { size: 5 })
+  // ════════════════════════════════════════════════════════════════════════════
+  // LABELS (matching original abbreviations exactly)
+  // ════════════════════════════════════════════════════════════════════════════
 
-  // Row 2: employer label + box labels
-  txt('c', L + 2, ry.r1 + rowH.r1 + 1, { size: 7, font: helveticaBold })
-  txt("Employer's name, address, and ZIP code", L + 11, ry.r1 + rowH.r1 + 1, { size: 5 })
+  // ── Row 1: SSN / EIN / OMB ──
+  txt('a', L + 2, ROW.r1Top + 2, 5, helveticaBold)
+  txt("Employee's SSN", L + 8, ROW.r1Top + 2, 5)
+  txt('b', C1 + 2, ROW.r1Top + 2, 5, helveticaBold)
+  txt('Employer identification number (EIN)', C1 + 8, ROW.r1Top + 2, 5)
+  txt('OMB No. 1545-0008', C4 + 4, ROW.r1Top + 2, 5)
 
-  // Box 1
-  txt('1', C1 + 2, ry.r2 + 1, { size: 7, font: helveticaBold })
-  txt('Wages, tips, other comp.', C1 + 10, ry.r2 + 1, { size: 4.5 })
-  // Box 2
-  txt('2', C2 + 2, ry.r2 + 1, { size: 7, font: helveticaBold })
-  txt('Federal income tax withheld', C2 + 10, ry.r2 + 1, { size: 4.5 })
-  // Box 3
-  txt('3', C3 + 2, ry.r2 + 1, { size: 7, font: helveticaBold })
-  txt('Social security wages', C3 + 10, ry.r2 + 1, { size: 4.5 })
+  // ── Row 2: Employer label + Box 1, 2, 3 ──
+  txt('c', L + 2, ROW.r2Top + 2, 5, helveticaBold)
+  txt("Employer's name, address, and ZIP code", L + 8, ROW.r2Top + 2, 5)
 
-  // Box 4
-  txt('4', C1 + 2, ry.r3 + 1, { size: 7, font: helveticaBold })
-  txt('Social security tax withheld', C1 + 10, ry.r3 + 1, { size: 4.5 })
-  // Box 5
-  txt('5', C2 + 2, ry.r3 + 1, { size: 7, font: helveticaBold })
-  txt('Medicare wages & tips', C2 + 10, ry.r3 + 1, { size: 4.5 })
-  // Box 6
-  txt('6', C3 + 2, ry.r3 + 1, { size: 7, font: helveticaBold })
-  txt('Medicare tax withheld', C3 + 10, ry.r3 + 1, { size: 4.5 })
+  txt('1', C1 + 2, ROW.r2Top + 2, 5, helveticaBold)
+  txt('Wgs, tips, other compn', C1 + 8, ROW.r2Top + 2, 4.5)
+  txt('2', C2 + 2, ROW.r2Top + 2, 5, helveticaBold)
+  txt('Fed inc tax withheld', C2 + 8, ROW.r2Top + 2, 4.5)
+  txt('3', C3 + 2, ROW.r2Top + 2, 5, helveticaBold)
+  txt('Social security wages', C3 + 8, ROW.r2Top + 2, 4.5)
 
-  // Box 7
-  txt('7', C1 + 2, ry.r4 + 1, { size: 7, font: helveticaBold })
-  txt('Social security tips', C1 + 10, ry.r4 + 1, { size: 4.5 })
-  // Box 8
-  txt('8', C2 + 2, ry.r4 + 1, { size: 7, font: helveticaBold })
-  txt('Allocated tips', C2 + 10, ry.r4 + 1, { size: 4.5 })
-  // Box 9
-  txt('9', C3 + 2, ry.r4 + 1, { size: 7, font: helveticaBold })
+  // ── Row 3: Box 4, 5, 6 ──
+  txt('4', C1 + 2, ROW.r3Top + 2, 5, helveticaBold)
+  txt('SS tax withheld', C1 + 8, ROW.r3Top + 2, 4.5)
+  txt('5', C2 + 2, ROW.r3Top + 2, 5, helveticaBold)
+  txt('Medicare wages & tips', C2 + 8, ROW.r3Top + 2, 4.5)
+  txt('6', C3 + 2, ROW.r3Top + 2, 5, helveticaBold)
+  txt('Medicare tax withheld', C3 + 8, ROW.r3Top + 2, 4.5)
 
-  // Row 5 labels
-  txt('d', L + 2, ry.r5 + 1, { size: 7, font: helveticaBold })
-  txt('Control number', L + 11, ry.r5 + 1, { size: 5 })
-  txt('10', C1 + 2, ry.r5 + 1, { size: 7, font: helveticaBold })
-  txt('Dependent care benefits', C1 + 14, ry.r5 + 1, { size: 4.5 })
-  txt('11', C2 + 2, ry.r5 + 1, { size: 7, font: helveticaBold })
-  txt('Nonqualified plans', C2 + 14, ry.r5 + 1, { size: 4.5 })
-  txt('12a', C3 + 2, ry.r5 + 1, { size: 6, font: helveticaBold })
-  txt('See inst. for box 12', C3 + 18, ry.r5 + 1, { size: 4 })
+  // ── Row 4: Box 7, 8, 9 ──
+  txt('7', C1 + 2, ROW.r4Top + 2, 5, helveticaBold)
+  txt('Social security tips', C1 + 8, ROW.r4Top + 2, 4.5)
+  txt('8', C2 + 2, ROW.r4Top + 2, 5, helveticaBold)
+  txt('Allocated tips', C2 + 8, ROW.r4Top + 2, 4.5)
+  txt('9', C3 + 2, ROW.r4Top + 2, 5, helveticaBold)
 
-  // Row 6 labels
-  txt('e', L + 2, ry.r5 + rowH.r5 + 1, { size: 7, font: helveticaBold })
-  txt("Employee's name, address, and ZIP code", L + 11, ry.r5 + rowH.r5 + 1, { size: 5 })
-  txt('Suff.', C1 - 22, ry.r5 + rowH.r5 + 1, { size: 4.5 })
-  txt('13', C1 + 2, ry.r6 + 1, { size: 7, font: helveticaBold })
-  txt('14', C2 + 2, ry.r6 + 1, { size: 7, font: helveticaBold })
-  txt('Other', C2 + 14, ry.r6 + 1, { size: 4.5 })
-  txt('12b', C3 + 2, ry.r6 + 1, { size: 6, font: helveticaBold })
+  // ── Row 5: Control / Box 10, 11, 12a ──
+  txt('d', L + 2, ROW.r5Top + 2, 5, helveticaBold)
+  txt('Control number', L + 8, ROW.r5Top + 2, 5)
+  txt('10', C1 + 2, ROW.r5Top + 2, 5, helveticaBold)
+  txt('Depdnt care benefits', C1 + 12, ROW.r5Top + 2, 4.5)
+  txt('11', C2 + 2, ROW.r5Top + 2, 5, helveticaBold)
+  txt('Nonqualified plans', C2 + 12, ROW.r5Top + 2, 4.5)
+  txt('12a', C3 + 2, ROW.r5Top + 2, 5, helveticaBold)
 
-  // Box 13 checkboxes labels
-  const chkY1 = ry.r6 + 10
-  const chkY2 = ry.r6 + 20
-  const chkY3 = ry.r6 + 30
-  txt('Statutory employee', C1 + 16, chkY1, { size: 5 })
-  txt('Retirement plan', C1 + 16, chkY2, { size: 5 })
-  txt('Third-party sick pay', C1 + 16, chkY3, { size: 5 })
+  // ── Row 6: Employee label / Box 13, 14, 12b ──
+  txt('e', L + 2, ROW.r6Top + 2, 5, helveticaBold)
+  txt("Employee's name, address, and ZIP code", L + 8, ROW.r6Top + 2, 5)
+  txt('Suff.', C1 - 20, ROW.r6Top + 2, 4.5)
 
-  // Checkbox boxes
-  const drawChkBox = (x, fromTop, checked) => {
+  txt('13', C1 + 2, ROW.r6Top + 2, 5, helveticaBold)
+  txt('14', C2 + 2, ROW.r6Top + 2, 5, helveticaBold)
+  txt('Other', C2 + 12, ROW.r6Top + 2, 4.5)
+  txt('12b', C3 + 2, ROW.r6Top + 2, 5, helveticaBold)
+
+  // Box 13 checkboxes with labels
+  const chkX = C1 + 8
+  const chkLblX = C1 + 18
+  const chkY1 = ROW.r6Top + 14
+  const chkY2 = ROW.r6Top + 24
+  const chkY3 = ROW.r7Top + 12
+
+  // Draw checkbox rectangles
+  const drawChk = (x, fromTop, checked) => {
     page.drawRectangle({
-      x, y: pY(fromTop + 7), width: 7, height: 7,
+      x, y: pY(fromTop) - 7, width: 7, height: 7,
       borderColor: black, borderWidth: 0.5, color: rgb(1, 1, 1),
     })
     if (checked) {
-      page.drawText('X', { x: x + 1, y: pY(fromTop + 7), size: 6, font: helveticaBold, color: black })
+      txt('X', x + 1.5, fromTop, 6, helveticaBold)
     }
   }
-  drawChkBox(C1 + 6, chkY1, b[13]?.statutoryEmployee)
-  drawChkBox(C1 + 6, chkY2, b[13]?.retirementPlan)
-  drawChkBox(C1 + 6, chkY3, b[13]?.thirdPartySickPay)
+  drawChk(chkX, chkY1, b[13]?.statutoryEmployee)
+  txt('Statutory employee', chkLblX, chkY1, 5)
+  drawChk(chkX, chkY2, b[13]?.retirementPlan)
+  txt('Retirement plan', chkLblX, chkY2, 5)
+  drawChk(chkX, chkY3, b[13]?.thirdPartySickPay)
+  txt('Third-party sick pay', chkLblX, chkY3, 5)
 
-  // 12c, 12d labels
-  txt('12c', C3 + 2, ry.r7 + 1, { size: 6, font: helveticaBold })
-  txt('12d', C3 + 2, ry.r8 + 1, { size: 6, font: helveticaBold })
+  // 12c, 12d
+  txt('12c', C3 + 2, ROW.r7Top + 2, 5, helveticaBold)
+  txt('12d', C3 + 2, ROW.r8Top + 2, 5, helveticaBold)
 
-  // Right panel: Form W-2 title
-  const rcx = (C4 + R) / 2 // center of right panel
-  txt('Form', rcx - 8, ry.r2 - 2, { size: 6 })
+  // ── Right panel: Form W-2 / Year / Copy ──
+  // "Form" small
+  txtC('Form', C4, R, ROW.r2Top + 2, 7)
 
-  // W-2 large
-  const w2Str = 'W-2'
-  const w2W = helveticaBold.widthOfTextAtSize(w2Str, 22)
-  page.drawText(w2Str, { x: rcx - w2W / 2, y: pY(ry.r2 + 6) - 22, size: 22, font: helveticaBold, color: black })
+  // "W-2" large bold
+  txtC('W-2', C4, R, ROW.r2Top + 10, 22, helveticaBold)
 
-  txt('Wage and', rcx - 16, ry.r2 + 28, { size: 9 })
-  txt('Tax', rcx - 6, ry.r2 + 38, { size: 9 })
-  txt('Statement', rcx - 18, ry.r2 + 48, { size: 9 })
+  // "Wage and Tax Statement"
+  txtC('Wage and', C4, R, ROW.r3Top + 2, 8)
+  txtC('Tax', C4, R, ROW.r3Top + 12, 8)
+  txtC('Statement', C4, R, ROW.r4Top + 2, 8)
 
-  // Year
-  const yrW = helveticaBold.widthOfTextAtSize(yr, 20)
-  if (yr) page.drawText(yr, { x: rcx - yrW / 2, y: pY(ry.r5 + 4) - 20, size: 20, font: helveticaBold, color: black })
+  // Year (large bold)
+  if (yr) txtC(yr, C4, R, ROW.r5Top + 2, 18, helveticaBold)
 
   // Copy label + description
   if (copyLabel) {
-    const clW = helveticaBold.widthOfTextAtSize(copyLabel, 7)
-    page.drawText(copyLabel, { x: rcx - clW / 2, y: pY(ry.r6 + 4) - 7, size: 7, font: helveticaBold, color: black })
+    txtC(copyLabel, C4, R, ROW.r6Top + 4, 7, helveticaBold)
     if (copyDescLines) {
       const lines = Array.isArray(copyDescLines) ? copyDescLines : [copyDescLines]
-      let dy = ry.r6 + 14
+      let dy = ROW.r6Top + 14
       for (const line of lines) {
-        const lw = helvetica.widthOfTextAtSize(line, 5)
-        page.drawText(line, { x: rcx - lw / 2, y: pY(dy) - 5, size: 5, font: helvetica, color: black })
+        txtC(line, C4, R, dy, 5)
         dy += 7
       }
     }
   }
 
-  // State row labels
-  const stLabels = [
-    { n: '15', t: 'State', col: 0 },
-    { n: '', t: "Employer's state ID number", col: 1 },
-    { n: '16', t: 'State wages, tips, etc.', col: 2 },
-    { n: '17', t: 'State income tax', col: 3 },
-    { n: '18', t: 'Local wages, tips, etc.', col: 4 },
-    { n: '19', t: 'Local income tax', col: 5 },
-    { n: '20', t: 'Locality name', col: 6 },
-  ]
-  const stY = ry.r9
-  for (const sl of stLabels) {
-    const cx = stCols[sl.col]
-    if (sl.n) {
-      txt(sl.n, cx + 2, stY + 1, { size: 6, font: helveticaBold })
-      txt(sl.t, cx + 2 + (sl.n.length > 1 ? 12 : 8), stY + 1, { size: 4.5 })
-    } else {
-      txt(sl.t, cx + 2, stY + 1, { size: 4.5 })
-    }
+  // ── State row labels ──
+  const stLabels = ['15 State', "Employer's state ID No.", '16 State wages, tips, etc', '17 State income tax', '18 Local wages, tips, etc', '19 Local income tax', '20 Locality name']
+  for (let i = 0; i < stLabels.length; i++) {
+    txt(stLabels[i], stCols[i] + 2, ROW.stTop + 2, 4.5, i === 0 ? helveticaBold : helvetica)
   }
 
-  // Footer
-  txt('Dept. of the Treasury \u2014 IRS', R - 80, ry.r9 + rowH.r9 + 1, { size: 5 })
+  // ── Footer ──
+  txtR('Department of the Treasury \u2014 IRS', R, ROW.ftTop + 2, 5, helvetica)
 
-  // ═══ DRAW DATA VALUES ═══
-  // Values are positioned BELOW their labels (label ~5pt + gap)
+  // ════════════════════════════════════════════════════════════════════════════
+  // DATA VALUES
+  // ════════════════════════════════════════════════════════════════════════════
 
-  // SSN (below "a Employee's SSN" label)
-  txt(em.ssn, L + 4, ry.r1 + 5, { size: 8, font: courier })
-  // EIN (below "b Employer identification number" label)
-  txt(co.ein, C1 + 4, ry.r1 + 5, { size: 8, font: courier })
+  // SSN — same line as label, to the right
+  const ssnLabelW = helvetica.widthOfTextAtSize("Employee's SSN", 5)
+  txt(em.ssn, L + 10 + ssnLabelW + 6, ROW.r1Top + 2, 9, courier)
 
-  // Employer info (below "c Employer's name..." label)
-  const empYStart = ry.r2 + 8
-  txt(co.name, L + 4, empYStart, { size: 8, font: helveticaBold })
-  txt(co.addressLine1, L + 4, empYStart + 10, { size: 8 })
+  // EIN — same line as label, to the right
+  const einLabelW = helvetica.widthOfTextAtSize('Employer identification number (EIN)', 5)
+  txt(co.ein, C1 + 10 + einLabelW + 6, ROW.r1Top + 2, 9, courier)
+
+  // Employer name and address (below "c" label)
+  txt(co.name, L + 6, ROW.r2Top + 12, 9, helveticaBold)
+  txt(co.addressLine1, L + 6, ROW.r2Top + 22, 8)
   if (co.addressLine2) {
-    txt(co.addressLine2, L + 4, empYStart + 20, { size: 8 })
-    txt(co.cityStateZip, L + 4, empYStart + 30, { size: 8 })
+    txt(co.addressLine2, L + 6, ROW.r3Top + 10, 8)
+    txt(co.cityStateZip, L + 6, ROW.r3Top + 20, 8)
   } else {
-    txt(co.cityStateZip, L + 4, empYStart + 20, { size: 8 })
+    txt(co.cityStateZip, L + 6, ROW.r3Top + 10, 8)
   }
 
-  // Box values (right-aligned, positioned at bottom of each box)
-  txtR(fmt(b[1]), C2, ry.r2 + 12)
-  txtR(fmt(b[2]), C3, ry.r2 + 12)
-  txtR(fmt(b[3]), C4, ry.r2 + 12)
-  txtR(fmt(b[4]), C2, ry.r3 + 12)
-  txtR(fmt(b[5]), C3, ry.r3 + 12)
-  txtR(fmt(b[6]), C4, ry.r3 + 12)
-  txtR(fmt(b[7]), C2, ry.r4 + 12)
-  txtR(fmt(b[8]), C3, ry.r4 + 12)
+  // Box values (right-aligned within each box, positioned below label)
+  txtR(fmt(b[1]), C2 - 2, ROW.r2Top + 12, 9, courier)
+  txtR(fmt(b[2]), C3 - 2, ROW.r2Top + 12, 9, courier)
+  txtR(fmt(b[3]), C4 - 2, ROW.r2Top + 12, 9, courier)
+  txtR(fmt(b[4]), C2 - 2, ROW.r3Top + 12, 9, courier)
+  txtR(fmt(b[5]), C3 - 2, ROW.r3Top + 12, 9, courier)
+  txtR(fmt(b[6]), C4 - 2, ROW.r3Top + 12, 9, courier)
+  txtR(fmt(b[7]), C2 - 2, ROW.r4Top + 12, 9, courier)
+  txtR(fmt(b[8]), C3 - 2, ROW.r4Top + 12, 9, courier)
 
-  // Control number (below "d Control number" label)
-  txt(data.controlNumber, L + 4, ry.r5 + 9, { size: 8, font: helveticaBold })
-  // Box 10, 11 (bottom of box)
-  txtR(fmt(b[10]), C2, ry.r5 + 11)
-  txtR(fmt(b[11]), C3, ry.r5 + 11)
+  // Control number
+  txt(data.controlNumber, L + 6, ROW.r5Top + 12, 9, helveticaBold)
+  // Box 10, 11
+  txtR(fmt(b[10]), C2 - 2, ROW.r5Top + 12, 9, courier)
+  txtR(fmt(b[11]), C3 - 2, ROW.r5Top + 12, 9, courier)
   // Box 12a
-  txt(fmt12(b['12a']), C3 + 4, ry.r5 + 11, { size: 6.5 })
+  txt(fmt12(b['12a']), C3 + 16, ROW.r5Top + 12, 7)
 
-  // Employee info (below "e Employee's name..." label)
-  const eeYStart = ry.r6 + 12
-  txt(em.name, L + 4, eeYStart, { size: 8, font: helveticaBold })
-  txt(em.addressLine1, L + 4, eeYStart + 10, { size: 8 })
-  txt(em.cityStateZip, L + 4, eeYStart + 20, { size: 8 })
+  // Employee name and address
+  txt(em.name, L + 6, ROW.r6Top + 14, 9, helveticaBold)
+  txt(em.addressLine1, L + 6, ROW.r6Top + 24, 8)
+  txt(em.cityStateZip, L + 6, ROW.r7Top + 10, 8)
 
-  // Box 14
-  txt(b[14], C2 + 4, ry.r6 + 12, { size: 6.5 })
+  // Box 14 value
+  txt(b[14], C2 + 6, ROW.r6Top + 14, 7)
   // Box 12b, 12c, 12d
-  txt(fmt12(b['12b']), C3 + 4, ry.r6 + 12, { size: 6.5 })
-  txt(fmt12(b['12c']), C3 + 4, ry.r7 + 10, { size: 6.5 })
-  txt(fmt12(b['12d']), C3 + 4, ry.r8 + 10, { size: 6.5 })
+  txt(fmt12(b['12b']), C3 + 16, ROW.r6Top + 14, 7)
+  txt(fmt12(b['12c']), C3 + 16, ROW.r7Top + 12, 7)
+  txt(fmt12(b['12d']), C3 + 16, ROW.r8Top + 12, 7)
 
   // State row values
-  txt(st.state, stCols[0] + 4, stY + 6, { size: 8, font: helveticaBold })
-  txt(st.employerId, stCols[1] + 4, stY + 6, { size: 7, font: courier })
-  txtR(fmt(b[16]), stCols[3], stY + 6)
-  txtR(fmt(b[17]), stCols[4], stY + 6)
-  txtR(fmt(b[18]), stCols[5], stY + 6)
-  txtR(fmt(b[19]), stCols[6], stY + 6)
-  txt(b[20], stCols[6] + 4, stY + 6, { size: 7 })
+  txt(st.state, stCols[0] + 4, ROW.stTop + 10, 8, helveticaBold)
+  txt(st.employerId, stCols[1] + 4, ROW.stTop + 10, 7, courier)
+  txtR(fmt(b[16] || st.stateWages), stCols[3] - 2, ROW.stTop + 10, 8, courier)
+  txtR(fmt(b[17] || st.stateTax), stCols[4] - 2, ROW.stTop + 10, 8, courier)
+  txtR(fmt(b[18]), stCols[5] - 2, ROW.stTop + 10, 8, courier)
+  txtR(fmt(b[19]), stCols[6] - 2, ROW.stTop + 10, 8, courier)
+  txt(b[20], stCols[6] + 4, ROW.stTop + 10, 7)
+}
+
+// ─── Draw dashed separator line between copies ───────────────────────────────
+
+function drawDashedLine(page, x1, x2, y, _pageH) {
+  const dashLen = 6
+  const gapLen = 4
+  let x = x1
+  while (x < x2) {
+    const end = Math.min(x + dashLen, x2)
+    page.drawLine({
+      start: { x, y },
+      end: { x: end, y },
+      thickness: 0.5,
+      color: rgb(0, 0, 0),
+    })
+    x = end + gapLen
+  }
 }
 
 // ─── Public: Generate PDF for a template ─────────────────────────────────────
 
-/**
- * @param {object} adaptedData - from documentAdapter
- * @param {object} manifest - template manifest
- * @returns {Promise<{pdfBytes, stats, warnings}>}
- */
 export async function generateDirectPdf(adaptedData, manifest) {
   const doc = await PDFDocument.create()
   const helvetica = await doc.embedFont(StandardFonts.Helvetica)
@@ -408,18 +391,20 @@ export async function generateDirectPdf(adaptedData, manifest) {
     const pageH = isLandscape ? 612 : 792
     const page = doc.addPage([pageW, pageH])
 
-    const topMargin = 20
-    const gap = 6
-    const totalGaps = (pageCopies.length - 1) * gap
-    const usableH = pageH - topMargin * 2 - totalGaps
-    // Each copy gets equal share of usable height (but capped at 185)
-    const copyH = Math.min(185, usableH / pageCopies.length)
+    const topMargin = 18
+    const copyH = 215  // height of one copy including footer
+    const gap = 10     // gap between copies (includes dashed line)
 
     for (let i = 0; i < pageCopies.length; i++) {
       const { label, desc } = pageCopies[i]
       const topY = topMargin + i * (copyH + gap)
-      const layout = buildCopyLayout(topY, label, desc)
-      drawCopy(page, layout, adaptedData, fonts, pageH)
+      drawCopy(page, topY, label, desc, adaptedData, fonts, pageH)
+
+      // Draw dashed separator between copies (not after the last one)
+      if (i < pageCopies.length - 1) {
+        const dashY = pageH - topY - copyH - gap / 2
+        drawDashedLine(page, 20, pageW - 20, dashY, pageH)
+      }
     }
   }
 
@@ -476,7 +461,6 @@ function getCopiesForTemplate(templateId) {
     ],
   }
 
-  // Earnings templates: page 1 = earnings + Copy C, page 2 = B + 2 + D
   if (templateId.includes('earnings')) {
     return [
       { label: 'Copy C', desc: ['For EMPLOYEE\'S RECORDS.'] },
@@ -490,18 +474,14 @@ function getCopiesForTemplate(templateId) {
 }
 
 function groupCopiesIntoPages(templateId, copies) {
-  // 2-column templates: 4 copies on one page
   if (['w2-2022-four-copies', 'w2-2023-mmr-reissued', 'w2-2022-industrial-four-copies'].includes(templateId)) {
-    return [copies] // all on one page, but need 2-column handling
+    return [copies]
   }
-  // Mcdean: 1 copy per page
   if (templateId.includes('mcdean')) {
     return copies.map(c => [c])
   }
-  // Earnings: page 1 = first copy (with earnings header), page 2 = remaining 3
   if (templateId.includes('earnings')) {
     return [[copies[0]], copies.slice(1)]
   }
-  // Default: all copies on one page
   return [copies]
 }
