@@ -325,14 +325,14 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   const einLabelW = helvetica.widthOfTextAtSize('Employer identification number (EIN)', 5)
   txt(co.ein, C1 + 10 + einLabelW + 6, ROW.r1Top + 2, 9, courier)
 
-  // Employer name and address (below "c" label) — regular weight like original
-  txt(co.name, L + 6, ROW.r2Top + 12, 9)
-  txt(co.addressLine1, L + 6, ROW.r2Top + 24, 8)
+  // Employer name and address (below "c" label) — Courier like original
+  txt(co.name, L + 6, ROW.r2Top + 12, 9, courier)
+  txt(co.addressLine1, L + 6, ROW.r2Top + 24, 8, courier)
   if (co.addressLine2) {
-    txt(co.addressLine2, L + 6, ROW.r3Top + 12, 8)
-    txt(co.cityStateZip, L + 6, ROW.r4Top + 2, 8)
+    txt(co.addressLine2, L + 6, ROW.r3Top + 12, 8, courier)
+    txt(co.cityStateZip, L + 6, ROW.r4Top + 2, 8, courier)
   } else {
-    txt(co.cityStateZip, L + 6, ROW.r3Top + 12, 8)
+    txt(co.cityStateZip, L + 6, ROW.r3Top + 12, 8, courier)
   }
 
   // Box values (right-aligned within each box, positioned below label)
@@ -345,34 +345,34 @@ function drawCopy(page, topY, copyLabel, copyDescLines, data, fonts, pageH) {
   txtR(fmt(b[7]), C2 - 2, ROW.r4Top + 12, 9, courier)
   txtR(fmt(b[8]), C3 - 2, ROW.r4Top + 12, 9, courier)
 
-  // Control number — regular weight like original
-  txt(data.controlNumber, L + 6, ROW.r5Top + 12, 9)
+  // Control number — Courier like original
+  txt(data.controlNumber, L + 6, ROW.r5Top + 12, 9, courier)
   // Box 10, 11
   txtR(fmt(b[10]), C2 - 2, ROW.r5Top + 12, 9, courier)
   txtR(fmt(b[11]), C3 - 2, ROW.r5Top + 12, 9, courier)
   // Box 12a
-  txt(fmt12(b['12a']), C3 + 16, ROW.r5Top + 12, 7)
+  txt(fmt12(b['12a']), C3 + 16, ROW.r5Top + 12, 7, courier)
 
-  // Employee name and address — regular weight like original, indented
-  txt(em.name, L + 8, ROW.r6Top + 14, 9)
-  txt(em.addressLine1, L + 8, ROW.r6Top + 26, 8)
-  txt(em.cityStateZip, L + 8, ROW.r7Top + 14, 8)
+  // Employee name and address — Courier like original
+  txt(em.name, L + 8, ROW.r6Top + 14, 9, courier)
+  txt(em.addressLine1, L + 8, ROW.r6Top + 26, 8, courier)
+  txt(em.cityStateZip, L + 8, ROW.r7Top + 14, 8, courier)
 
   // Box 14 value
-  txt(b[14], C2 + 6, ROW.r6Top + 14, 7)
+  txt(b[14], C2 + 6, ROW.r6Top + 14, 7, courier)
   // Box 12b, 12c, 12d
-  txt(fmt12(b['12b']), C3 + 16, ROW.r6Top + 14, 7)
-  txt(fmt12(b['12c']), C3 + 16, ROW.r7Top + 12, 7)
-  txt(fmt12(b['12d']), C3 + 16, ROW.r8Top + 12, 7)
+  txt(fmt12(b['12b']), C3 + 16, ROW.r6Top + 14, 7, courier)
+  txt(fmt12(b['12c']), C3 + 16, ROW.r7Top + 12, 7, courier)
+  txt(fmt12(b['12d']), C3 + 16, ROW.r8Top + 12, 7, courier)
 
   // State row values
-  txt(st.state, stCols[0] + 4, ROW.stTop + 10, 8)
+  txt(st.state, stCols[0] + 4, ROW.stTop + 10, 8, courier)
   txt(st.employerId, stCols[1] + 4, ROW.stTop + 10, 7, courier)
   txtR(fmt(b[16] || st.stateWages), stCols[3] - 2, ROW.stTop + 10, 8, courier)
   txtR(fmt(b[17] || st.stateTax), stCols[4] - 2, ROW.stTop + 10, 8, courier)
   txtR(fmt(b[18]), stCols[5] - 2, ROW.stTop + 10, 8, courier)
   txtR(fmt(b[19]), stCols[6] - 2, ROW.stTop + 10, 8, courier)
-  txt(b[20], stCols[6] + 4, ROW.stTop + 10, 7)
+  txt(b[20], stCols[6] + 4, ROW.stTop + 10, 7, courier)
 }
 
 // ─── Draw One Copy — 2x2 Grid Layout (Plantilla 2) ──────────────────────────
